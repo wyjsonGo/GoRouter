@@ -9,7 +9,7 @@ import com.wyjson.module_user.databinding.UserActivitySignInBinding;
 import com.wyjson.module_user.databinding.UserActivityUserInfoBinding;
 
 /**
- * 这个页面需要登录后才能进入,未登录会触发{@link com.wyjson.module_user.route.service.SignInInterceptor}
+ * 这个页面需要登录后才能进入,未登录会触发{@link com.wyjson.module_user.route.interceptor.SignInInterceptor}
  */
 public class UserInfoActivity extends FragmentActivity {
 
