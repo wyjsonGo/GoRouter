@@ -1,0 +1,137 @@
+package com.wyjson.router.core;
+
+import com.wyjson.router.enums.ParamType;
+import com.wyjson.router.enums.RouteType;
+import com.wyjson.router.exception.RouterException;
+import com.wyjson.router.utils.TextUtils;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class CardMeta {
+    private String path;
+    private RouteType type;
+    private Class<?> pathClass;
+    private int extra;
+    private Map<String, ParamType> paramsType;
+
+    protected CardMeta() {
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    protected void setPath(String path) {
+        this.path = path;
+        this.type = extractType(path);
+    }
+
+    public RouteType getType() {
+        return type;
+    }
+
+    public Class<?> getPathClass() {
+        return pathClass;
+    }
+
+    protected void setPathClass(Class<?> pathClass) {
+        this.pathClass = pathClass;
+    }
+
+    public int getExtra() {
+        return extra;
+    }
+
+    protected void setExtra(int extra) {
+        this.extra = extra;
+    }
+
+    public Map<String, ParamType> getParamsType() {
+        if (paramsType == null) {
+            paramsType = new HashMap<>();
+        }
+        return paramsType;
+    }
+
+    private RouteType extractType(String path) {
+        RouteType routeType = null;
+        try {
+            String defaultType = path.substring(path.lastIndexOf('/'));
+            if (!TextUtils.isEmpty(defaultType)) {
+                routeType = RouteType.getType(defaultType);
+            }
+        } catch (Exception ignored) {
+        }
+        if (routeType == null) {
+            throw new RouterException("The route type is incorrect! The path[" + path + "] type can only end with " + RouteType.toStringByValues());
+        }
+        return routeType;
+    }
+
+
+    public void commit(Class<?> cls) {
+        setPathClass(cls);
+        GoRouter.getInstance().addCardMeta(this);
+    }
+
+    public CardMeta putExtra(int extra) {
+        this.extra = extra;
+        return this;
+    }
+
+    public CardMeta putString(String key) {
+        getParamsType().put(key, ParamType.String);
+        return this;
+    }
+
+    public CardMeta putBoolean(String key) {
+        getParamsType().put(key, ParamType.Boolean);
+        return this;
+    }
+
+    public CardMeta putShort(String key) {
+        getParamsType().put(key, ParamType.Short);
+        return this;
+    }
+
+    public CardMeta putInt(String key) {
+        getParamsType().put(key, ParamType.Int);
+        return this;
+    }
+
+    public CardMeta putLong(String key) {
+        getParamsType().put(key, ParamType.Long);
+        return this;
+    }
+
+    public CardMeta putDouble(String key) {
+        getParamsType().put(key, ParamType.Double);
+        return this;
+    }
+
+    public CardMeta putByte(String key) {
+        getParamsType().put(key, ParamType.Byte);
+        return this;
+    }
+
+    public CardMeta putChar(String key) {
+        getParamsType().put(key, ParamType.Char);
+        return this;
+    }
+
+    public CardMeta putFloat(String key) {
+        getParamsType().put(key, ParamType.Float);
+        return this;
+    }
+
+    public CardMeta putSerializable(String key) {
+        getParamsType().put(key, ParamType.Serializable);
+        return this;
+    }
+
+    public CardMeta putParcelable(String key) {
+        getParamsType().put(key, ParamType.Parcelable);
+        return this;
+    }
+}

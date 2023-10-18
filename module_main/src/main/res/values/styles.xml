@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Main.AppTheme.Activity.Splash" parent="Base.Theme.GoRouter">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowBackground">#ffaa00</item>
+    </style>
+
+</resources>

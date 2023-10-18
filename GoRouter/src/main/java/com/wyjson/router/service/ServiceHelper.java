@@ -1,0 +1,64 @@
+package com.wyjson.router.service;
+
+import androidx.annotation.Nullable;
+
+import com.wyjson.router.exception.RouterException;
+import com.wyjson.router.interfaces.IService;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class ServiceHelper {
+
+    private ServiceHelper() {
+    }
+
+    private static class InstanceHolder {
+        private static final ServiceHelper mInstance = new ServiceHelper();
+    }
+
+    public static ServiceHelper getInstance() {
+        return InstanceHolder.mInstance;
+    }
+
+    private static final Map<Class<? extends IService>, ServiceMeta> services = new HashMap<>();
+
+    /**
+     * 实现相同接口的service会被覆盖(更新)
+     * 调用时机可以在application或插件模块加载时
+     *
+     * @param serviceClass 实现类.class
+     */
+    public void addService(Class<? extends IService> serviceClass) {
+        services.put((Class<? extends IService>) serviceClass.getInterfaces()[0], new ServiceMeta(serviceClass));
+    }
+
+    /**
+     * 获取service接口的实现
+     *
+     * @param serviceClass 接口.class
+     * @param <T>
+     * @return
+     */
+    @Nullable
+    public <T> T getService(Class<? extends T> serviceClass) {
+        ServiceMeta meta = services.get(serviceClass);
+        if (meta != null) {
+            if (serviceClass.isAssignableFrom(meta.getServiceClass())) {
+                IService instance = meta.getService();
+                if (instance == null) {
+                    try {
+                        instance = meta.getServiceClass().getConstructor().newInstance();
+                        instance.init();
+                        meta.setService(instance);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        throw new RouterException("serviceClass constructor new instance failed!");
+                    }
+                }
+                return (T) instance;
+            }
+        }
+        return null;
+    }
+}
