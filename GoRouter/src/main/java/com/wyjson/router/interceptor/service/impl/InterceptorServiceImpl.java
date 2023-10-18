@@ -32,8 +32,8 @@ public class InterceptorServiceImpl implements InterceptorService {
                 }
 
                 @Override
-                public void onInterrupt(Throwable exception) {
-                    callback.onInterrupt(exception);
+                public void onInterrupt(Card card, Throwable exception) {
+                    callback.onInterrupt(card, exception);
                 }
             });
         } else {

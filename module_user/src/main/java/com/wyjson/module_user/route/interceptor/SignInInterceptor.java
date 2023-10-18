@@ -22,7 +22,7 @@ public class SignInInterceptor implements IInterceptor {
         if (RouteTag.isExist(card.getTag(), RouteTag.LOGIN) || card.getExtras().getBoolean(IS_LOGIN)) {
             if (true) {// 判断用户是否登录
                 GoRouter.getInstance().build(UserRoute.SignInActivity).go(card.getContext());
-                callback.onInterrupt(new RouterException("未登录"));
+                callback.onInterrupt(card, new RouterException("未登录,拦截自动跳转登录页!"));
                 return;
             }
         }

@@ -229,9 +229,9 @@ public final class GoRouter {
                             }
 
                             @Override
-                            public void onInterrupt(Throwable exception) {
+                            public void onInterrupt(Card card, Throwable exception) {
                                 if (callback != null) {
-                                    callback.onInterrupt(card);
+                                    callback.onInterrupt(card, exception);
                                 }
                             }
                         });

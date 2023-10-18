@@ -1,6 +1,7 @@
 package com.wyjson.module_main.activity;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Toast;
 
@@ -13,6 +14,8 @@ import com.wyjson.module_common.route.UserRoute;
 import com.wyjson.module_common.route.service.user.UserService;
 import com.wyjson.module_main.R;
 import com.wyjson.module_main.databinding.MainActivityMainBinding;
+import com.wyjson.router.callback.GoCallback;
+import com.wyjson.router.core.Card;
 import com.wyjson.router.core.GoRouter;
 
 public class MainActivity extends FragmentActivity {
@@ -59,7 +62,29 @@ public class MainActivity extends FragmentActivity {
     }
 
     public void onClickUserInfoActivity(View view) {
-        GoRouter.getInstance().build(UserRoute.UserInfoActivity).go(this);
+        GoRouter.getInstance().build(UserRoute.UserInfoActivity).go(this, new GoCallback() {
+            @Override
+            public void onFound(Card card) {
+
+            }
+
+            @Override
+            public void onLost(Card card) {
+
+            }
+
+            @Override
+            public void onArrival(Card card) {
+
+            }
+
+            @Override
+            public void onInterrupt(Card card, Throwable exception) {
+                if (exception != null && !TextUtils.isEmpty(exception.getMessage())) {
+                    Toast.makeText(MainActivity.this, "onInterrupt:" + exception.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     public void onClickUserService(View view) {

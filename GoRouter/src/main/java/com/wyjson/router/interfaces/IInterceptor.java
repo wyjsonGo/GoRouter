@@ -12,7 +12,7 @@ public interface IInterceptor {
 
     /**
      * {@link InterceptorCallback#onContinue(Card)} 继续执行
-     * {@link InterceptorCallback#onInterrupt(Throwable)}} 拦截
+     * {@link InterceptorCallback#onInterrupt(Card, Throwable)}} 拦截
      *
      * @param card
      * @param callback
