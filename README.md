@@ -446,3 +446,4 @@
 
 2. 实现相同服务（HelloService）的实现类（HelloServiceImpl）调用addService方法会被覆盖(更新)，全局唯一。
 3. 拦截器addInterceptor(priority,interceptor)相同优先级添加会catch，setInterceptor(priority,interceptor)相同优先级添加会覆盖
+4. 开启混淆后框架不受影响。注意，如果使用GoRouter.getInstance().inject(this)自动注入参数方法，不要忘记参数加上@Keep注解，否则自动注入会失败。
