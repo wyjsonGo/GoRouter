@@ -17,7 +17,7 @@ public abstract class GoCallbackImpl implements GoCallback {
     public abstract void onArrival(Card card);
 
     @Override
-    public void onInterrupt(Card card) {
+    public void onInterrupt(Card card, Throwable exception) {
 
     }
 }

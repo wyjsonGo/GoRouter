@@ -30,5 +30,5 @@ public interface GoCallback {
      *
      * @param card
      */
-    void onInterrupt(Card card);
+    void onInterrupt(Card card, Throwable exception);
 }

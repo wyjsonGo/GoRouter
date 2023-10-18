@@ -140,8 +140,6 @@
             .putString("name")
             .putInt("age")
             .commit(TestActivity.class);
-
-
    ```
 
 3. 声明拦截器(拦截跳转过程，面向切面编程)
@@ -153,8 +151,8 @@
         @Override
         public void process(Card card, InterceptorCallback callback) {
             ...
-            callback.onContinue(card);  // 处理完成，交还控制权
-            // callback.onInterrupt(new RouterException("我觉得有点异常"));      // 觉得有问题，中断路由流程
+            callback.onContinue(card); // 处理完成，交还控制权
+            // callback.onInterrupt(card, new RouterException("我觉得有点异常")); // 觉得有问题，中断路由流程
 
             // 以上两种至少需要调用其中一种，否则不会继续路由
         }
@@ -167,7 +165,6 @@
 
 	 // 注册
     GoRouter.getInstance().addInterceptor(1, TestInterceptor.class);
-            
     ```
 
 4. 处理跳转结果
@@ -191,7 +188,7 @@
         }
 
         @Override
-        public void onInterrupt(Card card) {
+        public void onInterrupt(Card card, Throwable exception) {
 
         }
     });
@@ -215,8 +212,6 @@
     
     // 注册
     GoRouter.getInstance().addService(DegradeServiceImpl.class);
-
-    
     ```
 
 6. 为目标页面声明更多信息
@@ -228,7 +223,6 @@
     GoRouter.getInstance().build("/user/info/activity")
 	    .putTag(RouteTag.LOGIN.getValue() | RouteTag.AUTHENTICATION.getValue())
 	    .commit(UserInfoActivity.class);
-
     ```
 	Demo里[RouteTag.java](https://github.com/wyjsonGo/GoRouter/blob/master/module_common/src/main/java/com/wyjson/module_common/route/enums/RouteTag.java)已经实现了一个例子
 
@@ -256,7 +250,6 @@
     
     // 注册
     GoRouter.getInstance().addService(UserServiceImpl.class);
-
     ```
 
 8. 通过依赖注入解耦:服务管理(二) 发现服务

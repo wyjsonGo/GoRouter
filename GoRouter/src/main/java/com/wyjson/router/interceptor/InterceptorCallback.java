@@ -6,5 +6,5 @@ public interface InterceptorCallback {
 
     void onContinue(Card card);
 
-    void onInterrupt(Throwable exception);
+    void onInterrupt(Card card, Throwable exception);
 }
