@@ -62,7 +62,7 @@
 	可以引用枚举类[RouteType.java](https://github.com/wyjsonGo/GoRouter/blob/master/GoRouter/src/main/java/com/wyjson/router/enums/RouteType.java)来拼接，例如:
 	
 	``` java
-	"/user/info"+RouteType.ACTIVITY.getType()；	
+	"/user/info" + RouteType.ACTIVITY.getType()；
 	```
 	
 3. 发起路由操作
@@ -152,16 +152,16 @@
     public class TestInterceptor implements IInterceptor {
         @Override
         public void process(Card card, InterceptorCallback callback) {
-        ...
-        callback.onContinue(card);  // 处理完成，交还控制权
-        // callback.onInterrupt(new RouterException("我觉得有点异常"));      // 觉得有问题，中断路由流程
+            ...
+            callback.onContinue(card);  // 处理完成，交还控制权
+            // callback.onInterrupt(new RouterException("我觉得有点异常"));      // 觉得有问题，中断路由流程
 
-        // 以上两种至少需要调用其中一种，否则不会继续路由
+            // 以上两种至少需要调用其中一种，否则不会继续路由
         }
 
         @Override
         public void init() {
-        // 拦截器的初始化，会在sdk初始化的时候调用该方法，仅会调用一次
+            // 拦截器的初始化，会在sdk初始化的时候调用该方法，仅会调用一次
         }
     }
 
@@ -175,26 +175,26 @@
     ``` java
     // 使用两个参数的go方法，可以获取单次跳转的结果
     GoRouter.getInstance().build("/test/activity").go(this, new GoCallback() {
-            @Override
-            public void onFound(Card card) {
+        @Override
+        public void onFound(Card card) {
 
-            }
+        }
 
-            @Override
-            public void onLost(Card card) {
+        @Override
+        public void onLost(Card card) {
 
-            }
+        }
 
-            @Override
-            public void onArrival(Card card) {
-                
-            }
+        @Override
+        public void onArrival(Card card) {
 
-            @Override
-            public void onInterrupt(Card card) {
+        }
 
-            }
-        });
+        @Override
+        public void onInterrupt(Card card) {
+
+        }
+    });
     ```
 
 5. 自定义全局降级策略
@@ -264,7 +264,7 @@
     ``` java
     HelloService helloService = GoRouter.getInstance().getService(HelloService.class);
     if (helloService != null) {
-    	helloService.sayHello("Wyjson");
+        helloService.sayHello("Wyjson");
     }
     ```
 
