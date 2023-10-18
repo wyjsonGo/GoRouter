@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * 单个int有4字节，也就是32位，可以配置32个开关
  */
-public enum RouteExtra {
+public enum RouteTag {
     LOGIN(1),
     AUTHENTICATION(1 << 1),
 //    SAFETY(1 << 2),
@@ -17,7 +17,7 @@ public enum RouteExtra {
         return value;
     }
 
-    RouteExtra(int value) {
+    RouteTag(int value) {
         this.value = value;
     }
 
@@ -28,7 +28,7 @@ public enum RouteExtra {
      * @param flag
      * @return
      */
-    public static boolean isExist(int v, RouteExtra flag) {
+    public static boolean isExist(int v, RouteTag flag) {
         return (v & flag.getValue()) > 0;
     }
 
@@ -80,9 +80,9 @@ public enum RouteExtra {
      * @param v
      * @return
      */
-    public static ArrayList<RouteExtra> getExistList(int v) {
-        ArrayList<RouteExtra> resultList = new ArrayList<>();
-        for (RouteExtra each : values()) {
+    public static ArrayList<RouteTag> getExistList(int v) {
+        ArrayList<RouteTag> resultList = new ArrayList<>();
+        for (RouteTag each : values()) {
             if ((v & each.getValue()) > 0)
                 resultList.add(each);
         }

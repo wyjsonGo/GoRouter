@@ -12,7 +12,7 @@ public class CardMeta {
     private String path;
     private RouteType type;
     private Class<?> pathClass;
-    private int extra;
+    private int tag;
     private Map<String, ParamType> paramsType;
 
     protected CardMeta() {
@@ -39,12 +39,12 @@ public class CardMeta {
         this.pathClass = pathClass;
     }
 
-    public int getExtra() {
-        return extra;
+    public int getTag() {
+        return tag;
     }
 
-    protected void setExtra(int extra) {
-        this.extra = extra;
+    protected void setTag(int tag) {
+        this.tag = tag;
     }
 
     public Map<String, ParamType> getParamsType() {
@@ -75,8 +75,8 @@ public class CardMeta {
         GoRouter.getInstance().addCardMeta(this);
     }
 
-    public CardMeta putExtra(int extra) {
-        this.extra = extra;
+    public CardMeta putTag(int tag) {
+        this.tag = tag;
         return this;
     }
 

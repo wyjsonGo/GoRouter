@@ -192,7 +192,7 @@ public final class GoRouter {
         CardMeta cardMeta = getCardMeta(card);
         if (cardMeta != null) {
             card.setPathClass(cardMeta.getPathClass());
-            card.setExtra(cardMeta.getExtra());
+            card.setTag(cardMeta.getTag());
 
             Map<String, ParamType> paramsType = cardMeta.getParamsType();
             if (MapUtils.isNotEmpty(paramsType)) {

@@ -223,14 +223,14 @@
 
     ``` java
     // 我们经常需要在目标页面中配置一些属性，比方说"是否需要登陆"之类的
-    // 可以通过putExtra()进行扩展，这个属性是一个 int值，换句话说，单个int有4字节，也就是32位，可以配置32个开关
+    // 可以通过putTag()进行扩展，这个属性是一个 int值，换句话说，单个int有4字节，也就是32位，可以配置32个开关
     // 剩下的可以自行发挥，通过字节操作可以标识32个开关，通过开关标记目标页面的一些属性，在拦截器中可以拿到这个标记进行业务逻辑判断
     GoRouter.getInstance().build("/user/info/activity")
-	    .putExtra(RouteExtra.LOGIN.getValue() | RouteExtra.AUTHENTICATION.getValue())
+	    .putTag(RouteTag.LOGIN.getValue() | RouteTag.AUTHENTICATION.getValue())
 	    .commit(UserInfoActivity.class);
 
     ```
-	Demo里[RouteExtra.java](https://github.com/wyjsonGo/GoRouter/blob/master/module_common/src/main/java/com/wyjson/module_common/route/enums/RouteExtra.java)已经实现了一个例子
+	Demo里[RouteTag.java](https://github.com/wyjsonGo/GoRouter/blob/master/module_common/src/main/java/com/wyjson/module_common/route/enums/RouteTag.java)已经实现了一个例子
 
 7. 通过依赖注入解耦:服务管理(一) 暴露服务
 
@@ -348,7 +348,7 @@
     // 觉得接口不够多，可以直接拿出Bundle赋值
     GoRouter.getInstance()
             .build("/home/main/activity")
-            .getExtra();
+            .getExtras();
 
     // 转场动画(常规方式)
     GoRouter.getInstance()
