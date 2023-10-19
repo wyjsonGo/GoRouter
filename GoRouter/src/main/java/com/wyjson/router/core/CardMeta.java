@@ -2,7 +2,6 @@ package com.wyjson.router.core;
 
 import com.wyjson.router.enums.ParamType;
 import com.wyjson.router.enums.RouteType;
-import com.wyjson.router.exception.RouterException;
 import com.wyjson.router.utils.TextUtils;
 
 import java.util.HashMap;
@@ -64,7 +63,7 @@ public class CardMeta {
         } catch (Exception ignored) {
         }
         if (routeType == null) {
-            throw new RouterException("The route type is incorrect! The path[" + path + "] type can only end with " + RouteType.toStringByValues());
+            GoRouter.logger.warning(null, "The route type is incorrect! The path[" + path + "] type can only end with " + RouteType.toStringByValues());
         }
         return routeType;
     }

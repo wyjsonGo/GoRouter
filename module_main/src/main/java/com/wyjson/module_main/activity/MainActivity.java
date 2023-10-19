@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -79,8 +80,8 @@ public class MainActivity extends FragmentActivity {
             }
 
             @Override
-            public void onInterrupt(Card card, Throwable exception) {
-                if (exception != null && !TextUtils.isEmpty(exception.getMessage())) {
+            public void onInterrupt(Card card, @NonNull Throwable exception) {
+                if (!TextUtils.isEmpty(exception.getMessage())) {
                     Toast.makeText(MainActivity.this, "onInterrupt:" + exception.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }

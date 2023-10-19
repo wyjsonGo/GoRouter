@@ -1,11 +1,8 @@
 package com.wyjson.router.interceptor;
 
-import androidx.annotation.NonNull;
-
 import com.wyjson.router.exception.RouterException;
 import com.wyjson.router.interfaces.IInterceptor;
 
-import java.util.Iterator;
 import java.util.Map;
 
 public class InterceptorUtils {
@@ -14,6 +11,10 @@ public class InterceptorUtils {
     }
 
     private static final Map<Integer, IInterceptor> interceptors = new UniqueKeyTreeMap<>("More than one interceptors use same priority [%s]");
+
+    public static Map<Integer, IInterceptor> getInterceptors() {
+        return interceptors;
+    }
 
     /**
      * 相同优先级添加会catch
@@ -45,15 +46,6 @@ public class InterceptorUtils {
      */
     public static void setInterceptor(int priority, Class<? extends IInterceptor> interceptor) {
         addInterceptor(priority, interceptor, true);
-    }
-
-    @NonNull
-    public static Iterator<Map.Entry<Integer, IInterceptor>> getIterator() {
-        return interceptors.entrySet().iterator();
-    }
-
-    public static int getIteratorSize() {
-        return interceptors.size();
     }
 
     public static void clearIterator() {
