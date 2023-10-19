@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 
 import com.wyjson.router.callback.GoCallback;
 import com.wyjson.router.enums.ParamType;
+import com.wyjson.router.enums.RouteType;
 import com.wyjson.router.exception.RouterException;
 import com.wyjson.router.interceptor.InterceptorCallback;
 import com.wyjson.router.interceptor.InterceptorUtils;
@@ -27,17 +28,29 @@ import com.wyjson.router.interfaces.IService;
 import com.wyjson.router.interfaces.PathReplaceService;
 import com.wyjson.router.interfaces.PretreatmentService;
 import com.wyjson.router.service.ServiceHelper;
+import com.wyjson.router.thread.DefaultPoolExecutor;
+import com.wyjson.router.utils.DefaultLogger;
+import com.wyjson.router.utils.ILogger;
 import com.wyjson.router.utils.MapUtils;
 import com.wyjson.router.utils.TextUtils;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ThreadPoolExecutor;
 
 public final class GoRouter {
 
+    public static final String ROUTER_RAW_URI = "router_raw_uri";
+    public static final String ROUTER_PARAM_INJECT = "router_param_inject";
+
+    private final Handler mHandler = new Handler(Looper.getMainLooper());
+    private static final Map<String, CardMeta> routes = new HashMap<>();
+    private volatile static ThreadPoolExecutor executor = DefaultPoolExecutor.getInstance();
+    public static ILogger logger = new DefaultLogger("GoRouter");
+
     private GoRouter() {
-        mHandler = new Handler(Looper.getMainLooper());
+        logger.info(null, "GoRouter init!");
         InterceptorUtils.clearIterator();
         addService(InterceptorServiceImpl.class);
     }
@@ -50,11 +63,29 @@ public final class GoRouter {
         return InstanceHolder.mInstance;
     }
 
-    public static final String ROUTER_RAW_URI = "router_raw_uri";
-    public static final String ROUTER_PARAM_INJECT = "router_param_inject";
-    private final Handler mHandler;
+    public static synchronized void setExecutor(ThreadPoolExecutor tpe) {
+        executor = tpe;
+    }
 
-    private static final Map<String, CardMeta> routes = new HashMap<>();
+    public ThreadPoolExecutor getExecutor() {
+        return executor;
+    }
+
+    public static void setLogger(ILogger userLogger) {
+        if (userLogger != null) {
+            logger = userLogger;
+        }
+    }
+
+    static synchronized void openLog() {
+        logger.showLog(true);
+        logger.info(null, "GoRouter openLog");
+    }
+
+    public static synchronized void printStackTrace() {
+        logger.showStackTrace(true);
+        logger.info(null, "GoRouter printStackTrace");
+    }
 
     @Nullable
     CardMeta getCardMeta(Card card) {
@@ -62,7 +93,11 @@ public final class GoRouter {
     }
 
     void addCardMeta(CardMeta cardMeta) {
-        routes.put(cardMeta.getPath(), cardMeta);
+        if (cardMeta.getType() != null) {
+            routes.put(cardMeta.getPath(), cardMeta);
+        } else {
+            throw new RouterException("The route type is incorrect! The path[" + cardMeta.getPath() + "] type can only end with " + RouteType.toStringByValues());
+        }
     }
 
     /**
@@ -189,6 +224,7 @@ public final class GoRouter {
             return null;
         }
         card.setContext(context);
+        card.setInterceptorException(null);
         CardMeta cardMeta = getCardMeta(card);
         if (cardMeta != null) {
             card.setPathClass(cardMeta.getPathClass());
@@ -215,9 +251,11 @@ public final class GoRouter {
                 card.withString(GoRouter.ROUTER_RAW_URI, rawUri.toString());
             }
 
-            if (callback != null) {
-                callback.onFound(card);
-            }
+            runInMainThread(() -> {
+                if (callback != null) {
+                    callback.onFound(card);
+                }
+            });
             switch (card.getType()) {
                 case ACTIVITY:
                     InterceptorService interceptorService = getService(InterceptorService.class);
@@ -229,10 +267,12 @@ public final class GoRouter {
                             }
 
                             @Override
-                            public void onInterrupt(Card card, Throwable exception) {
-                                if (callback != null) {
-                                    callback.onInterrupt(card, exception);
-                                }
+                            public void onInterrupt(Card card, @NonNull Throwable exception) {
+                                runInMainThread(() -> {
+                                    if (callback != null) {
+                                        callback.onInterrupt(card, exception);
+                                    }
+                                });
                             }
                         });
                     } else {
@@ -295,14 +335,16 @@ public final class GoRouter {
     }
 
     private void onLost(Context context, Card card, GoCallback callback) {
-        if (callback != null) {
-            callback.onLost(card);
-        } else {
-            DegradeService degradeService = getService(DegradeService.class);
-            if (degradeService != null) {
-                degradeService.onLost(context, card);
+        runInMainThread(() -> {
+            if (callback != null) {
+                callback.onLost(card);
+            } else {
+                DegradeService degradeService = getService(DegradeService.class);
+                if (degradeService != null) {
+                    degradeService.onLost(context, card);
+                }
             }
-        }
+        });
     }
 
     @SuppressLint("WrongConstant")
@@ -353,9 +395,11 @@ public final class GoRouter {
             if (instance instanceof Fragment) {
                 ((Fragment) instance).setArguments(card.getExtras());
             }
-            if (callback != null) {
-                callback.onArrival(card);
-            }
+            runInMainThread(() -> {
+                if (callback != null) {
+                    callback.onArrival(card);
+                }
+            });
             return instance;
         } catch (Exception e) {
             e.printStackTrace();

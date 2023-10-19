@@ -28,6 +28,9 @@ public final class Card extends CardMeta {
     private int enterAnim = -1;
     private int exitAnim = -1;
 
+    private Throwable interceptorException;// 拦截执行中断异常信息
+    private int timeout = 300;// go() timeout, TimeUnit.Second
+
     public Uri getUri() {
         return uri;
     }
@@ -271,5 +274,21 @@ public final class Card extends CardMeta {
     public Card greenChannel() {
         this.greenChannel = true;
         return this;
+    }
+
+    public Throwable getInterceptorException() {
+        return interceptorException;
+    }
+
+    public void setInterceptorException(Throwable interceptorException) {
+        this.interceptorException = interceptorException;
+    }
+
+    public int getTimeout() {
+        return timeout;
+    }
+
+    public void setTimeout(int timeout) {
+        this.timeout = timeout;
     }
 }

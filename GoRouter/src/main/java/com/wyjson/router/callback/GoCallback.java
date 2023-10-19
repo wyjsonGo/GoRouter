@@ -1,5 +1,7 @@
 package com.wyjson.router.callback;
 
+import androidx.annotation.NonNull;
+
 import com.wyjson.router.core.Card;
 
 public interface GoCallback {
@@ -30,5 +32,5 @@ public interface GoCallback {
      *
      * @param card
      */
-    void onInterrupt(Card card, Throwable exception);
+    void onInterrupt(Card card, @NonNull Throwable exception);
 }
