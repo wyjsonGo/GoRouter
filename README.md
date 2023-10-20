@@ -4,6 +4,31 @@
 
 > 一个用于帮助 Android App 进行组件化改造的框架 —— 支持模块间的路由、通信、解耦
 
+## 简介
+###### 之前一直在用阿里开源的[ARouter](https://github.com/alibaba/ARouter)项目，因为ARouter多年未更新，ARouter 开始有些不太适合了，所以重新开发了这款Android路由框架。
+
+### GoRouter和ARouter功能差异对比
+
+功能			 | ARouter 	  | GoRouter	 | 描述
+------------- | --------- | -------- | --------
+初始化			 | 需要		 | 不需要		 | 
+集成难易程度	 | 费劲		 | 简单		 | ARouter因为长期未更新,导致项目开发和发布期间会报各种错误,导致失败
+路由注册方式	 | 注解		 | java		 | 为了能持续使用本库,所以放弃了注解生成类的方式
+服务			 | 一对多		 | 一对一		 | ARouter可以为一个服务接口注册多个实现类(没啥用),本库一个服务接口对应一个实现方法(调用更方便)
+动态注册拦截器	 | 不支持		 | 支持		 | ARouter只能动态注册路由,不能动态注册拦截器
+重写跳转URL服务 | 支持		 | 不支持		 | 可以在PretreatmentService里实现相同功能
+withObject()        | 支持		 | 不支持		 | 没啥用，一般使用withSerializable()方法
+路由文档	       | 支持		 | 不支持		 | 有用，但是本库没有。可以先临时在Log里查看全部路由信息，很全面
+
+#### ARouter迁移指南
+
+ARouter		 | GoRouter
+---------- | ----------
+ARouter		 | GoRouter
+navigation()	 | go()
+IProvider	 | IService
+Postcard	 | Card
+
 ---
 
 #### 一、功能介绍
@@ -32,15 +57,16 @@
 1. 添加依赖和配置
 
 	```groovy
-	allprojects {
-	    repositories {
-	        ...
-	        maven { url 'https://jitpack.io' }
-	    }
-	}
+	dependencyResolutionManagement {
+        repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+        repositories {
+            ...
+            maven { url 'https://jitpack.io' }
+        }
+    }
 	```
  
-	[![Download](https://jitpack.io/v/wyjsonGo/GoRouter.svg)](https://jitpack.io/#wyjsonGo/GoRouter)
+	[![Release Version](https://jitpack.io/v/wyjsonGo/GoRouter.svg)](https://jitpack.io/#wyjsonGo/GoRouter)
 
 	
 	```groovy
