@@ -7,7 +7,6 @@ public class DefaultLogger implements ILogger {
 
     private static boolean isShowLog = false;
     private static boolean isShowStackTrace = false;
-    private static boolean isMonitorMode = false;
 
     private String defaultTag = "GoRouter";
 
@@ -16,16 +15,17 @@ public class DefaultLogger implements ILogger {
         return isShowLog;
     }
 
+    @Override
+    public String getDefaultTag() {
+        return defaultTag;
+    }
+
     public void showLog(boolean showLog) {
         isShowLog = showLog;
     }
 
     public void showStackTrace(boolean showStackTrace) {
         isShowStackTrace = showStackTrace;
-    }
-
-    public void showMonitor(boolean showMonitor) {
-        isMonitorMode = showMonitor;
     }
 
     public DefaultLogger() {
@@ -38,32 +38,44 @@ public class DefaultLogger implements ILogger {
     @Override
     public void debug(String tag, String message) {
         if (isShowLog) {
-            StackTraceElement stackTraceElement = Thread.currentThread().getStackTrace()[3];
-            Log.d(TextUtils.isEmpty(tag) ? getDefaultTag() : tag, message + getExtInfo(stackTraceElement));
+            if (isShowStackTrace) {
+                StackTraceElement stackTraceElement = Thread.currentThread().getStackTrace()[3];
+                message = message + getExtInfo(stackTraceElement);
+            }
+            Log.d(TextUtils.isEmpty(tag) ? getDefaultTag() : tag, message);
         }
     }
 
     @Override
     public void info(String tag, String message) {
         if (isShowLog) {
-            StackTraceElement stackTraceElement = Thread.currentThread().getStackTrace()[3];
-            Log.i(TextUtils.isEmpty(tag) ? getDefaultTag() : tag, message + getExtInfo(stackTraceElement));
+            if (isShowStackTrace) {
+                StackTraceElement stackTraceElement = Thread.currentThread().getStackTrace()[3];
+                message = message + getExtInfo(stackTraceElement);
+            }
+            Log.i(TextUtils.isEmpty(tag) ? getDefaultTag() : tag, message);
         }
     }
 
     @Override
     public void warning(String tag, String message) {
         if (isShowLog) {
-            StackTraceElement stackTraceElement = Thread.currentThread().getStackTrace()[3];
-            Log.w(TextUtils.isEmpty(tag) ? getDefaultTag() : tag, message + getExtInfo(stackTraceElement));
+            if (isShowStackTrace) {
+                StackTraceElement stackTraceElement = Thread.currentThread().getStackTrace()[3];
+                message = message + getExtInfo(stackTraceElement);
+            }
+            Log.w(TextUtils.isEmpty(tag) ? getDefaultTag() : tag, message);
         }
     }
 
     @Override
     public void error(String tag, String message) {
         if (isShowLog) {
-            StackTraceElement stackTraceElement = Thread.currentThread().getStackTrace()[3];
-            Log.e(TextUtils.isEmpty(tag) ? getDefaultTag() : tag, message + getExtInfo(stackTraceElement));
+            if (isShowStackTrace) {
+                StackTraceElement stackTraceElement = Thread.currentThread().getStackTrace()[3];
+                message = message + getExtInfo(stackTraceElement);
+            }
+            Log.e(TextUtils.isEmpty(tag) ? getDefaultTag() : tag, message);
         }
     }
 
@@ -74,30 +86,9 @@ public class DefaultLogger implements ILogger {
         }
     }
 
-
-    @Override
-    public void monitor(String message) {
-        if (isShowLog && isMonitorMode()) {
-            StackTraceElement stackTraceElement = Thread.currentThread().getStackTrace()[3];
-            Log.d(defaultTag + "::monitor", message + getExtInfo(stackTraceElement));
-        }
-    }
-
-    @Override
-    public boolean isMonitorMode() {
-        return isMonitorMode;
-    }
-
-    @Override
-    public String getDefaultTag() {
-        return defaultTag;
-    }
-
     public static String getExtInfo(StackTraceElement stackTraceElement) {
-
         String separator = " & ";
-        StringBuilder sb = new StringBuilder("[");
-
+        StringBuilder sb = new StringBuilder(" <-> [");
         if (isShowStackTrace) {
             String threadName = Thread.currentThread().getName();
             String fileName = stackTraceElement.getFileName();
@@ -113,8 +104,7 @@ public class DefaultLogger implements ILogger {
             sb.append("MethodName=").append(methodName).append(separator);
             sb.append("LineNumber=").append(lineNumber);
         }
-
-        sb.append(" ] ");
+        sb.append("]");
         return sb.toString();
     }
 }
