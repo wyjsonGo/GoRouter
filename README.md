@@ -18,17 +18,18 @@
 动态注册拦截器	 | 不支持	 | 支持		 | ARouter只能动态注册路由,不能动态注册拦截器
 重写跳转URL服务 | 支持		 | 不支持	 | 可以在PretreatmentService里实现相同功能
 获取元数据 		 | 不支持	 | 支持		 | 有些场景需要判断某个页面当前是否存在,就需要获取页面class等信息，参见5-1
-withObject()  | 支持		 | 不支持	  | 没啥用，一般使用withSerializable()方法
+withObject()  | 支持		 | 不支持	 | 没啥用，一般使用withSerializable()方法
 路由文档		 | 支持		 | 不支持	 | 有用，但是本库没有。可以先临时在Log里查看全部路由信息，很全面
 
 #### ARouter迁移指南
 
-ARouter		 | GoRouter
----------- | ----------
-ARouter		 | GoRouter
-navigation()	 | go()
-IProvider	 | IService
-Postcard	 | Card
+ARouter				 | GoRouter
+-------------------- | ----------
+ARouter				 | GoRouter
+navigation()			 | go()
+IProvider				 | IService
+Postcard				 | Card
+NavigationCallback	 | GoCallback
 
 ---
 
