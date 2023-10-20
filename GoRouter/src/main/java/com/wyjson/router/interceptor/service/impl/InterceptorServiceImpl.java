@@ -1,5 +1,7 @@
 package com.wyjson.router.interceptor.service.impl;
 
+import androidx.annotation.NonNull;
+
 import com.wyjson.router.core.Card;
 import com.wyjson.router.core.GoRouter;
 import com.wyjson.router.exception.RouterException;
@@ -18,6 +20,7 @@ public class InterceptorServiceImpl implements InterceptorService {
 
     @Override
     public void doInterceptions(Card card, InterceptorCallback callback) {
+        GoRouter.logger.info(null, "[doInterceptions] " + InterceptorUtils.getInterceptors());
         if (MapUtils.isNotEmpty(InterceptorUtils.getInterceptors())) {
             Iterator<Map.Entry<Integer, IInterceptor>> iterator = InterceptorUtils.getInterceptors().entrySet().iterator();
             GoRouter.getInstance().getExecutor().execute(new Runnable() {
@@ -28,7 +31,9 @@ public class InterceptorServiceImpl implements InterceptorService {
                         execute(card, iterator, interceptorCounter);
                         interceptorCounter.await(card.getTimeout(), TimeUnit.SECONDS);
                         if (interceptorCounter.getCount() > 0) {
-                            callback.onInterrupt(card, new RouterException("The interceptor processing timed out."));
+                            RouterException exception = new RouterException("The interceptor processing timed out.");
+                            GoRouter.logger.warning(null, "[doInterceptions] [onInterrupt] message:" + exception.getMessage());
+                            callback.onInterrupt(card, exception);
                         } else if (card.getInterceptorException() != null) {
                             callback.onInterrupt(card, card.getInterceptorException());
                         } else {
@@ -46,7 +51,8 @@ public class InterceptorServiceImpl implements InterceptorService {
 
     private static void execute(Card card, Iterator<Map.Entry<Integer, IInterceptor>> iterator, final CancelableCountDownLatch counter) {
         if (iterator.hasNext()) {
-            iterator.next().getValue().process(card, new InterceptorCallback() {
+            Map.Entry<Integer, IInterceptor> interceptorEntry = iterator.next();
+            interceptorEntry.getValue().process(card, new InterceptorCallback() {
                 @Override
                 public void onContinue(Card card) {
                     counter.countDown();
@@ -54,8 +60,9 @@ public class InterceptorServiceImpl implements InterceptorService {
                 }
 
                 @Override
-                public void onInterrupt(Card card, Throwable exception) {
+                public void onInterrupt(Card card, @NonNull Throwable exception) {
                     card.setInterceptorException(exception == null ? new RouterException() : exception);
+                    GoRouter.logger.warning(null, "[doInterceptions] [onInterrupt] {" + interceptorEntry.getKey() + "->" + interceptorEntry.getValue().getClass().getSimpleName() + "} message:" + card.getInterceptorException().getMessage());
                     counter.cancel();
                 }
             });

@@ -18,14 +18,21 @@
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="这个页面需要登录后才能进入,未登录会触发SignInInterceptor"
+        android:text="这个页面需要登录和身份认证都通过才能进入,未登录会触发SignInInterceptor,未通过身份认证会触发AuthenticationInterceptor"
         android:textColor="@android:color/black"
         android:textSize="16sp"
         android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="开发阶段可以开启日志GoRouter.openLog(),搜索[doInterceptions]查看拦截器执行状态"
+        android:textColor="@android:color/holo_red_light"
+        android:textSize="14sp" />
 
 
 </LinearLayout>

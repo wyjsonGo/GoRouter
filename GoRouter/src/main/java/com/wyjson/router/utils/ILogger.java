@@ -6,6 +6,8 @@ public interface ILogger {
     boolean isShowStackTrace = false;
     String defaultTag = "GoRouter";
 
+    boolean isShowLog();
+
     void showLog(boolean isShowLog);
 
     void showStackTrace(boolean isShowStackTrace);

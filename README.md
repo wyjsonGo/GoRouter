@@ -4,6 +4,31 @@
 
 > 一个用于帮助 Android App 进行组件化改造的框架 —— 支持模块间的路由、通信、解耦
 
+## 简介
+###### 之前一直在用阿里开源的[ARouter](https://github.com/alibaba/ARouter)项目，因为ARouter多年未更新，ARouter 开始有些不太适合了，所以重新开发了这款Android路由框架。
+
+### GoRouter和ARouter功能差异对比
+
+功能			 | ARouter 	  | GoRouter	 | 描述
+------------- | --------- | -------- | --------
+初始化			 | 需要		 | 不需要		 | 
+集成难易程度	 | 费劲		 | 简单		 | ARouter因为长期未更新,导致项目开发和发布期间会报各种错误,导致失败
+路由注册方式	 | 注解		 | java		 | 为了能持续使用本库,所以放弃了注解生成类的方式
+服务			 | 一对多		 | 一对一		 | ARouter可以为一个服务接口注册多个实现类(没啥用),本库一个服务接口对应一个实现方法(调用更方便)
+动态注册拦截器	 | 不支持		 | 支持		 | ARouter只能动态注册路由,不能动态注册拦截器
+重写跳转URL服务 | 支持		 | 不支持		 | 可以在PretreatmentService里实现相同功能
+withObject()        | 支持		 | 不支持		 | 没啥用，一般使用withSerializable()方法
+路由文档	       | 支持		 | 不支持		 | 有用，但是本库没有。可以先临时在Log里查看全部路由信息，很全面
+
+#### ARouter迁移指南
+
+ARouter		 | GoRouter
+---------- | ----------
+ARouter		 | GoRouter
+navigation()	 | go()
+IProvider	 | IService
+Postcard	 | Card
+
 ---
 
 #### 一、功能介绍
@@ -20,7 +45,7 @@
 11. 完全支持Kotlin以及混编
 12. **支持第三方 App 加固**
 13. 支持增量编译
-14. 支持动态注册路由信息
+14. 支持动态注册路由信息和拦截器
 
 #### 二、典型应用
 1. 从外部URL映射到内部页面，以及参数传递与解析
@@ -32,15 +57,16 @@
 1. 添加依赖和配置
 
 	```groovy
-	allprojects {
-	    repositories {
-	        ...
-	        maven { url 'https://jitpack.io' }
-	    }
-	}
+	dependencyResolutionManagement {
+        repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+        repositories {
+            ...
+            maven { url 'https://jitpack.io' }
+        }
+    }
 	```
  
-	[![Download](https://jitpack.io/v/wyjsonGo/GoRouter.svg)](https://jitpack.io/#wyjsonGo/GoRouter)
+	[![Release Version](https://jitpack.io/v/wyjsonGo/GoRouter.svg)](https://jitpack.io/#wyjsonGo/GoRouter)
 
 	
 	```groovy
@@ -64,8 +90,16 @@
 	``` java
 	"/user/info" + RouteType.ACTIVITY.getType()；
 	```
-	
-3. 发起路由操作
+3. 开启Log
+
+	``` java
+    if (BuildConfig.DEBUG) {
+        GoRouter.openLog(); // 开启日志，最好放到Application里开启
+        // GoRouter.printStackTrace(); // 打印日志的时候打印线程堆栈
+    }
+	```
+
+4. 发起路由操作
 
     ``` java
     // 1. 应用内简单的跳转(通过URL跳转在'进阶用法'中)
@@ -261,27 +295,37 @@
     }
     ```
 
-9. 预处理服务
+9. 跳转前预处理
 
     ``` java
-    // 实现 PretreatmentService 接口，并加上一个Path内容任意的注解即可
+    // 比如跳转登录页面，只要简单的调用go就可以了，一些必须的参数和标识可以放到预处理里来做。
+    // 或者一些埋点的处理
+    // 实现PretreatmentService接口
     public class PretreatmentServiceImpl implements PretreatmentService {
-        @Override
-        public boolean onPretreatment(Context context, Card card) {
-            // 跳转前预处理，如果需要自行处理跳转，该方法返回 false 即可
-        }
 
-        @Override
-        public void init() {
-    
-        }
-    }
+	    @Override
+	    public void init() {
+
+	    }
+
+	    @Override
+	    public boolean onPretreatment(Context context, Card card) {
+	        // 登录页面预处理
+	        if ("/user/sign_in/activity".equals(card.getPath())) {
+	            card.withFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	        }
+	        return true; // 跳转前预处理，如果需要自行处理跳转，该方法返回 false 即可
+	    }
+	}
+
+	// 注册
+	GoRouter.getInstance().addService(PretreatmentServiceImpl.class);
     ```
 
 10. 动态注册路由信息
 
-	适用于部分插件化架构的App以及需要动态注册路由信息的场景，可以通过 GoRouter 提供的接口实现动态注册
-路由信息。
+	适用于部分插件化架构的App以及需要动态注册路由信息和拦截器的场景，可以通过 GoRouter 提供的接口实现动态注册
+路由信息和拦截器。
 
     ``` java
     GoRouter.getInstance().addInterceptor(1, TestInterceptor.class);
@@ -362,6 +406,12 @@
             
     // 使用绿色通道(跳过所有的拦截器)
     GoRouter.getInstance().build("/home/main/activity").greenChannel().go(this);
+
+    // 使用自己的日志工具打印日志
+    GoRouter.setLogger();
+
+    // 使用自己提供的线程池
+    GoRouter.setExecutor();
     ```
 
 3. 获取原始的URI
@@ -375,60 +425,6 @@
     String[] params = getIntent().getStringArrayExtra(GoRouter.ROUTER_PARAM_INJECT);
     ```
 
-5. 重写跳转URL
-
-    ``` java
-    // 实现PathReplaceService接口
-    public class PathReplaceServiceImpl implements PathReplaceService {
-
-	    @Override
-	    public String forString(String path) {
-	        // TODO: 按照一定的规则处理之后返回处理后的结果...
-	        return path;
-	    }
-	
-	    @Override
-	    public Uri forUri(Uri uri) {
-	        // TODO: 按照一定的规则处理之后返回处理后的结果...
-	        return uri;
-	    }
-	
-	    @Override
-	    public void init() {
-	
-	    }
-	}
-	
-	// 注册
-	GoRouter.getInstance().addService(PathReplaceServiceImpl.class);
-    ```
-
-6. 跳转前预处理
-
-    ``` java
-    // 比如跳转登录页面，只要简单的调用go就可以了，一些必须的参数和标识可以放到预处理里来做。
-    // 实现PretreatmentService接口
-    public class PretreatmentServiceImpl implements PretreatmentService {
-
-	    @Override
-	    public void init() {
-	
-	    }
-	
-	    @Override
-	    public boolean onPretreatment(Context context, Card card) {
-	        // 登录页面预处理
-	        if ("/user/sign_in/activity".equals(card.getPath())) {
-	            card.withFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-	        }
-	        return true;
-	    }
-	}
-	
-	// 注册
-	GoRouter.getInstance().addService(PretreatmentServiceImpl.class);
-    ```
-
 #### 六、其他
 
 1. 拦截器和服务的异同
@@ -438,5 +434,5 @@
 	- 服务没有该限制，某一服务可能在App整个生命周期中都不会用到，所以服务只有被调用的时候才会触发初始化操作。
 
 2. 实现相同服务（HelloService）的实现类（HelloServiceImpl）调用addService方法会被覆盖(更新)，全局唯一。
-3. 拦截器addInterceptor(priority,interceptor)相同优先级添加会catch，setInterceptor(priority,interceptor)相同优先级添加会覆盖
+3. 拦截器addInterceptor(priority,interceptor)相同优先级添加会catch，setInterceptor(priority,interceptor)相同优先级添加会覆盖(更新)。
 4. 开启混淆后框架不受影响。注意，如果使用GoRouter.getInstance().inject(this)自动注入参数方法，不要忘记参数加上@Keep注解，否则自动注入会失败。

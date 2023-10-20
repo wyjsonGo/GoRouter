@@ -11,6 +11,11 @@ public class DefaultLogger implements ILogger {
 
     private String defaultTag = "GoRouter";
 
+    @Override
+    public boolean isShowLog() {
+        return isShowLog;
+    }
+
     public void showLog(boolean showLog) {
         isShowLog = showLog;
     }

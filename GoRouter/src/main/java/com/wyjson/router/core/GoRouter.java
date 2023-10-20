@@ -25,7 +25,6 @@ import com.wyjson.router.interceptor.service.impl.InterceptorServiceImpl;
 import com.wyjson.router.interfaces.DegradeService;
 import com.wyjson.router.interfaces.IInterceptor;
 import com.wyjson.router.interfaces.IService;
-import com.wyjson.router.interfaces.PathReplaceService;
 import com.wyjson.router.interfaces.PretreatmentService;
 import com.wyjson.router.service.ServiceHelper;
 import com.wyjson.router.thread.DefaultPoolExecutor;
@@ -50,7 +49,7 @@ public final class GoRouter {
     public static ILogger logger = new DefaultLogger("GoRouter");
 
     private GoRouter() {
-        logger.info(null, "GoRouter init!");
+        logger.info(null, "[GoRouter] init!");
         InterceptorUtils.clearIterator();
         addService(InterceptorServiceImpl.class);
     }
@@ -77,24 +76,31 @@ public final class GoRouter {
         }
     }
 
-    static synchronized void openLog() {
+    public static synchronized void openLog() {
         logger.showLog(true);
-        logger.info(null, "GoRouter openLog");
+        logger.info(null, "[openLog]");
     }
 
     public static synchronized void printStackTrace() {
         logger.showStackTrace(true);
-        logger.info(null, "GoRouter printStackTrace");
+        logger.info(null, "[printStackTrace]");
     }
 
     @Nullable
     CardMeta getCardMeta(Card card) {
-        return routes.get(card.getPath());
+        CardMeta cardMeta = routes.get(card.getPath());
+        if (cardMeta != null) {
+            GoRouter.logger.info(null, "[getCardMeta] " + cardMeta.toSuperString());
+        } else {
+            GoRouter.logger.warning(null, "[getCardMeta] null");
+        }
+        return cardMeta;
     }
 
     void addCardMeta(CardMeta cardMeta) {
         if (cardMeta.getType() != null) {
             routes.put(cardMeta.getPath(), cardMeta);
+            GoRouter.logger.debug(null, "[addCardMeta] size:" + routes.size() + ", commit:" + cardMeta.toSuperString());
         } else {
             throw new RouterException("The route type is incorrect! The path[" + cardMeta.getPath() + "] type can only end with " + RouteType.toStringByValues());
         }
@@ -151,23 +157,13 @@ public final class GoRouter {
     public Card build(String path, Bundle bundle) {
         if (TextUtils.isEmpty(path)) {
             throw new RouterException("[path] Parameter is invalid!");
-        } else {
-            PathReplaceService pService = getService(PathReplaceService.class);
-            if (pService != null) {
-                path = pService.forString(path);
-            }
         }
         return new Card(path, bundle);
     }
 
     public Card build(Uri uri) {
         if (uri == null || TextUtils.isEmpty(uri.toString())) {
-            throw new RouterException("[uri] Parameter invalid!");
-        } else {
-            PathReplaceService pService = getService(PathReplaceService.class);
-            if (pService != null) {
-                uri = pService.forUri(uri);
-            }
+            throw new RouterException("[uri] Parameter is invalid!");
         }
         return new Card(uri);
     }
@@ -205,6 +201,7 @@ public final class GoRouter {
                 Object value = bundle.get(paramsName);
                 if (value == null)
                     continue;
+                logger.debug(null, "[inject] " + paramsName + ":" + value);
                 try {
                     Field injectField = target.getClass().getDeclaredField(paramsName);
                     injectField.setAccessible(true);
@@ -214,17 +211,24 @@ public final class GoRouter {
                 }
             }
         }
+        logger.debug(null, "[inject] Auto Inject Success!");
     }
 
     @Nullable
     Object go(Context context, Card card, int requestCode, GoCallback callback) {
-        PretreatmentService pretreatmentService = getService(PretreatmentService.class);
-        if (pretreatmentService != null && !pretreatmentService.onPretreatment(context, card)) {
-            // 预处理失败，导航取消
-            return null;
-        }
         card.setContext(context);
         card.setInterceptorException(null);
+        logger.debug(null, "[go] " + card.toString());
+        PretreatmentService pretreatmentService = getService(PretreatmentService.class);
+        if (pretreatmentService != null) {
+            if (!pretreatmentService.onPretreatment(context, card)) {
+                // 预处理失败，导航取消
+                logger.debug(null, "[go] PretreatmentService Failure!");
+                return null;
+            }
+        } else {
+            logger.warning(null, "[go] This [PretreatmentService] was not found!");
+        }
         CardMeta cardMeta = getCardMeta(card);
         if (cardMeta != null) {
             card.setPathClass(cardMeta.getPathClass());
@@ -252,6 +256,7 @@ public final class GoRouter {
             }
 
             runInMainThread(() -> {
+                logger.debug(null, "[go] [onFound] " + card.toString());
                 if (callback != null) {
                     callback.onFound(card);
                 }
@@ -284,7 +289,6 @@ public final class GoRouter {
                     return goFragment(context, card, cardMeta.getPathClass(), callback);
             }
         } else {
-            // There is no route.
             onLost(context, card, callback);
         }
         return null;
@@ -336,12 +340,15 @@ public final class GoRouter {
 
     private void onLost(Context context, Card card, GoCallback callback) {
         runInMainThread(() -> {
+            logger.error(null, "[onLost] There is no route. path[" + card.getPath() + "]");
             if (callback != null) {
                 callback.onLost(card);
             } else {
                 DegradeService degradeService = getService(DegradeService.class);
                 if (degradeService != null) {
                     degradeService.onLost(context, card);
+                } else {
+                    logger.warning(null, "[onLost] This [DegradeService] was not found!");
                 }
             }
         });
@@ -382,6 +389,7 @@ public final class GoRouter {
                 ((Activity) context).overridePendingTransition(card.getEnterAnim(), card.getExitAnim());
             }
 
+            logger.debug(null, "[goActivity] [onArrival] Complete!");
             if (callback != null) {
                 callback.onArrival(card);
             }
@@ -396,6 +404,7 @@ public final class GoRouter {
                 ((Fragment) instance).setArguments(card.getExtras());
             }
             runInMainThread(() -> {
+                logger.debug(null, "[goFragment] [onArrival] Complete!");
                 if (callback != null) {
                     callback.onArrival(card);
                 }

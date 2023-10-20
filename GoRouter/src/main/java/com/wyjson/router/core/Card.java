@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.SparseArray;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityOptionsCompat;
@@ -290,5 +291,27 @@ public final class Card extends CardMeta {
 
     public void setTimeout(int timeout) {
         this.timeout = timeout;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        if (!GoRouter.logger.isShowLog()) {
+            return "";
+        }
+        return "Card{" +
+                "path='" + getPath() + '\'' +
+                ", uri=" + uri +
+                ", mBundle=" + mBundle +
+                ", flags=" + flags +
+                ", greenChannel=" + greenChannel +
+                ", action='" + action + '\'' +
+                ", context=" + (context != null ? context.getClass().getSimpleName() : null) +
+                ", optionsCompat=" + optionsCompat +
+                ", enterAnim=" + enterAnim +
+                ", exitAnim=" + exitAnim +
+                ", interceptorException=" + interceptorException +
+                ", timeout=" + timeout +
+                '}';
     }
 }
