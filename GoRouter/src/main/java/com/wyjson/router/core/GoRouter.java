@@ -25,7 +25,6 @@ import com.wyjson.router.interceptor.service.impl.InterceptorServiceImpl;
 import com.wyjson.router.interfaces.DegradeService;
 import com.wyjson.router.interfaces.IInterceptor;
 import com.wyjson.router.interfaces.IService;
-import com.wyjson.router.interfaces.PathReplaceService;
 import com.wyjson.router.interfaces.PretreatmentService;
 import com.wyjson.router.service.ServiceHelper;
 import com.wyjson.router.thread.DefaultPoolExecutor;
@@ -158,11 +157,6 @@ public final class GoRouter {
     public Card build(String path, Bundle bundle) {
         if (TextUtils.isEmpty(path)) {
             throw new RouterException("[path] Parameter is invalid!");
-        } else {
-            PathReplaceService pService = getService(PathReplaceService.class);
-            if (pService != null) {
-                path = pService.forString(path);
-            }
         }
         return new Card(path, bundle);
     }
@@ -170,11 +164,6 @@ public final class GoRouter {
     public Card build(Uri uri) {
         if (uri == null || TextUtils.isEmpty(uri.toString())) {
             throw new RouterException("[uri] Parameter is invalid!");
-        } else {
-            PathReplaceService pService = getService(PathReplaceService.class);
-            if (pService != null) {
-                uri = pService.forUri(uri);
-            }
         }
         return new Card(uri);
     }

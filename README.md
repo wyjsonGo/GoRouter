@@ -399,34 +399,6 @@
     String[] params = getIntent().getStringArrayExtra(GoRouter.ROUTER_PARAM_INJECT);
     ```
 
-5. 重写跳转URL
-
-    ``` java
-    // 实现PathReplaceService接口
-    public class PathReplaceServiceImpl implements PathReplaceService {
-
-	    @Override
-	    public String forString(String path) {
-	        // TODO: 按照一定的规则处理之后返回处理后的结果...
-	        return path;
-	    }
-	
-	    @Override
-	    public Uri forUri(Uri uri) {
-	        // TODO: 按照一定的规则处理之后返回处理后的结果...
-	        return uri;
-	    }
-	
-	    @Override
-	    public void init() {
-	
-	    }
-	}
-	
-	// 注册
-	GoRouter.getInstance().addService(PathReplaceServiceImpl.class);
-    ```
-
 #### 六、其他
 
 1. 拦截器和服务的异同

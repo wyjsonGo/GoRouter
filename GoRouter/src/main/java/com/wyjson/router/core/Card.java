@@ -306,7 +306,7 @@ public final class Card extends CardMeta {
                 ", flags=" + flags +
                 ", greenChannel=" + greenChannel +
                 ", action='" + action + '\'' +
-                ", context=" + context +
+                ", context=" + (context != null ? context.getClass().getSimpleName() : null) +
                 ", optionsCompat=" + optionsCompat +
                 ", enterAnim=" + enterAnim +
                 ", exitAnim=" + exitAnim +
