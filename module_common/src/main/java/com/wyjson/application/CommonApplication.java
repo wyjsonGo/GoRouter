@@ -2,6 +2,7 @@ package com.wyjson.application;
 
 import android.app.Application;
 
+import com.wyjson.module_common.BuildConfig;
 import com.wyjson.module_common.application.IApplication;
 import com.wyjson.module_common.route.service.DegradeServiceImpl;
 import com.wyjson.module_common.route.service.PathReplaceServiceImpl;
@@ -12,6 +13,10 @@ public class CommonApplication implements IApplication {
 
     @Override
     public void init(Application app) {
+        if (BuildConfig.DEBUG) {
+            GoRouter.openLog();
+//            GoRouter.printStackTrace();
+        }
         GoRouter.getInstance().addService(DegradeServiceImpl.class);
         GoRouter.getInstance().addService(PretreatmentServiceImpl.class);
         GoRouter.getInstance().addService(PathReplaceServiceImpl.class);

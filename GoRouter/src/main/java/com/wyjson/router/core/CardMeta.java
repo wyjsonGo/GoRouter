@@ -1,5 +1,7 @@
 package com.wyjson.router.core;
 
+import androidx.annotation.NonNull;
+
 import com.wyjson.router.enums.ParamType;
 import com.wyjson.router.enums.RouteType;
 import com.wyjson.router.utils.TextUtils;
@@ -60,10 +62,11 @@ public class CardMeta {
             if (!TextUtils.isEmpty(defaultType)) {
                 routeType = RouteType.getType(defaultType);
             }
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            GoRouter.logger.warning(null, "[extractType] " + e.getMessage());
         }
         if (routeType == null) {
-            GoRouter.logger.warning(null, "The route type is incorrect! The path[" + path + "] type can only end with " + RouteType.toStringByValues());
+            GoRouter.logger.error(null, "[extractType] The route type is incorrect! The path[" + path + "] type can only end with " + RouteType.toStringByValues());
         }
         return routeType;
     }
@@ -132,5 +135,19 @@ public class CardMeta {
     public CardMeta putParcelable(String key) {
         getParamsType().put(key, ParamType.Parcelable);
         return this;
+    }
+
+    @NonNull
+    public String toSuperString() {
+        if (!GoRouter.logger.isShowLog()) {
+            return "";
+        }
+        return "CardMeta{" +
+                "path='" + path + '\'' +
+                ", type=" + type +
+                ", pathClass=" + pathClass +
+                ", tag=" + tag +
+                ", paramsType=" + paramsType +
+                '}';
     }
 }

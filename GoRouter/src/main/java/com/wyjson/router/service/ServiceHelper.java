@@ -2,6 +2,7 @@ package com.wyjson.router.service;
 
 import androidx.annotation.Nullable;
 
+import com.wyjson.router.core.GoRouter;
 import com.wyjson.router.exception.RouterException;
 import com.wyjson.router.interfaces.IService;
 
@@ -30,7 +31,9 @@ public class ServiceHelper {
      * @param serviceClass 实现类.class
      */
     public void addService(Class<? extends IService> serviceClass) {
-        services.put((Class<? extends IService>) serviceClass.getInterfaces()[0], new ServiceMeta(serviceClass));
+        Class<? extends IService> serviceInterfaceClass = (Class<? extends IService>) serviceClass.getInterfaces()[0];
+        services.put(serviceInterfaceClass, new ServiceMeta(serviceClass));
+        GoRouter.logger.debug(null, "[addService] size:" + services.size() + ", " + serviceInterfaceClass.getSimpleName() + " -> " + serviceClass.getSimpleName());
     }
 
     /**
@@ -56,9 +59,11 @@ public class ServiceHelper {
                         throw new RouterException("serviceClass constructor new instance failed!");
                     }
                 }
+                GoRouter.logger.info(null, "[getService] " + serviceClass.getSimpleName() + " -> " + meta.getServiceClass().getSimpleName());
                 return (T) instance;
             }
         }
+        GoRouter.logger.warning(null, "[getService] " + serviceClass.getSimpleName() + ", No registered service found!");
         return null;
     }
 }

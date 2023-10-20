@@ -1,5 +1,6 @@
 package com.wyjson.router.interceptor;
 
+import com.wyjson.router.core.GoRouter;
 import com.wyjson.router.exception.RouterException;
 import com.wyjson.router.interfaces.IInterceptor;
 
@@ -32,6 +33,9 @@ public class InterceptorUtils {
             IInterceptor instance = interceptor.getConstructor().newInstance();
             instance.init();
             interceptors.put(priority, instance);
+
+            String title = isForce ? "[setInterceptor]" : "[addInterceptor]";
+            GoRouter.logger.debug(null, title + " size:" + interceptors.size() + ", priority:" + priority + " -> " + interceptor.getSimpleName());
         } catch (Exception e) {
             throw new RouterException(e);
         }

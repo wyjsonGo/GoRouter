@@ -42,7 +42,7 @@ public class DefaultPoolExecutor extends ThreadPoolExecutor {
         super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, threadFactory, new RejectedExecutionHandler() {
             @Override
             public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
-                GoRouter.logger.error(null, "Task rejected, too many task!");
+                GoRouter.logger.error(null, "[DefaultPoolExecutor] Task rejected, too many task!");
             }
         });
     }
@@ -70,7 +70,7 @@ public class DefaultPoolExecutor extends ThreadPoolExecutor {
         }
 
         if (t != null) {
-            GoRouter.logger.warning(null, "Running task appeared exception! Thread [" + Thread.currentThread().getName() + "], because [" + t.getMessage() + "]\n" + TextUtils.formatStackTrace(t.getStackTrace()));
+            GoRouter.logger.warning(null, "[afterExecute] Running task appeared exception! Thread [" + Thread.currentThread().getName() + "], because [" + t.getMessage() + "]\n" + TextUtils.formatStackTrace(t.getStackTrace()));
         }
     }
 }

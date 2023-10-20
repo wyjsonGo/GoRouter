@@ -11,6 +11,7 @@ import com.wyjson.module_user.activity.UserInfoActivity;
 import com.wyjson.module_user.fragment.CardFragment;
 import com.wyjson.module_user.fragment.ParamFragment;
 import com.wyjson.module_user.route.interceptor.SignInInterceptor;
+import com.wyjson.module_user.route.interceptor.AuthenticationInterceptor;
 import com.wyjson.module_user.route.service.UserServiceImpl;
 import com.wyjson.router.core.GoRouter;
 
@@ -18,8 +19,9 @@ public class UserApplication implements IApplication {
 
     @Override
     public void init(Application app) {
-        GoRouter.getInstance().addInterceptor(1, SignInInterceptor.class);
         GoRouter.getInstance().addService(UserServiceImpl.class);
+        GoRouter.getInstance().addInterceptor(1, SignInInterceptor.class);
+        GoRouter.getInstance().addInterceptor(100, AuthenticationInterceptor.class);
 
         GoRouter.getInstance().build(UserRoute.UserInfoActivity)
                 .putTag(RouteTag.LOGIN.getValue() | RouteTag.AUTHENTICATION.getValue())

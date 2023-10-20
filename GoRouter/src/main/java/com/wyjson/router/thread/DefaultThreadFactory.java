@@ -25,7 +25,7 @@ public class DefaultThreadFactory implements ThreadFactory {
     @Override
     public Thread newThread(Runnable runnable) {
         String threadName = namePrefix + threadNumber.getAndIncrement();
-        GoRouter.logger.info(null, "Thread production, name is [" + threadName + "]");
+        GoRouter.logger.info(null, "[newThread] Thread production, name is [" + threadName + "]");
         Thread thread = new Thread(group, runnable, threadName, 0);
         if (thread.isDaemon()) {// 设为非后台线程
             thread.setDaemon(false);
@@ -38,7 +38,7 @@ public class DefaultThreadFactory implements ThreadFactory {
         thread.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
             @Override
             public void uncaughtException(Thread thread, Throwable ex) {
-                GoRouter.logger.info(null, "Running task appeared exception! Thread [" + thread.getName() + "], because [" + ex.getMessage() + "]");
+                GoRouter.logger.info(null, "[uncaughtException] Running task appeared exception! Thread [" + thread.getName() + "], because [" + ex.getMessage() + "]");
             }
         });
         return thread;
