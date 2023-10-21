@@ -90,17 +90,29 @@ public final class GoRouter {
     CardMeta getCardMeta(Card card) {
         CardMeta cardMeta = routes.get(card.getPath());
         if (cardMeta != null) {
-            GoRouter.logger.info(null, "[getCardMeta] " + cardMeta.toSuperString());
+            logger.info(null, "[getCardMeta] " + cardMeta.toSuperString());
         } else {
-            GoRouter.logger.warning(null, "[getCardMeta] null");
+            logger.warning(null, "[getCardMeta] null");
         }
         return cardMeta;
     }
 
     void addCardMeta(CardMeta cardMeta) {
         if (cardMeta.getType() != null) {
+            if (logger.isShowLog()) {
+                // 检查路由是否有重复提交的情况
+                for (Map.Entry<String, CardMeta> cardMetaEntry : routes.entrySet()) {
+                    if (TextUtils.equals(cardMetaEntry.getKey(), cardMeta.getPath())) {
+                        logger.error(null, "[addCardMeta] Path duplicate commit!!! path[" + cardMetaEntry.getValue().getPath() + "]");
+                        break;
+                    } else if (cardMetaEntry.getValue().getPathClass() == cardMeta.getPathClass()) {
+                        logger.error(null, "[addCardMeta] PathClass duplicate commit!!! pathClass[" + cardMetaEntry.getValue().getPathClass() + "]");
+                        break;
+                    }
+                }
+            }
             routes.put(cardMeta.getPath(), cardMeta);
-            GoRouter.logger.debug(null, "[addCardMeta] size:" + routes.size() + ", commit:" + cardMeta.toSuperString());
+            logger.debug(null, "[addCardMeta] size:" + routes.size() + ", commit:" + cardMeta.toSuperString());
         } else {
             throw new RouterException("The route type is incorrect! The path[" + cardMeta.getPath() + "] type can only end with " + RouteType.toStringByValues());
         }
