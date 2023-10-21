@@ -11,7 +11,7 @@ public class InterceptorUtils {
     private InterceptorUtils() {
     }
 
-    private static final Map<Integer, IInterceptor> interceptors = new UniqueKeyTreeMap<>("More than one interceptors use same priority [%s]");
+    private static final Map<Integer, IInterceptor> interceptors = new InterceptorTreeMap<>("More than one interceptors use same priority [%s]");
 
     public static Map<Integer, IInterceptor> getInterceptors() {
         return interceptors;

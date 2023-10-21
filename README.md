@@ -9,26 +9,25 @@
 
 ### GoRouter和ARouter功能差异对比
 
-功能			 | ARouter | GoRouter | 描述
-------------- | ------- | -------- | --------
-初始化			 | 需要		 | 不需要	 | 
+功能			 | ARouter   | GoRouter  | 描述
+------------ | --------  | --------- | --------
+初始化		 | 需要		 | 不需要	 |
 集成难易程度	 | 费劲		 | 简单		 | ARouter因为长期未更新,导致项目开发和发布期间会报各种错误,导致失败
-路由注册方式	 | 注解		 | java	 | 为了能持续使用本库,所以放弃了注解生成类的方式
+路由注册方式	 | 注解		 | java 	 | 为了能持续使用本库,所以放弃了注解生成类的方式
 服务			 | 一对多	 | 一对一	 | ARouter可以为一个服务接口注册多个实现类(没啥用),本库一个服务接口对应一个实现方法(调用更方便)
 动态注册拦截器	 | 不支持	 | 支持		 | ARouter只能动态注册路由,不能动态注册拦截器
 重写跳转URL服务 | 支持		 | 不支持	 | 可以在PretreatmentService里实现相同功能
-获取元数据 		 | 不支持	 | 支持		 | 有些场景需要判断某个页面当前是否存在,就需要获取页面class等信息，参见5-1
-withObject()  | 支持		 | 不支持	 | 没啥用，一般使用withSerializable()方法
-路由文档		 | 支持		 | 不支持	 | 有用，但是本库没有。可以先临时在Log里查看全部路由信息，很全面
+获取元数据 	 | 不支持	 | 支持		 | 有些场景需要判断某个页面当前是否存在,就需要获取页面class等信息，参见5-1
+withObject() | 支持		 | 不支持	 | 没啥用，一般使用withSerializable()方法
 
 #### ARouter迁移指南
 
 ARouter				 | GoRouter
 -------------------- | ----------
 ARouter				 | GoRouter
-navigation()			 | go()
-IProvider				 | IService
-Postcard				 | Card
+navigation()		 | go()
+IProvider			 | IService
+Postcard			 | Card
 NavigationCallback	 | GoCallback
 
 ---
@@ -46,8 +45,9 @@ NavigationCallback	 | GoCallback
 10. 支持获取Fragment
 11. 完全支持Kotlin以及混编
 12. **支持第三方 App 加固**
-13. 支持增量编译
-14. 支持动态注册路由信息和拦截器
+13. **支持生成路由文档**
+14. 支持增量编译
+15. 支持动态注册路由信息和拦截器
 
 #### 二、典型应用
 1. 从外部URL映射到内部页面，以及参数传递与解析
@@ -426,6 +426,15 @@ NavigationCallback	 | GoCallback
     ``` java
     String[] params = getIntent().getStringArrayExtra(GoRouter.ROUTER_PARAM_INJECT);
     ```
+
+5. 生成路由文档
+
+    ``` java
+    // 调用 GoRouter.openLog(); 开启日志后使用!
+    // 返回JSON格式文档，打印Log或显示到TextView上
+    GoRouter.generateDocument();
+    ```
+	Demo里[DocumentFragment.java](https://github.com/wyjsonGo/GoRouter/blob/master/module_main/src/main/java/com/wyjson/module_main/fragment/DocumentFragment.java)已经实现了一个例子
 
 #### 六、其他
 

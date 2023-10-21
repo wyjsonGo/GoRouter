@@ -15,6 +15,7 @@ import com.wyjson.module_common.route.UserRoute;
 import com.wyjson.module_common.route.service.user.UserService;
 import com.wyjson.module_main.R;
 import com.wyjson.module_main.databinding.MainActivityMainBinding;
+import com.wyjson.module_main.fragment.DocumentFragment;
 import com.wyjson.router.callback.GoCallback;
 import com.wyjson.router.core.Card;
 import com.wyjson.router.core.GoRouter;
@@ -44,9 +45,10 @@ public class MainActivity extends FragmentActivity {
     public void onClickCardFragment(View view) {
         Fragment cardFragment = (Fragment) GoRouter.getInstance().build(UserRoute.CardFragment).go(this);
         if (cardFragment != null) {
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.fl_container, cardFragment);
-            transaction.commit();
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fl_container, cardFragment)
+                    .commit();
         }
     }
 
@@ -56,9 +58,10 @@ public class MainActivity extends FragmentActivity {
                 .withString("name", "Wyjson")
                 .go(this);
         if (cardFragment != null) {
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.fl_container, cardFragment);
-            transaction.commit();
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fl_container, cardFragment)
+                    .commit();
         }
     }
 
@@ -93,6 +96,13 @@ public class MainActivity extends FragmentActivity {
         if (userService != null) {
             Toast.makeText(this, "userId:" + userService.getUserId(), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public void onClickGenerateDocument(View view) {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fl_container, new DocumentFragment())
+                .commit();
     }
 
 }

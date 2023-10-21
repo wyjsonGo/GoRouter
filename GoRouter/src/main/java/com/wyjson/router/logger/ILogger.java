@@ -1,4 +1,4 @@
-package com.wyjson.router.utils;
+package com.wyjson.router.logger;
 
 public interface ILogger {
 

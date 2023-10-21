@@ -2,7 +2,7 @@ package com.wyjson.router.service;
 
 import com.wyjson.router.interfaces.IService;
 
-class ServiceMeta {
+public class ServiceMeta {
     private final Class<? extends IService> serviceClass;
     private IService service;
 

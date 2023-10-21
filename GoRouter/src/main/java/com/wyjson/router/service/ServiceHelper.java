@@ -22,7 +22,11 @@ public class ServiceHelper {
         return InstanceHolder.mInstance;
     }
 
-    private static final Map<Class<? extends IService>, ServiceMeta> services = new HashMap<>();
+    private static final Map<Class<? extends IService>, ServiceMeta> services = new ServiceHashMap<>();
+
+    public Map<Class<? extends IService>, ServiceMeta> getServices() {
+        return services;
+    }
 
     /**
      * 实现相同接口的service会被覆盖(更新)

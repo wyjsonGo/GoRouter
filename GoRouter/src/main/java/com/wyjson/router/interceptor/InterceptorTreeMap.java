@@ -8,10 +8,16 @@ import com.wyjson.router.exception.RouterException;
 import java.util.Iterator;
 import java.util.TreeMap;
 
-public class UniqueKeyTreeMap<K, V> extends TreeMap<K, V> {
+/**
+ * UniqueKeyTreeMap
+ *
+ * @param <K>
+ * @param <V>
+ */
+public class InterceptorTreeMap<K, V> extends TreeMap<K, V> {
     private final String tipText;
 
-    public UniqueKeyTreeMap(String exceptionText) {
+    public InterceptorTreeMap(String exceptionText) {
         super();
         tipText = exceptionText;
     }
