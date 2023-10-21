@@ -13,10 +13,17 @@ public class CardMeta {
     private String path;
     private RouteType type;
     private Class<?> pathClass;
-    private int tag;
-    private Map<String, ParamType> paramsType;
+    private int tag;// 额外的标记
+    private Map<String, ParamType> paramsType;// <参数名, 参数类型>
 
     protected CardMeta() {
+    }
+
+    public CardMeta(String path, Class<?> pathClass, int tag, Map<String, ParamType> paramsType) {
+        setPath(path);
+        this.pathClass = pathClass;
+        this.tag = tag;
+        this.paramsType = paramsType;
     }
 
     public String getPath() {
@@ -73,8 +80,7 @@ public class CardMeta {
 
 
     public void commit(Class<?> cls) {
-        setPathClass(cls);
-        GoRouter.getInstance().addCardMeta(this);
+        GoRouter.getInstance().addCardMeta(new CardMeta(this.path, cls, this.tag, this.paramsType));
     }
 
     public CardMeta putTag(int tag) {
@@ -138,7 +144,7 @@ public class CardMeta {
     }
 
     @NonNull
-    public String toSuperString() {
+    public String toString() {
         if (!GoRouter.logger.isShowLog()) {
             return "";
         }

@@ -1,4 +1,4 @@
-package com.wyjson.router.utils;
+package com.wyjson.router.logger;
 
 public interface ILogger {
 
@@ -7,6 +7,8 @@ public interface ILogger {
     String defaultTag = "GoRouter";
 
     boolean isShowLog();
+
+    String getDefaultTag();
 
     void showLog(boolean isShowLog);
 
@@ -21,10 +23,4 @@ public interface ILogger {
     void error(String tag, String message);
 
     void error(String tag, String message, Throwable e);
-
-    void monitor(String message);
-
-    boolean isMonitorMode();
-
-    String getDefaultTag();
 }

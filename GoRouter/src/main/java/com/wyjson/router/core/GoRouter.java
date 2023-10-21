@@ -11,10 +11,14 @@ import android.os.Looper;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.arch.core.util.Function;
 import androidx.core.app.ActivityCompat;
+import androidx.core.util.Supplier;
 import androidx.fragment.app.Fragment;
 
 import com.wyjson.router.callback.GoCallback;
+import com.wyjson.router.document.DocumentModel;
+import com.wyjson.router.document.DocumentUtils;
 import com.wyjson.router.enums.ParamType;
 import com.wyjson.router.enums.RouteType;
 import com.wyjson.router.exception.RouterException;
@@ -26,15 +30,14 @@ import com.wyjson.router.interfaces.DegradeService;
 import com.wyjson.router.interfaces.IInterceptor;
 import com.wyjson.router.interfaces.IService;
 import com.wyjson.router.interfaces.PretreatmentService;
+import com.wyjson.router.logger.DefaultLogger;
+import com.wyjson.router.logger.ILogger;
 import com.wyjson.router.service.ServiceHelper;
 import com.wyjson.router.thread.DefaultPoolExecutor;
-import com.wyjson.router.utils.DefaultLogger;
-import com.wyjson.router.utils.ILogger;
 import com.wyjson.router.utils.MapUtils;
 import com.wyjson.router.utils.TextUtils;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -44,7 +47,7 @@ public final class GoRouter {
     public static final String ROUTER_PARAM_INJECT = "router_param_inject";
 
     private final Handler mHandler = new Handler(Looper.getMainLooper());
-    private static final Map<String, CardMeta> routes = new HashMap<>();
+    private static final Map<String, CardMeta> routes = new RouteHashMap<>();
     private volatile static ThreadPoolExecutor executor = DefaultPoolExecutor.getInstance();
     public static ILogger logger = new DefaultLogger("GoRouter");
 
@@ -86,21 +89,47 @@ public final class GoRouter {
         logger.info(null, "[printStackTrace]");
     }
 
+    public static String generateDocument() {
+        return generateDocument(null);
+    }
+
+    /**
+     * 生成JSON格式文档
+     *
+     * @param tagFunction 不处理返回默认int类型tag,实现方法可自定义返回tag,示例[LOGIN, AUTHENTICATION]
+     * @return JSON格式文档
+     */
+    public static String generateDocument(Function<Integer, String> tagFunction) {
+        return DocumentUtils.generate(new DocumentModel(routes, ServiceHelper.getInstance().getServices(), InterceptorUtils.getInterceptors()), tagFunction);
+    }
+
     @Nullable
     CardMeta getCardMeta(Card card) {
         CardMeta cardMeta = routes.get(card.getPath());
         if (cardMeta != null) {
-            GoRouter.logger.info(null, "[getCardMeta] " + cardMeta.toSuperString());
+            logger.info(null, "[getCardMeta] " + cardMeta.toString());
         } else {
-            GoRouter.logger.warning(null, "[getCardMeta] null");
+            logger.warning(null, "[getCardMeta] null");
         }
         return cardMeta;
     }
 
     void addCardMeta(CardMeta cardMeta) {
         if (cardMeta.getType() != null) {
+            // 检查路由是否有重复提交的情况
+            if (logger.isShowLog()) {
+                for (Map.Entry<String, CardMeta> cardMetaEntry : routes.entrySet()) {
+                    if (TextUtils.equals(cardMetaEntry.getKey(), cardMeta.getPath())) {
+                        logger.error(null, "[addCardMeta] Path duplicate commit!!! path[" + cardMetaEntry.getValue().getPath() + "]");
+                        break;
+                    } else if (cardMetaEntry.getValue().getPathClass() == cardMeta.getPathClass()) {
+                        logger.error(null, "[addCardMeta] PathClass duplicate commit!!! pathClass[" + cardMetaEntry.getValue().getPathClass() + "]");
+                        break;
+                    }
+                }
+            }
             routes.put(cardMeta.getPath(), cardMeta);
-            GoRouter.logger.debug(null, "[addCardMeta] size:" + routes.size() + ", commit:" + cardMeta.toSuperString());
+            logger.debug(null, "[addCardMeta] size:" + routes.size() + ", commit:" + cardMeta.toString());
         } else {
             throw new RouterException("The route type is incorrect! The path[" + cardMeta.getPath() + "] type can only end with " + RouteType.toStringByValues());
         }
