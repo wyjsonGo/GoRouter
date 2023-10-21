@@ -90,7 +90,7 @@ public final class GoRouter {
     CardMeta getCardMeta(Card card) {
         CardMeta cardMeta = routes.get(card.getPath());
         if (cardMeta != null) {
-            logger.info(null, "[getCardMeta] " + cardMeta.toSuperString());
+            logger.info(null, "[getCardMeta] " + cardMeta.toString());
         } else {
             logger.warning(null, "[getCardMeta] null");
         }
@@ -112,7 +112,7 @@ public final class GoRouter {
                 }
             }
             routes.put(cardMeta.getPath(), cardMeta);
-            logger.debug(null, "[addCardMeta] size:" + routes.size() + ", commit:" + cardMeta.toSuperString());
+            logger.debug(null, "[addCardMeta] size:" + routes.size() + ", commit:" + cardMeta.toString());
         } else {
             throw new RouterException("The route type is incorrect! The path[" + cardMeta.getPath() + "] type can only end with " + RouteType.toStringByValues());
         }

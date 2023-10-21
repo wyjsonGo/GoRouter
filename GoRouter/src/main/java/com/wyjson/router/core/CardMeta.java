@@ -19,6 +19,13 @@ public class CardMeta {
     protected CardMeta() {
     }
 
+    public CardMeta(String path, Class<?> pathClass, int tag, Map<String, ParamType> paramsType) {
+        setPath(path);
+        this.pathClass = pathClass;
+        this.tag = tag;
+        this.paramsType = paramsType;
+    }
+
     public String getPath() {
         return path;
     }
@@ -73,8 +80,7 @@ public class CardMeta {
 
 
     public void commit(Class<?> cls) {
-        setPathClass(cls);
-        GoRouter.getInstance().addCardMeta(this);
+        GoRouter.getInstance().addCardMeta(new CardMeta(this.path, cls, this.tag, this.paramsType));
     }
 
     public CardMeta putTag(int tag) {
@@ -138,7 +144,7 @@ public class CardMeta {
     }
 
     @NonNull
-    public String toSuperString() {
+    public String toString() {
         if (!GoRouter.logger.isShowLog()) {
             return "";
         }
