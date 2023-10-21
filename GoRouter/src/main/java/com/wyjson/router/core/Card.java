@@ -18,7 +18,7 @@ import java.util.ArrayList;
 
 public final class Card extends CardMeta {
 
-    private final Uri uri;
+    private Uri uri;
     private Bundle mBundle;
     private int flags = 0;
     private boolean greenChannel;
@@ -31,6 +31,11 @@ public final class Card extends CardMeta {
 
     private Throwable interceptorException;// 拦截执行中断异常信息
     private int timeout = 300;// go() timeout, TimeUnit.Second
+
+    private void setUri(Uri uri) {
+        this.uri = uri;
+        setPath(uri.getPath());
+    }
 
     public Uri getUri() {
         return uri;
@@ -49,16 +54,12 @@ public final class Card extends CardMeta {
     }
 
     public Card(Uri uri) {
-        this(uri.getPath(), uri, null);
+        setUri(uri);
+        this.mBundle = new Bundle();
     }
 
     public Card(String path, Bundle bundle) {
-        this(path, null, bundle);
-    }
-
-    public Card(String path, Uri uri, Bundle bundle) {
         setPath(path);
-        this.uri = uri;
         this.mBundle = (null == bundle ? new Bundle() : bundle);
     }
 
