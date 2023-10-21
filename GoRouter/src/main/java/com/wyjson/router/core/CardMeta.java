@@ -13,8 +13,8 @@ public class CardMeta {
     private String path;
     private RouteType type;
     private Class<?> pathClass;
-    private int tag;
-    private Map<String, ParamType> paramsType;
+    private int tag;// 额外的标记
+    private Map<String, ParamType> paramsType;// <参数名, 参数类型>
 
     protected CardMeta() {
     }

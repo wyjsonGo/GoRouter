@@ -21,13 +21,13 @@ public final class Card extends CardMeta {
     private Uri uri;
     private Bundle mBundle;
     private int flags = 0;
-    private boolean greenChannel;
+    private boolean greenChannel;// 绿色通道(跳过所有的拦截器)
     private String action;
     private Context context;
 
-    private Bundle optionsCompat;
-    private int enterAnim = -1;
+    private int enterAnim = -1;// 转场动画
     private int exitAnim = -1;
+    private Bundle optionsCompat;// 转场动画(API16+)
 
     private Throwable interceptorException;// 拦截执行中断异常信息
     private int timeout = 300;// go() timeout, TimeUnit.Second
