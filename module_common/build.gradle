@@ -33,4 +33,5 @@ dependencies {
     api 'androidx.appcompat:appcompat:1.6.1'
 //    api 'com.github.wyjsonGo.GoRouter:GoRouter:1.0.4'
     api project(path: ':GoRouter')
+    annotationProcessor project(path: ':GoRouter-Compiler')
 }

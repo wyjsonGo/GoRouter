@@ -10,11 +10,12 @@ import com.wyjson.module_user.activity.SignInActivity;
 import com.wyjson.module_user.activity.UserInfoActivity;
 import com.wyjson.module_user.fragment.CardFragment;
 import com.wyjson.module_user.fragment.ParamFragment;
-import com.wyjson.module_user.route.interceptor.SignInInterceptor;
 import com.wyjson.module_user.route.interceptor.AuthenticationInterceptor;
-import com.wyjson.module_user.route.service.UserServiceImpl;
+import com.wyjson.module_user.route.interceptor.SignInInterceptor;
+import com.wyjson.router.annotation.ApplicationModule;
 import com.wyjson.router.core.GoRouter;
 
+@ApplicationModule(priority = 3)
 public class UserApplication implements IApplication {
 
     @Override
