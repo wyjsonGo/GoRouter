@@ -1,6 +1,6 @@
 # [GoRouter](https://github.com/wyjsonGo/GoRouter)
 
-[![License](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e45a2c43bddf469492a8071e0f986098~tplv-k3u1fbpfcp-image.image#?w=108\&h=20\&s=1153\&e=svg\&b=565555)](https://www.apache.org/licenses/LICENSE-2.0)
+[![License](https://img.shields.io/badge/license-Apache%202-green.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
 > 一个用于帮助 Android App 进行组件化改造的框架 —— 支持模块间的路由、通信、解耦
 
@@ -73,7 +73,7 @@
      }
     ```
 
-    [![Release Version](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/55a9f6f3f27a45bbbca426be157a1cf5~tplv-k3u1fbpfcp-image.image#?w=91\&h=20\&s=890\&e=svg\&a=1\&b=565656)](https://jitpack.io/#wyjsonGo/GoRouter)
+    [![Release Version](https://jitpack.io/v/wyjsonGo/GoRouter.svg)](https://jitpack.io/#wyjsonGo/GoRouter)
 
     ```groovy
     dependencies {
