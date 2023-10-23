@@ -19,7 +19,8 @@ public class UserApplication implements IApplication {
 
     @Override
     public void init(Application app) {
-        GoRouter.getInstance().addService(UserServiceImpl.class);
+        // TODO: 2023/10/23 :::Test
+//        GoRouter.getInstance().addService(UserServiceImpl.class);
         GoRouter.getInstance().addInterceptor(1, SignInInterceptor.class);
         GoRouter.getInstance().addInterceptor(100, AuthenticationInterceptor.class);
 

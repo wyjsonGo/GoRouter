@@ -1,6 +1,10 @@
 rootProject.name = "GoRouter"
 include ':app'
-include ':GoRouter'
-include ':module_common'
 include ':module_main'
 include ':module_user'
+include ':module_common'
+
+include ':GoRouter-Compiler'
+include ':GoRouter-Annotation'
+include ':GoRouter'
+

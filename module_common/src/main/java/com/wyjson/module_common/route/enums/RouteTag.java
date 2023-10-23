@@ -1,5 +1,7 @@
 package com.wyjson.module_common.route.enums;
 
+import org.jetbrains.annotations.Contract;
+
 import java.util.ArrayList;
 
 /**
@@ -13,6 +15,7 @@ public enum RouteTag {
 
     private final int value;
 
+    @Contract(pure = true)
     public int getValue() {
         return value;
     }
