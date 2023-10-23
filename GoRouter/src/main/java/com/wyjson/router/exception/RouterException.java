@@ -5,6 +5,7 @@ import android.os.Build;
 import androidx.annotation.RequiresApi;
 
 public class RouterException extends RuntimeException {
+
     public RouterException() {
     }
 

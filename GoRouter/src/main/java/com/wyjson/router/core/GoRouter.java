@@ -13,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.arch.core.util.Function;
 import androidx.core.app.ActivityCompat;
-import androidx.core.util.Supplier;
 import androidx.fragment.app.Fragment;
 
 import com.wyjson.router.callback.GoCallback;

@@ -1,7 +1,6 @@
 package com.wyjson.router.document;
 
 import androidx.arch.core.util.Function;
-import androidx.core.util.Supplier;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
