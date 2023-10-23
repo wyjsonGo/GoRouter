@@ -33,6 +33,6 @@ android {
 }
 
 dependencies {
-    implementation project(path: ':module_common')
+    api project(path: ':module_common')
     annotationProcessor project(path: ':GoRouter-Compiler')
 }

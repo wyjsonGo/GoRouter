@@ -1,4 +1,4 @@
-package com.wyjson.application;
+package com.wyjson.module_common;
 
 import android.app.Application;
 
