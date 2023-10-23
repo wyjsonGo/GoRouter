@@ -8,5 +8,6 @@ public interface MainRoute extends BaseRoute {
     String SplashActivity = PREFIX + "/splash" + ACTIVITY_ROUTE_SUFFIX;
 
     String MainActivity = PREFIX + ACTIVITY_ROUTE_SUFFIX;
+    String DocumentFragment = PREFIX + "/document" + FRAGMENT_ROUTE_SUFFIX;
 
 }

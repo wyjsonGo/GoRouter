@@ -9,13 +9,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentTransaction;
 
+import com.wyjson.module_common.route.MainRoute;
 import com.wyjson.module_common.route.UserRoute;
 import com.wyjson.module_common.route.service.user.UserService;
 import com.wyjson.module_main.R;
 import com.wyjson.module_main.databinding.MainActivityMainBinding;
-import com.wyjson.module_main.fragment.DocumentFragment;
 import com.wyjson.router.callback.GoCallback;
 import com.wyjson.router.core.Card;
 import com.wyjson.router.core.GoRouter;
@@ -99,10 +98,13 @@ public class MainActivity extends FragmentActivity {
     }
 
     public void onClickGenerateDocument(View view) {
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fl_container, new DocumentFragment())
-                .commit();
+        Fragment fragment = (Fragment) GoRouter.getInstance().build(MainRoute.DocumentFragment).go(this);
+        if (fragment != null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fl_container, fragment)
+                    .commit();
+        }
     }
 
 }

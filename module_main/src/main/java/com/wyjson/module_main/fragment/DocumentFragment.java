@@ -2,6 +2,7 @@ package com.wyjson.module_main.fragment;
 
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +36,7 @@ public class DocumentFragment extends Fragment {
         String jsonStr = GoRouter.generateDocument(tag -> RouteTag.getExistList(tag).toString());
         try {
             vb.tvContent.setText(new JSONObject(jsonStr).toString(4).replace("\\", ""));
+            Log.i("GoRouterDemo", vb.tvContent.getText().toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
