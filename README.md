@@ -529,10 +529,10 @@
 
 5.  开启日志可以检查路由是否有重复提交的情况
 
-```log
-[addCardMeta] Path duplicate commit!!! path[/xx/xx]
-```
+    ```log
+    [addCardMeta] Path duplicate commit!!! path[/xx/xx]
+    ```
 
-```log
-[addCardMeta] PathClass duplicate commit!!! pathClass[class xx.xx]
-```
+    ```log
+    [addCardMeta] PathClass duplicate commit!!! pathClass[class xx.xx]
+    ```
