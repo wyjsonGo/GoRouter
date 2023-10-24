@@ -313,7 +313,6 @@ public final class GoRouter {
                     }
                     break;
                 case FRAGMENT:
-                case DIALOG_FRAGMENT:
                     return goFragment(context, card, cardMeta.getPathClass(), callback);
             }
         } else {

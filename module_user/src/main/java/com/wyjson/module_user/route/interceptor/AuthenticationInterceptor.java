@@ -1,11 +1,13 @@
 package com.wyjson.module_user.route.interceptor;
 
 import com.wyjson.module_common.route.enums.RouteTag;
+import com.wyjson.router.annotation.Interceptor;
 import com.wyjson.router.core.Card;
 import com.wyjson.router.exception.RouterException;
 import com.wyjson.router.interceptor.InterceptorCallback;
 import com.wyjson.router.interfaces.IInterceptor;
 
+@Interceptor(priority = 100, name = "身份验证拦截器")
 public class AuthenticationInterceptor implements IInterceptor {
 
     @Override

@@ -2,9 +2,8 @@ package com.wyjson.router.enums;
 
 public enum RouteType {
     ACTIVITY("/activity"),
-    FRAGMENT("/fragment"),
-    DIALOG_FRAGMENT("/dialog/fragment");
-
+    FRAGMENT("/fragment");
+    
     private final String type;
 
     public String getType() {

@@ -7,9 +7,9 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.CLASS)
-public @interface Autowired {
+public @interface Param {
 
-    // Mark param's name or service name.
+    // Mark param name
     String name() default "";
 
     // If required, app will be crash when value is null.

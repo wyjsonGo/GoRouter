@@ -1,21 +1,23 @@
 package com.wyjson.module_common.route.enums;
 
-import org.jetbrains.annotations.Contract;
-
 import java.util.ArrayList;
 
 /**
- * 单个int有4字节，也就是32位，可以配置32个开关
+ * 单个int有4字节，也就是32位，可以配置31个开关,范围从1到1 << 30
  */
 public enum RouteTag {
+
     LOGIN(1),
     AUTHENTICATION(1 << 1),
-//    SAFETY(1 << 2),
+    SAFETY(1 << 2),
     ;
+
+    public static final int LOGIN2 = 1;
+    public static final int AUTHENTICATION2 = 1 << 1;
+    public static final int SAFETY2 = 1 << 2;
 
     private final int value;
 
-    @Contract(pure = true)
     public int getValue() {
         return value;
     }
