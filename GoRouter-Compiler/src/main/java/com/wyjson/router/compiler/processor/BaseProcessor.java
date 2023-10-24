@@ -1,9 +1,9 @@
 package com.wyjson.router.compiler.processor;
 
-import static com.wyjson.router.compiler.utils.Consts.KEY_MODULE_NAME;
-import static com.wyjson.router.compiler.utils.Consts.NO_MODULE_NAME_TIPS;
+import static com.wyjson.router.compiler.utils.Constants.KEY_MODULE_NAME;
+import static com.wyjson.router.compiler.utils.Constants.NO_MODULE_NAME_TIPS;
+import static com.wyjson.router.compiler.utils.Constants.PREFIX_OF_LOGGER;
 
-import com.wyjson.router.compiler.utils.Consts;
 import com.wyjson.router.compiler.utils.Logger;
 
 import org.apache.commons.collections4.MapUtils;
@@ -28,6 +28,7 @@ public abstract class BaseProcessor extends AbstractProcessor {
     Elements elementUtils;
     // Module name, maybe its 'app' or others
     String moduleName = null;
+    String generateClassName;
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
@@ -45,13 +46,37 @@ public abstract class BaseProcessor extends AbstractProcessor {
         }
 
         if (StringUtils.isNotEmpty(moduleName)) {
-            moduleName = moduleName.replaceAll("[^0-9a-zA-Z_]+", "");
+            generateClassName = strToClassName(moduleName);
 
             logger.info(moduleName + " The user has configuration the module name, it was [" + moduleName + "]");
         } else {
             logger.error(NO_MODULE_NAME_TIPS);
-            throw new RuntimeException(Consts.PREFIX_OF_LOGGER + ">>> No module name, for more information, look at gradle log.");
+            throw new RuntimeException(PREFIX_OF_LOGGER + ">>> No module name, for more information, look at gradle log.");
         }
+    }
+
+    private String strToClassName(String str) {
+        if (StringUtils.isEmpty(str)) {
+            return str;
+        }
+        // 去除首字母是0-9和_的情况
+        str = str.replaceAll("^[0-9_]", "");
+        // 首字母大写
+        str = str.substring(0, 1).toUpperCase() + str.substring(1);
+        // 处理下划线
+        int len = str.length();
+        StringBuilder sb = new StringBuilder(len);
+        for (int i = 0; i < len; i++) {
+            char c = str.charAt(i);
+            if (c == '_') {
+                if (++i < len) {
+                    sb.append(Character.toUpperCase(str.charAt(i)));
+                }
+            } else {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
     }
 
     @Override

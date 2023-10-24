@@ -7,7 +7,7 @@ import com.wyjson.router.annotation.Service;
 import com.wyjson.router.core.Card;
 import com.wyjson.router.interfaces.DegradeService;
 
-@Service(name = "全局降级策略")
+@Service(remark = "全局降级策略")
 public class DegradeServiceImpl implements DegradeService {
 
     @Override

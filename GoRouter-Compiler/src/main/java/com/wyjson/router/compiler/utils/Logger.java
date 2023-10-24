@@ -1,5 +1,7 @@
 package com.wyjson.router.compiler.utils;
 
+import static com.wyjson.router.compiler.utils.Constants.PREFIX_OF_LOGGER;
+
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.processing.Messager;
@@ -14,25 +16,25 @@ public class Logger {
 
     public void info(CharSequence info) {
         if (StringUtils.isNotEmpty(info)) {
-            msg.printMessage(Diagnostic.Kind.NOTE, Consts.PREFIX_OF_LOGGER + info);
+            msg.printMessage(Diagnostic.Kind.NOTE, PREFIX_OF_LOGGER + info);
         }
     }
 
     public void error(CharSequence error) {
         if (StringUtils.isNotEmpty(error)) {
-            msg.printMessage(Diagnostic.Kind.ERROR, Consts.PREFIX_OF_LOGGER + "An exception is encountered, [" + error + "]");
+            msg.printMessage(Diagnostic.Kind.ERROR, PREFIX_OF_LOGGER + "An exception is encountered, [" + error + "]");
         }
     }
 
     public void error(Throwable error) {
         if (null != error) {
-            msg.printMessage(Diagnostic.Kind.ERROR, Consts.PREFIX_OF_LOGGER + "An exception is encountered, [" + error.getMessage() + "]" + "\n" + formatStackTrace(error.getStackTrace()));
+            msg.printMessage(Diagnostic.Kind.ERROR, PREFIX_OF_LOGGER + "An exception is encountered, [" + error.getMessage() + "]" + "\n" + formatStackTrace(error.getStackTrace()));
         }
     }
 
     public void warning(CharSequence warning) {
         if (StringUtils.isNotEmpty(warning)) {
-            msg.printMessage(Diagnostic.Kind.WARNING, Consts.PREFIX_OF_LOGGER + warning);
+            msg.printMessage(Diagnostic.Kind.WARNING, PREFIX_OF_LOGGER + warning);
         }
     }
 

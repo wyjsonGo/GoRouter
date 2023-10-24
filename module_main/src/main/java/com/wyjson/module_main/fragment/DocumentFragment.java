@@ -11,13 +11,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.wyjson.module_common.route.MainRoute;
 import com.wyjson.module_common.route.enums.RouteTag;
 import com.wyjson.module_main.databinding.MainFragmentDocumentBinding;
+import com.wyjson.router.annotation.Route;
 import com.wyjson.router.core.GoRouter;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+@Route(path = MainRoute.DocumentFragment, remark = "文档碎片")
 public class DocumentFragment extends Fragment {
 
     protected MainFragmentDocumentBinding vb;

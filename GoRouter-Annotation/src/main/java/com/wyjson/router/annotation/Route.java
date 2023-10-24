@@ -1,12 +1,13 @@
 package com.wyjson.router.annotation;
 
-import java.lang.annotation.ElementType;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.CLASS;
+
 import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target({ElementType.TYPE})
-@Retention(RetentionPolicy.CLASS)
+@Target({TYPE})
+@Retention(CLASS)
 public @interface Route {
 
     /**
@@ -15,13 +16,13 @@ public @interface Route {
     String path();
 
     /**
-     * Name of route, used to generate javadoc.
+     * remark of route, used to generate javadoc.
      */
-    String name() default "";
+    String remark() default "";
 
     /**
      * Extra data, can be set by user.
-     * Ps. U should use the integer num sign the switch, by bits. 10001010101010
+     * Ps. U should use the integer num sign the switch, Range from 1 to 1 << 30
      */
     int tag() default 0;
 }

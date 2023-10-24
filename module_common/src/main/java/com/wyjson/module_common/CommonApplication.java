@@ -4,7 +4,7 @@ import android.app.Application;
 
 import com.wyjson.module_common.application.IApplication;
 import com.wyjson.router.core.GoRouter;
-import com.wyjson.router.module.module_commonGoRouter;
+import com.wyjson.router.module.ModuleCommonGoRouter;
 
 public class CommonApplication implements IApplication {
 
@@ -14,7 +14,7 @@ public class CommonApplication implements IApplication {
             GoRouter.openLog();
 //            GoRouter.printStackTrace();
         }
-        module_commonGoRouter.loadInto();
+        ModuleCommonGoRouter.load();
     }
 
 }

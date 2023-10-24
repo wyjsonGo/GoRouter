@@ -181,6 +181,7 @@ public class DocumentUtils {
         public void write(JsonWriter out, CardMeta value) throws IOException {
             out.beginObject();
             out.name("path").value(value.getPath());
+            out.name("remark").value(value.getRemark());
             out.name("type").value(value.getType().toString());
             out.name("pathClass").value(value.getPathClass().getName());
             if (value.getTag() != 0) {

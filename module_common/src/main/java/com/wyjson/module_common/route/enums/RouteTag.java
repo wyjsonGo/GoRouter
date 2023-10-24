@@ -33,8 +33,8 @@ public enum RouteTag {
      * @param flag
      * @return
      */
-    public static boolean isExist(int v, RouteTag flag) {
-        return (v & flag.getValue()) > 0;
+    public static boolean isExist(int v, RouteTag tag) {
+        return (v & tag.getValue()) > 0;
     }
 
     /**

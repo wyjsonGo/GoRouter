@@ -13,7 +13,7 @@ import com.wyjson.router.annotation.Route;
 /**
  * 这个页面需要登录后才能进入,未登录会触发登录拦截器{@link com.wyjson.module_user.route.interceptor.SignInInterceptor}
  */
-@Route(path = UserRoute.UserInfoActivity, name = "用户信息页面", tag = RouteTag.LOGIN2 | RouteTag.AUTHENTICATION2)
+@Route(path = UserRoute.UserInfoActivity, remark = "用户信息页面", tag = RouteTag.LOGIN2 | RouteTag.AUTHENTICATION2)
 public class UserInfoActivity extends FragmentActivity {
 
     UserActivityUserInfoBinding vb;

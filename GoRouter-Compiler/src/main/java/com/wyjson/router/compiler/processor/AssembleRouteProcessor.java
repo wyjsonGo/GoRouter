@@ -1,16 +1,17 @@
 package com.wyjson.router.compiler.processor;
 
-import static com.wyjson.router.compiler.utils.Consts.ACTIVITY;
-import static com.wyjson.router.compiler.utils.Consts.ANNOTATION_TYPE_INTERCEPTOR;
-import static com.wyjson.router.compiler.utils.Consts.ANNOTATION_TYPE_PARAM;
-import static com.wyjson.router.compiler.utils.Consts.ANNOTATION_TYPE_ROUTE;
-import static com.wyjson.router.compiler.utils.Consts.ANNOTATION_TYPE_SERVICE;
-import static com.wyjson.router.compiler.utils.Consts.FRAGMENT;
-import static com.wyjson.router.compiler.utils.Consts.GOROUTER_PACKAGE_NAME;
-import static com.wyjson.router.compiler.utils.Consts.METHOD_LOAD_INTO;
-import static com.wyjson.router.compiler.utils.Consts.MODULE_PACKAGE_NAME;
-import static com.wyjson.router.compiler.utils.Consts.PROJECT;
-import static com.wyjson.router.compiler.utils.Consts.WARNING_TIPS;
+import static com.wyjson.router.compiler.utils.Constants.ACTIVITY;
+import static com.wyjson.router.compiler.utils.Constants.ANNOTATION_TYPE_INTERCEPTOR;
+import static com.wyjson.router.compiler.utils.Constants.ANNOTATION_TYPE_PARAM;
+import static com.wyjson.router.compiler.utils.Constants.ANNOTATION_TYPE_ROUTE;
+import static com.wyjson.router.compiler.utils.Constants.ANNOTATION_TYPE_SERVICE;
+import static com.wyjson.router.compiler.utils.Constants.FRAGMENT;
+import static com.wyjson.router.compiler.utils.Constants.GOROUTER_PACKAGE_NAME;
+import static com.wyjson.router.compiler.utils.Constants.METHOD_NAME_LOAD;
+import static com.wyjson.router.compiler.utils.Constants.MODULE_PACKAGE_NAME;
+import static com.wyjson.router.compiler.utils.Constants.PREFIX_OF_LOGGER;
+import static com.wyjson.router.compiler.utils.Constants.PROJECT;
+import static com.wyjson.router.compiler.utils.Constants.WARNING_TIPS;
 import static javax.lang.model.element.Modifier.PUBLIC;
 import static javax.lang.model.element.Modifier.STATIC;
 
@@ -21,7 +22,6 @@ import com.squareup.javapoet.TypeSpec;
 import com.wyjson.router.annotation.Interceptor;
 import com.wyjson.router.annotation.Route;
 import com.wyjson.router.annotation.Service;
-import com.wyjson.router.compiler.utils.Consts;
 
 import org.apache.commons.collections4.CollectionUtils;
 
@@ -45,23 +45,22 @@ public class AssembleRouteProcessor extends BaseProcessor {
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
-        mGoRouter = elementUtils.getTypeElement(GOROUTER_PACKAGE_NAME);
-
         logger.info(moduleName + " >>> AssembleRouteProcessor init. <<<");
+        mGoRouter = elementUtils.getTypeElement(GOROUTER_PACKAGE_NAME);
     }
 
     @Override
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
         if (CollectionUtils.isEmpty(set))
             return false;
-        MethodSpec.Builder loadInto = MethodSpec.methodBuilder(METHOD_LOAD_INTO).addModifiers(PUBLIC, STATIC);
+        MethodSpec.Builder loadInto = MethodSpec.methodBuilder(METHOD_NAME_LOAD).addModifiers(PUBLIC, STATIC);
         loadInto.addJavadoc("Load the $S route", moduleName);
 
         addService(roundEnvironment, loadInto);
         addInterceptor(roundEnvironment, loadInto);
         addRoute(roundEnvironment, loadInto);
 
-        String className = moduleName + PROJECT;
+        String className = generateClassName + PROJECT;
         try {
             JavaFile.builder(MODULE_PACKAGE_NAME,
                     TypeSpec.classBuilder(className)
@@ -127,7 +126,7 @@ public class AssembleRouteProcessor extends BaseProcessor {
             } else if (types.isSubtype(tm, typeFragment)) {
                 type = ".commitFragment($T.class)";
             } else {
-                throw new RuntimeException(Consts.PREFIX_OF_LOGGER + moduleName + " The @Route(path='" + route.path() + "') is marked on unsupported class, look at [" + tm.toString() + "].");
+                throw new RuntimeException(PREFIX_OF_LOGGER + moduleName + " The @Route(path='" + route.path() + "') is marked on unsupported class, look at [" + tm.toString() + "].");
             }
 
             String tag = route.tag() == 0 ? "" : ".putTag(" + route.tag() + ")";

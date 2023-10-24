@@ -7,13 +7,14 @@ import com.wyjson.module_common.route.UserRoute;
 import com.wyjson.module_user.activity.ParamActivity;
 import com.wyjson.module_user.fragment.ParamFragment;
 import com.wyjson.router.core.GoRouter;
-import com.wyjson.router.module.GoRouter_module_user;
+import com.wyjson.router.module.ModuleUserGoRouter;
 
 public class UserApplication implements IApplication {
 
     @Override
     public void init(Application app) {
-        GoRouter_module_user.loadInto();
+        ModuleUserGoRouter.load();
+        // TODO: 2023/10/24 :::Test
         GoRouter.getInstance().build(UserRoute.ParamActivity)
                 .putInt("age")
                 .putString("name")
