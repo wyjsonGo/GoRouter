@@ -15,10 +15,10 @@ public class UserApplication implements IApplication {
     public void init(Application app) {
         ModuleUserGoRouter.load();
         // TODO: 2023/10/24 :::Test
-        GoRouter.getInstance().build(UserRoute.ParamActivity)
-                .putInt("age")
-                .putString("name")
-                .commitActivity(ParamActivity.class);
+//        GoRouter.getInstance().build(UserRoute.ParamActivity)
+//                .putInt("age")
+//                .putString("name")
+//                .commitActivity(ParamActivity.class);
         GoRouter.getInstance().build(UserRoute.ParamFragment)
                 .putInt("age")
                 .putString("name")

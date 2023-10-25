@@ -18,10 +18,10 @@ public class ParamFragment extends Fragment {
 
     protected UserFragmentParamBinding vb;
 
-    @Param(name = "age", remark = "年龄")
+//    @Param(name = "age", remark = "年龄")
     private int age = 18;
 
-    @Param(name = "name", required = true, remark = "名称")
+//    @Param(name = "name", required = true, remark = "名称")
     private String name;
 
     @Nullable
