@@ -14,18 +14,16 @@ public class CardMeta {
     private Class<?> pathClass;
     private int tag;// 额外的标记
     private Map<String, ParamType> paramsType;// <参数名, 参数类型>
-    private String remark;// 备注
 
     protected CardMeta() {
     }
 
-    public CardMeta(String path, RouteType type, Class<?> pathClass, int tag, Map<String, ParamType> paramsType, String remark) {
+    public CardMeta(String path, RouteType type, Class<?> pathClass, int tag, Map<String, ParamType> paramsType) {
         this.path = path;
         this.type = type;
         this.pathClass = pathClass;
         this.tag = tag;
         this.paramsType = paramsType;
-        this.remark = remark;
     }
 
     public String getPath() {
@@ -67,10 +65,6 @@ public class CardMeta {
         return paramsType;
     }
 
-    public String getRemark() {
-        return remark;
-    }
-
     public void commitActivity(Class<?> cls) {
         commit(cls, RouteType.ACTIVITY);
     }
@@ -80,12 +74,7 @@ public class CardMeta {
     }
 
     public void commit(Class<?> cls, RouteType type) {
-        GoRouter.getInstance().addCardMeta(new CardMeta(this.path, type, cls, this.tag, this.paramsType, this.remark));
-    }
-
-    public CardMeta putRemark(String remark) {
-        this.remark = remark;
-        return this;
+        GoRouter.getInstance().addCardMeta(new CardMeta(this.path, type, cls, this.tag, this.paramsType));
     }
 
     public CardMeta putTag(int tag) {
