@@ -17,10 +17,9 @@ public class ParamActivity extends FragmentActivity {
 
     UserActivityParamBinding vb;
 
-    @Param(name = "mAge1", remark = "年龄")
+    @Param(remark = "年龄")
     private int age = 18;
-
-    @Param(name = "mName1", required = true, remark = "名称")
+    @Param(remark = "名称", required = true)
     private String name;
 
     @Override

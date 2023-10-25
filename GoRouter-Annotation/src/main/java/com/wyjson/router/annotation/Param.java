@@ -10,13 +10,10 @@ import java.lang.annotation.Target;
 @Retention(CLASS)
 public @interface Param {
 
-    // Mark param name
-    String name() default "";
+    // remark of the field
+    String remark() default "";
 
     // If required, app will be crash when value is null.
     // Primitive type wont be check!
     boolean required() default false;
-
-    // remark of the field
-    String remark() default "";
 }
