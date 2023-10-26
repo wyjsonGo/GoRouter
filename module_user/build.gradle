@@ -11,6 +11,7 @@ android {
         targetSdkVersion 33
 
         consumerProguardFiles "consumer-rules.pro"
+        
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments = [GOROUTER_MODULE_NAME: project.getName()]
@@ -40,4 +41,5 @@ android {
 dependencies {
     api project(path: ':module_common')
     annotationProcessor project(path: ':GoRouter-Compiler')
+//    annotationProcessor 'com.github.wyjsonGo.GoRouter:GoRouter-Compiler:1.1.0'
 }

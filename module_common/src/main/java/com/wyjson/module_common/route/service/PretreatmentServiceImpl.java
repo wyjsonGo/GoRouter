@@ -8,7 +8,7 @@ import com.wyjson.router.annotation.Service;
 import com.wyjson.router.core.Card;
 import com.wyjson.router.interfaces.PretreatmentService;
 
-@Service(remark = "预处理")
+@Service(remark = "预处理服务")
 public class PretreatmentServiceImpl implements PretreatmentService {
 
     @Override
