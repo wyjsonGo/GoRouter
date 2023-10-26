@@ -92,7 +92,7 @@
     ```groovy
     dependencies {
         // x.x.x 替换为jitpack最新版本
-        annotationProcessor 'com.github.wyjsonGo.GoRouter: GoRouter-Compiler:x.x.x'
+        annotationProcessor 'com.github.wyjsonGo.GoRouter:GoRouter-Compiler:x.x.x'
     }
     ```
 
