@@ -111,10 +111,10 @@
 3.  开启Log
 
     ```java
-     if (BuildConfig.DEBUG) {
+    if (BuildConfig.DEBUG) {
         GoRouter.openLog(); // 开启日志，最好放到Application里开启
         // GoRouter.printStackTrace(); // 打印日志的时候打印线程堆栈
-     }
+    }
     ```
 
 4.  发起路由操作
@@ -131,18 +131,18 @@
     ```
 
 5.  加载注解方式生成的路由表
-	
-	模块项目里至少使用一条注解`@Route`、`@Param`、`@Service`、`@Interceptor`，就会生成对应路由表的加载类。路由表加载类命名规则会根据`GOROUTER_MODULE_NAME `设置的模块名称转换成大写驼峰命名+GoRouter.java，所有模块生成的路由表加载类都会放到`com.wyjson.router.module`包下。
-	
-	例如模块名称`module_user`会生成`ModuleUserGoRouter.java`
-	
+
+    模块项目里至少使用一条注解`@Route`、`@Param`、`@Service`、`@Interceptor`，就会生成对应路由表的加载类。路由表加载类命名规则会根据`GOROUTER_MODULE_NAME `设置的模块名称转换成大写驼峰命名+GoRouter.java，所有模块生成的路由表加载类都会放到`com.wyjson.router.module`包下。
+
+    例如模块名称`module_user`会生成`ModuleUserGoRouter.java`
+
     ```java
     // 在模块自己的application里调用路由表加载方法
     ModuleUserGoRouter.load();
     ```
-    
+
     模块路由表加载Demo示例[UserApplication.java](https://github.com/wyjsonGo/GoRouter/blob/master/module_user/src/main/java/com/wyjson/module_user/UserApplication.java)
-    
+
 #### 四、进阶用法
 
 1.  通过URL跳转
