@@ -105,7 +105,7 @@
     @Route(path = "/test/activity")
     public class TestActivity extend Activity {
         ...
-	}
+    }
     ```
 
 3.  开启Log
