@@ -35,7 +35,7 @@ public class ParamActivity extends FragmentActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        GoRouter.getInstance().inject(intent);
+        GoRouter.getInstance().inject(this, intent);
         vb.tvTitle.setText("age:" + age + ",name:" + name);
     }
 }

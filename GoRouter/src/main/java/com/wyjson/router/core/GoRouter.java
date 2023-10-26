@@ -204,25 +204,51 @@ public final class GoRouter {
         }
     }
 
+    public void inject(Activity activity) {
+        inject(activity, null, null);
+    }
+
+    public void inject(Activity activity, Intent intent) {
+        inject(activity, intent, null);
+    }
+
+    public void inject(Activity activity, Bundle bundle) {
+        inject(activity, null, bundle);
+    }
+
+    public void inject(Fragment fragment) {
+        inject(fragment, null, null);
+    }
+
+    public void inject(Fragment fragment, Intent intent) {
+        inject(fragment, intent, null);
+    }
+
+    public void inject(Fragment fragment, Bundle bundle) {
+        inject(fragment, null, bundle);
+    }
+
     /**
      * 解析参数
      *
      * @param target
+     * @param intent
+     * @param bundle
      * @param <T>
      */
-    public <T> void inject(T target) {
-        Bundle bundle;
-        if (target instanceof Activity) {
-            bundle = ((Activity) target).getIntent().getExtras();
-        } else if (target instanceof Fragment) {
-            bundle = ((Fragment) target).getArguments();
-        } else if (target instanceof Intent) {
-            bundle = ((Intent) target).getExtras();
-        } else if (target instanceof Bundle) {
-            bundle = (Bundle) target;
-        } else {
-            throw new RouterException("The target instance can only be an Activity, Fragment, Intent, or Bundle");
+    private <T> void inject(T target, Intent intent, Bundle bundle) {
+        if (bundle == null) {
+            if (intent != null) {
+                bundle = intent.getExtras();
+            } else {
+                if (target instanceof Activity) {
+                    bundle = ((Activity) target).getIntent().getExtras();
+                } else if (target instanceof Fragment) {
+                    bundle = ((Fragment) target).getArguments();
+                }
+            }
         }
+
         String[] autoInjectParams = bundle.getStringArray(GoRouter.ROUTER_PARAM_INJECT);
         if (null != autoInjectParams && autoInjectParams.length > 0) {
             for (String paramsName : autoInjectParams) {
