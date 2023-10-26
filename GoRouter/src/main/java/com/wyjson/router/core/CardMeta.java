@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 
 import com.wyjson.router.enums.ParamType;
 import com.wyjson.router.enums.RouteType;
-import com.wyjson.router.utils.TextUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,8 +18,9 @@ public class CardMeta {
     protected CardMeta() {
     }
 
-    public CardMeta(String path, Class<?> pathClass, int tag, Map<String, ParamType> paramsType) {
-        setPath(path);
+    public CardMeta(String path, RouteType type, Class<?> pathClass, int tag, Map<String, ParamType> paramsType) {
+        this.path = path;
+        this.type = type;
         this.pathClass = pathClass;
         this.tag = tag;
         this.paramsType = paramsType;
@@ -32,11 +32,14 @@ public class CardMeta {
 
     protected void setPath(String path) {
         this.path = path;
-        this.type = extractType(path);
     }
 
     public RouteType getType() {
         return type;
+    }
+
+    public void setType(RouteType type) {
+        this.type = type;
     }
 
     public Class<?> getPathClass() {
@@ -62,25 +65,16 @@ public class CardMeta {
         return paramsType;
     }
 
-    private RouteType extractType(String path) {
-        RouteType routeType = null;
-        try {
-            String defaultType = path.substring(path.lastIndexOf('/'));
-            if (!TextUtils.isEmpty(defaultType)) {
-                routeType = RouteType.getType(defaultType);
-            }
-        } catch (Exception e) {
-            GoRouter.logger.warning(null, "[extractType] " + e.getMessage());
-        }
-        if (routeType == null) {
-            GoRouter.logger.error(null, "[extractType] The route type is incorrect! The path[" + path + "] type can only end with " + RouteType.toStringByValues());
-        }
-        return routeType;
+    public void commitActivity(Class<?> cls) {
+        commit(cls, RouteType.ACTIVITY);
     }
 
+    public void commitFragment(Class<?> cls) {
+        commit(cls, RouteType.FRAGMENT);
+    }
 
-    public void commit(Class<?> cls) {
-        GoRouter.getInstance().addCardMeta(new CardMeta(this.path, cls, this.tag, this.paramsType));
+    public void commit(Class<?> cls, RouteType type) {
+        GoRouter.getInstance().addCardMeta(new CardMeta(this.path, type, cls, this.tag, this.paramsType));
     }
 
     public CardMeta putTag(int tag) {

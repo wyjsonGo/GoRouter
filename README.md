@@ -13,24 +13,14 @@
 | 功能           | ARouter | GoRouter | 描述                                                   |
 | ------------ | ------- | -------- | ---------------------------------------------------- |
 | 初始化          | 需要      | 不需要      |                                                      |
-| 集成难易程度       | 费劲      | 简单       | ARouter因为长期未更新,导致项目开发和发布期间会报各种错误,导致失败                |
-| 路由注册方式       | 注解      | java     | 为了能持续使用本库,所以放弃了注解生成类的方式                              |
+| 集成难易程度       | 费劲      | 简单       | ARouter因为长期未更新,导致项目开发和发布期间会报各种错误,导致失败 |
+| 路由注册方式       | 注解      | 注解、java     | GoRouter不仅提供了注解，还能使用java方式注册，参见4-10 |
 | 服务           | 一对多     | 一对一      | ARouter可以为一个服务接口注册多个实现类(没啥用),本库一个服务接口对应一个实现方法(调用更方便) |
-| 动态注册拦截器      | 不支持     | 支持       | ARouter只能动态注册路由,不能动态注册拦截器                            |
-| 重写跳转URL服务    | 支持      | 不支持      | 可以在`PretreatmentService`里实现相同功能                        |
-| 获取元数据        | 不支持     | 支持       | 有些场景需要判断某个页面当前是否存在,就需要获取页面class等信息，参见5-1             |
-| withObject() | 支持      | 不支持      | 没啥用，一般使用`withSerializable()`方法                         |
-| inject(T)    | 单一      | 更多       | ARouter支持Activity, Fragment，所以不能再`onNewIntent()`方法里使用，GoRouter支持Activity, Fragment, Intent, Bundle        |
-
-#### ARouter迁移指南
-
-| ARouter            | GoRouter   |
-| ------------------ | ---------- |
-| ARouter            | GoRouter   |
-| navigation()       | go()       |
-| NavigationCallback | GoCallback |
-| IProvider          | IService   |
-| Postcard           | Card       |
+| 动态注册拦截器      | 不支持     | 支持       | ARouter只能动态注册路由,不能动态注册拦截器 |
+| 重写跳转URL服务    | 支持      | 不支持      | 可以在`PretreatmentService`里实现相同功能 |
+| 获取元数据        | 不支持     | 支持       | 有些场景需要判断某个页面当前是否存在,就需要获取页面class等信息，参见5-1 |
+| withObject() | 支持      | 不支持      | 可以使用`withSerializable()`方法 |
+| inject(T)    | 单一      | 更多       | ARouter不能在`onNewIntent()`方法里使用，GoRouter提供了更多使用场景 |
 
 ***
 
@@ -65,44 +55,65 @@
 
     ```groovy
     dependencyResolutionManagement {
-         repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-         repositories {
-             ...
-             maven { url 'https://jitpack.io' }
-         }
-     }
+        repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+        repositories {
+            ...
+            maven { url 'https://jitpack.io' }
+        }
+    }
     ```
 
     [![Release Version](https://jitpack.io/v/wyjsonGo/GoRouter.svg)](https://jitpack.io/#wyjsonGo/GoRouter)
 
     ```groovy
     dependencies {
-       // x.x.x 替换为jitpack最新版本
+        // x.x.x 替换为jitpack最新版本
         implementation 'com.github.wyjsonGo.GoRouter:GoRouter:x.x.x'
     }
     ```
 
-2.  添加Activity/Fragment
+2.  在module下添加注解依赖和配置(可选)
 
-    ```java
-    // 调用时机可以在模块的Application或插件模块加载时
-    // 这里的路径需要注意的是至少需要有两级，/xx/activity，路径必须以RouteType[/activity][/fragment]结尾
-    GoRouter.getInstance().build("/test/activity").commit(TestActivity.class);
-    GoRouter.getInstance().build("/test/fragment").commit(TestFragment.class);
+    ```groovy
+    android {
+        defaultConfig {
+            ...
+            javaCompileOptions {
+                annotationProcessorOptions {
+                    arguments = [GOROUTER_MODULE_NAME: project.getName()]
+                }
+            }
+        }
+    }
     ```
 
-    可以引用枚举类[RouteType.java](https://github.com/wyjsonGo/GoRouter/blob/master/GoRouter/src/main/java/com/wyjson/router/enums/RouteType.java)来拼接，例如:
+    [![Release Version](https://jitpack.io/v/wyjsonGo/GoRouter.svg)](https://jitpack.io/#wyjsonGo/GoRouter)
+
+    ```groovy
+    dependencies {
+        // x.x.x 替换为jitpack最新版本
+        annotationProcessor 'com.github.wyjsonGo.GoRouter: GoRouter-Compiler:x.x.x'
+    }
+    ```
+
+    module_user模块Demo示例[module_user/build.gradle](https://github.com/wyjsonGo/GoRouter/blob/master/module_user/build.gradle)
+
+3.  添加Activity/Fragment
 
     ```java
-    "/user/info" + RouteType.ACTIVITY.getType()；
+    // 注解
+    @Route(path = "/test/activity")
+    public class TestActivity extend Activity {
+        ...
+	}
     ```
 
 3.  开启Log
 
     ```java
      if (BuildConfig.DEBUG) {
-         GoRouter.openLog(); // 开启日志，最好放到Application里开启
-         // GoRouter.printStackTrace(); // 打印日志的时候打印线程堆栈
+        GoRouter.openLog(); // 开启日志，最好放到Application里开启
+        // GoRouter.printStackTrace(); // 打印日志的时候打印线程堆栈
      }
     ```
 
@@ -119,6 +130,19 @@
                 .go(this);
     ```
 
+5.  加载注解方式生成的路由表
+	
+	模块项目里至少使用一条注解`@Route`、`@Param`、`@Service`、`@Interceptor`，就会生成对应路由表的加载类。路由表加载类命名规则会根据`GOROUTER_MODULE_NAME `设置的模块名称转换成大写驼峰命名+GoRouter.java，所有模块生成的路由表加载类都会放到`com.wyjson.router.module`包下。
+	
+	例如模块名称`module_user`会生成`ModuleUserGoRouter.java`
+	
+    ```java
+    // 在模块自己的application里调用路由表加载方法
+    ModuleUserGoRouter.load();
+    ```
+    
+    模块路由表加载Demo示例[UserApplication.java](https://github.com/wyjsonGo/GoRouter/blob/master/module_user/src/main/java/com/wyjson/module_user/UserApplication.java)
+    
 #### 四、进阶用法
 
 1.  通过URL跳转
@@ -128,11 +152,11 @@
     public class SchemeFilterActivity extends Activity {
         @Override
         protected void onCreate(Bundle savedInstanceState) {
-           super.onCreate(savedInstanceState);
+            super.onCreate(savedInstanceState);
 
-           Uri uri = getIntent().getData();
-           GoRouter.getInstance().build(uri).go(this);
-           finish();
+            Uri uri = getIntent().getData();
+            GoRouter.getInstance().build(uri).go(this);
+            finish();
         }
     }
     ```
@@ -158,30 +182,32 @@
 2.  解析参数
 
     ```java
-    // 为每一个参数声明一个字段，并使用 @Keep 标注
+    // 为每一个参数声明一个字段，并使用 @Param 标注
     // URL中不能传递Parcelable类型数据，通过GoRouter api可以传递Parcelable对象
+    @Route(path = "/test/activity")
     public class TestActivity extends Activity {
-        @Keep
-        private String name;
-        @Keep
+    
+        @Param
         int age = 18;
+        
+        @Param
+        private String name;
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
            super.onCreate(savedInstanceState);
-           //inject(T);方法支持Activity, Fragment, Intent, Bundle
            GoRouter.getInstance().inject(this);
 
            // GoRouter会自动对字段进行赋值，无需主动获取
-           Log.d("param", name + age);
+           Log.d("param", "age:" + age + ",name:" + name);
         }
+        
+	    @Override
+	    protected void onNewIntent(Intent intent) {
+	        super.onNewIntent(intent);
+	        GoRouter.getInstance().inject(this, intent);
+	    }
     }
-
-    // 注册
-    GoRouter.getInstance().build("/test/activity")
-            .putString("name")
-            .putInt("age")
-            .commit(TestActivity.class);
     ```
 
 3.  声明拦截器(拦截跳转过程，面向切面编程)
@@ -189,6 +215,7 @@
     ```java
     // 比较经典的应用就是在跳转过程中处理登陆事件，这样就不需要在目标页重复做登陆检查
     // 拦截器会在跳转之间执行，多个拦截器会按优先级顺序依次执行
+    @Interceptor(priority = 1, remark = "测试拦截器")
     public class TestInterceptor implements IInterceptor {
         @Override
         public void process(Card card, InterceptorCallback callback) {
@@ -204,9 +231,6 @@
             // 拦截器的初始化，会在sdk初始化的时候调用该方法，仅会调用一次
         }
     }
-
-    // 注册
-    GoRouter.getInstance().addInterceptor(1, TestInterceptor.class);
     ```
 
 4.  处理跳转结果
@@ -240,6 +264,7 @@
 
     ```java
     // 实现DegradeService接口
+    @Service(remark = "全局降级策略")
     public class DegradeServiceImpl implements DegradeService {
        @Override
        public void onLost(Context context, Card card) {
@@ -251,23 +276,19 @@
 
        }
     }
-
-    // 注册
-    GoRouter.getInstance().addService(DegradeServiceImpl.class);
     ```
 
 6.  为目标页面声明更多信息
 
     ```java
     // 我们经常需要在目标页面中配置一些属性，比方说"是否需要登陆"之类的
-    // 可以通过putTag()进行扩展，这个属性是一个 int值，换句话说，单个int有4字节，也就是32位，可以配置32个开关
+    // 可以通过@Route注解的tag属性进行扩展，这个属性是一个 int值，换句话说，单个int有4字节，也就是32位，可以配置32个开关
     // 剩下的可以自行发挥，通过字节操作可以标识32个开关，通过开关标记目标页面的一些属性，在拦截器中可以拿到这个标记进行业务逻辑判断
-    GoRouter.getInstance().build("/user/info/activity")
-       .putTag(RouteTag.LOGIN.getValue() | RouteTag.AUTHENTICATION.getValue())
-       .commit(UserInfoActivity.class);
+    @Route(path = "/user/info/activity", tag = LOGIN | AUTHENTICATION)
     ```
 
-    [RouteTag.java](https://github.com/wyjsonGo/GoRouter/blob/master/module_common/src/main/java/com/wyjson/module_common/route/enums/RouteTag.java)Demo示例
+    tag使用示例[UserInfoActivity.java](https://github.com/wyjsonGo/GoRouter/blob/master/module_user/src/main/java/com/wyjson/module_user/activity/UserInfoActivity.java)，
+    tag处理示例[SignInInterceptor.java](https://github.com/wyjsonGo/GoRouter/blob/master/module_user/src/main/java/com/wyjson/module_user/route/interceptor/SignInInterceptor.java)
 
 7.  通过依赖注入解耦:服务管理(一) 暴露服务
 
@@ -278,6 +299,7 @@
     }
 
     // 实现接口
+    @Service(remark = "服务描述")
     public class HelloServiceImpl implements HelloService {
 
         @Override
@@ -290,9 +312,6 @@
 
         }
     }
-
-    // 注册
-    GoRouter.getInstance().addService(UserServiceImpl.class);
     ```
 
 8.  通过依赖注入解耦:服务管理(二) 发现服务
@@ -310,6 +329,7 @@
     // 比如跳转登录页面，只要简单的调用go就可以了，一些必须的参数和标识可以放到预处理里来做。
     // 或者一些埋点的处理
     // 实现PretreatmentService接口
+    @Service(remark = "预处理服务")
     public class PretreatmentServiceImpl implements PretreatmentService {
 
        @Override
@@ -326,18 +346,17 @@
            return true; // 跳转前预处理，如果需要自行处理跳转，该方法返回 false 即可
        }
     }
-
-    // 注册
-    GoRouter.getInstance().addService(PretreatmentServiceImpl.class);
     ```
 
-10. 动态注册路由信息
+10. java方式动态注册路由信息
 
-    适用于部分插件化架构的App以及需要动态注册路由信息和拦截器的场景，可以通过 GoRouter 提供的接口实现动态注册路由信息和拦截器。
+    适用于插件化架构的App以及需要动态注册路由信息和拦截器的场景，可以通过 GoRouter 提供的接口实现动态注册路由信息和拦截器。
 
     ```java
-    // 注册Activity和Fragment
-    GoRouter.getInstance().build("/user/info/activity").commit(UserInfoActivity.class);
+    // 注册Activity
+    GoRouter.getInstance().build("/user/info/activity").commitActivity(UserInfoActivity.class);
+    // 注册Fragment
+    GoRouter.getInstance().build("/user/card/fragment").commitFragment(CardFragment.class);
     // 注册服务
     GoRouter.getInstance().addService(UserServiceImpl.class);
     // 注册拦截器
@@ -362,7 +381,7 @@
 
     ```java
     // 构建标准的路由请求
-    GoRouter.getInstance().build("/home/main/activity").go(this);
+    GoRouter.getInstance().build("/main/activity").go(this);
 
     // 构建标准的路由请求，通过Uri直接解析
     Uri uri;
@@ -370,18 +389,18 @@
 
     // 构建标准的路由请求，startActivityForResult
     // go的第一个参数必须是Activity，第二个参数则是RequestCode
-    GoRouter.getInstance().build("/home/main/activity").go(this, 5);
+    GoRouter.getInstance().build("/main/activity").go(this, 5);
 
     // 直接传递Bundle
     Bundle params = new Bundle();
     GoRouter.getInstance()
-        .build("/home/main/activity")
+        .build("/main/activity")
         .with(params)
         .go(this);
 
     // 指定Flag
     GoRouter.getInstance()
-        .build("/home/main/activity")
+        .build("/main/activity")
         .withFlags();
         .go(this);
 
@@ -389,13 +408,13 @@
     Fragment fragment = (Fragment) GoRouter.getInstance().build("/test/fragment").go(this);
 
     // 序列化对象传递
-    GoRouter.getInstance().build("/home/main/activity")
+    GoRouter.getInstance().build("/main/activity")
         .withSerializable("user",new User())
         .go(this);
 
     // 觉得接口不够多，可以直接拿出Bundle赋值
     GoRouter.getInstance()
-            .build("/home/main/activity")
+            .build("/main/activity")
             .getExtras();
 
     // 转场动画(常规方式)
@@ -416,7 +435,7 @@
         .go(this);
 
     // 使用绿色通道(跳过所有的拦截器)
-    GoRouter.getInstance().build("/home/main/activity").greenChannel().go(this);
+    GoRouter.getInstance().build("/main/activity").greenChannel().go(this);
 
     // 使用自己的日志工具打印日志
     GoRouter.setLogger();
@@ -445,15 +464,15 @@
     GoRouter.generateDocument();
     ```
 
-    Demo的路由文档示例([DocumentFragment.java](https://github.com/wyjsonGo/GoRouter/blob/master/module_main/src/main/java/com/wyjson/module_main/fragment/DocumentFragment.java)Demo示例)
+    Demo路由文档示例[DocumentFragment.java](https://github.com/wyjsonGo/GoRouter/blob/master/module_main/src/main/java/com/wyjson/module_main/fragment/DocumentFragment.java)
 
     ```json
     {
         "services": {
+            "DegradeService": "com.wyjson.module_common.route.service.DegradeServiceImpl",
             "InterceptorService": "com.wyjson.router.interceptor.service.impl.InterceptorServiceImpl",
             "PretreatmentService": "com.wyjson.module_common.route.service.PretreatmentServiceImpl",
-            "UserService": "com.wyjson.module_user.route.service.UserServiceImpl",
-            "DegradeService": "com.wyjson.module_common.route.service.DegradeServiceImpl"
+            "UserService": "com.wyjson.module_user.route.service.UserServiceImpl"
         },
         "interceptors": {
             "1": "com.wyjson.module_user.route.interceptor.SignInInterceptor",
@@ -496,6 +515,11 @@
                 "pathClass": "com.wyjson.module_main.fragment.DocumentFragment"
             },
             {
+                "path": "/main/activity",
+                "type": "ACTIVITY",
+                "pathClass": "com.wyjson.module_main.activity.MainActivity"
+            },
+            {
                 "path": "/user/param/fragment",
                 "type": "FRAGMENT",
                 "pathClass": "com.wyjson.module_user.fragment.ParamFragment",
@@ -503,11 +527,6 @@
                     "name": "String",
                     "age": "Int"
                 }
-            },
-            {
-                "path": "/main/activity",
-                "type": "ACTIVITY",
-                "pathClass": "com.wyjson.module_main.activity.MainActivity"
             }
         ]
     }
@@ -521,11 +540,11 @@
     *   拦截器因为其特殊性，只对Activity路由有效，拦截器会在GoRouter首次调用的时候初始化。
     *   服务没有该限制，某一服务可能在App整个生命周期中都不会用到，所以服务只有被调用的时候才会触发初始化操作。
 
-2.  实现相同服务（HelloService）的实现类（HelloServiceImpl）调用`addService()`方法会被覆盖(更新)，全局唯一。
+2.  使用java方式注册服务，实现相同服务（HelloService）的实现类（HelloServiceImpl）调用`addService()`方法会被覆盖(更新)，全局唯一。
 
-3.  拦截器`addInterceptor(priority,interceptor)`相同优先级添加会catch，`setInterceptor(priority,interceptor)`相同优先级添加会覆盖(更新)。
+3.  使用java方式注册拦截器，`addInterceptor(priority,interceptor)`相同优先级添加会catch，`setInterceptor(priority,interceptor)`相同优先级添加会覆盖(更新)。
 
-4.  开启混淆后框架不受影响。注意，如果使用`GoRouter.getInstance().inject(this)`自动注入参数方法，不要忘记参数加上`@Keep`注解，否则自动注入会失败。
+4.  框架已经做了混淆处理。注意，如果使用`GoRouter.getInstance().inject(this)`自动注入参数方法，不要忘记参数加上`@Param`注解，否则自动注入会失败。
 
 5.  开启日志可以检查路由是否有重复提交的情况
 
@@ -536,3 +555,18 @@
     ```log
     [addCardMeta] PathClass duplicate commit!!! pathClass[class xx.xx]
     ```
+    GoRouter日志tag为`GoRouter`，GoRouter-Compiler日志tag为`GoRouter::Compiler `。
+
+6.  ARouter迁移指南
+
+    | ARouter            | GoRouter   |
+    | ------------------ | ---------- |
+    | ARouter            | GoRouter   |
+    | navigation()       | go()       |
+    | NavigationCallback | GoCallback |
+    | IProvider          | IService   |
+    | Postcard           | Card       |
+    | @Route             | @Route     |
+    | @Route             | @Service   |
+    | @Route             | @Interceptor |
+    | @Autowired         | @Param     |

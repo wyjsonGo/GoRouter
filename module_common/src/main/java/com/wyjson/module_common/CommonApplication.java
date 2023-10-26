@@ -1,12 +1,10 @@
-package com.wyjson.application;
+package com.wyjson.module_common;
 
 import android.app.Application;
 
-import com.wyjson.module_common.BuildConfig;
 import com.wyjson.module_common.application.IApplication;
-import com.wyjson.module_common.route.service.DegradeServiceImpl;
-import com.wyjson.module_common.route.service.PretreatmentServiceImpl;
 import com.wyjson.router.core.GoRouter;
+import com.wyjson.router.module.ModuleCommonGoRouter;
 
 public class CommonApplication implements IApplication {
 
@@ -16,8 +14,7 @@ public class CommonApplication implements IApplication {
             GoRouter.openLog();
 //            GoRouter.printStackTrace();
         }
-        GoRouter.getInstance().addService(DegradeServiceImpl.class);
-        GoRouter.getInstance().addService(PretreatmentServiceImpl.class);
+        ModuleCommonGoRouter.load();
     }
 
 }

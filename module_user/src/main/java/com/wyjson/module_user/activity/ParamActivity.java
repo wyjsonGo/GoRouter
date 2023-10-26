@@ -3,20 +3,23 @@ package com.wyjson.module_user.activity;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.annotation.Keep;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
 
+import com.wyjson.module_common.route.UserRoute;
 import com.wyjson.module_user.databinding.UserActivityParamBinding;
+import com.wyjson.router.annotation.Param;
+import com.wyjson.router.annotation.Route;
 import com.wyjson.router.core.GoRouter;
 
+@Route(path = UserRoute.ParamActivity, remark = "参数页面")
 public class ParamActivity extends FragmentActivity {
 
     UserActivityParamBinding vb;
 
-    @Keep
+    @Param(remark = "年龄")
     private int age = 18;
-    @Keep
+    @Param(remark = "名称", required = true)
     private String name;
 
     @Override
@@ -32,7 +35,7 @@ public class ParamActivity extends FragmentActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        GoRouter.getInstance().inject(intent);
+        GoRouter.getInstance().inject(this, intent);
         vb.tvTitle.setText("age:" + age + ",name:" + name);
     }
 }

@@ -5,8 +5,11 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
 
+import com.wyjson.module_common.route.UserRoute;
 import com.wyjson.module_user.databinding.UserActivitySignInBinding;
+import com.wyjson.router.annotation.Route;
 
+@Route(path = UserRoute.SignInActivity, remark = "登录页面")
 public class SignInActivity extends FragmentActivity {
 
     UserActivitySignInBinding vb;
