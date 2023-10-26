@@ -11,13 +11,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.wyjson.module_common.route.enums.RouteTag;
+import com.wyjson.module_common.route.MainRoute;
+import com.wyjson.module_common.route.utils.RouteTagUtils;
 import com.wyjson.module_main.databinding.MainFragmentDocumentBinding;
+import com.wyjson.router.annotation.Route;
 import com.wyjson.router.core.GoRouter;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+@Route(path = MainRoute.DocumentFragment, remark = "文档碎片")
 public class DocumentFragment extends Fragment {
 
     protected MainFragmentDocumentBinding vb;
@@ -33,7 +36,7 @@ public class DocumentFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        String jsonStr = GoRouter.generateDocument(tag -> RouteTag.getExistList(tag).toString());
+        String jsonStr = GoRouter.generateDocument(tag -> RouteTagUtils.TagEnum.getExistList(tag).toString());
         try {
             vb.tvContent.setText(new JSONObject(jsonStr).toString(4).replace("\\", ""));
             Log.i("GoRouterDemo", vb.tvContent.getText().toString());

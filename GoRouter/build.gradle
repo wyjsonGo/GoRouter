@@ -9,18 +9,14 @@ android {
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 33
+
+        consumerProguardFiles "consumer-rules.pro"
     }
 
     buildFeatures {
         buildConfig = false
     }
 
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
@@ -30,4 +26,5 @@ android {
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.code.gson:gson:2.10.1'
+    api project(path: ':GoRouter-Annotation')
 }

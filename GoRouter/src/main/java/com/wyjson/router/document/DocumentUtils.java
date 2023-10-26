@@ -32,6 +32,7 @@ public class DocumentUtils {
 
     /**
      * 生成JSON格式文档
+     * ***只有添加进路由的路径、服务、拦截器才会出现在文档里***
      *
      * @param documentModel
      * @param tagFunction   不处理返回默认int类型tag,实现方法可自定义返回tag,示例[LOGIN, AUTHENTICATION]

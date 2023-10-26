@@ -7,14 +7,14 @@ import com.wyjson.router.core.Card;
 public interface GoCallback {
 
     /**
-     * 当找到目的地时回调
+     * 当找到目的地的回调
      *
      * @param card
      */
     void onFound(Card card);
 
     /**
-     * 迷路后再回电话。
+     * 迷路后的回调。
      *
      * @param card
      */

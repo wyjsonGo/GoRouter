@@ -3,10 +3,12 @@ package com.wyjson.module_main.activity;
 import androidx.fragment.app.FragmentActivity;
 
 import com.wyjson.module_common.route.MainRoute;
+import com.wyjson.router.annotation.Route;
 import com.wyjson.router.callback.GoCallbackImpl;
 import com.wyjson.router.core.Card;
 import com.wyjson.router.core.GoRouter;
 
+@Route(path = MainRoute.SplashActivity, remark = "欢迎页")
 public class SplashActivity extends FragmentActivity {
 
     @Override
