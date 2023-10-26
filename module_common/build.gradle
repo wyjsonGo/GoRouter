@@ -40,6 +40,7 @@ dependencies {
 
 //    api project(path: ':GoRouter')
 //    annotationProcessor project(path: ':GoRouter-Compiler')
+
     api 'com.github.wyjsonGo.GoRouter:GoRouter:1.1.0'
     annotationProcessor 'com.github.wyjsonGo.GoRouter:GoRouter-Compiler:1.1.0'
 }
