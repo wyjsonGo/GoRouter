@@ -19,7 +19,7 @@
 | 动态注册拦截器      | 不支持     | 支持       | ARouter只能动态注册路由,不能动态注册拦截器 |
 | 重写跳转URL服务    | 支持      | 不支持      | 可以在`PretreatmentService`里实现相同功能 |
 | 获取元数据        | 不支持     | 支持       | 有些场景需要判断某个页面当前是否存在,就需要获取页面class等信息，参见5-1 |
-| withObject() | 支持      | 不支持      | 可以使用`withSerializable()`方法 |
+| withObject() | 支持      | 不支持      | ARouter实现原理是转JSON后使用`withString()`方法传递 |
 | inject(T)    | 单一      | 更多       | ARouter不能在`onNewIntent()`方法里使用，GoRouter提供了更多使用场景 |
 
 ***
