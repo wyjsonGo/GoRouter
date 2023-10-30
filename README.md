@@ -544,7 +544,7 @@
 
 3.  使用java方式注册拦截器，`addInterceptor(priority,interceptor)`相同优先级添加会catch，`setInterceptor(priority,interceptor)`相同优先级添加会覆盖(更新)。
 
-4.  框架已经做了混淆处理。注意，如果使用`GoRouter.getInstance().inject(this)`自动注入参数方法，不要忘记参数加上`@Param`注解，否则自动注入会失败。
+4.  框架已经对注解方式注入参数做了混淆处理。如果不使用注解方式，使用java方式注册，不要忘记参数加上`@Keep`注解，否则自动注入会失败。
 
 5.  开启日志可以检查路由是否有重复提交的情况
 
