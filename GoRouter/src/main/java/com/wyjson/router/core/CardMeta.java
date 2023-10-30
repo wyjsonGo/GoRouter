@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import com.wyjson.router.enums.ParamType;
 import com.wyjson.router.enums.RouteType;
+import com.wyjson.router.param.ParamMeta;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,12 +14,12 @@ public class CardMeta {
     private RouteType type;
     private Class<?> pathClass;
     private int tag;// 额外的标记
-    private Map<String, ParamType> paramsType;// <参数名, 参数类型>
+    private Map<String, ParamMeta> paramsType;// <参数名, 参数类型>
 
     protected CardMeta() {
     }
 
-    public CardMeta(String path, RouteType type, Class<?> pathClass, int tag, Map<String, ParamType> paramsType) {
+    public CardMeta(String path, RouteType type, Class<?> pathClass, int tag, Map<String, ParamMeta> paramsType) {
         this.path = path;
         this.type = type;
         this.pathClass = pathClass;
@@ -58,7 +59,7 @@ public class CardMeta {
         this.tag = tag;
     }
 
-    public Map<String, ParamType> getParamsType() {
+    public Map<String, ParamMeta> getParamsType() {
         if (paramsType == null) {
             paramsType = new HashMap<>();
         }
@@ -83,7 +84,7 @@ public class CardMeta {
     }
 
     public CardMeta putString(String key) {
-        getParamsType().put(key, ParamType.String);
+        getParamsType().put(key, new ParamMeta(key, ParamType.String, false));
         return this;
     }
 
