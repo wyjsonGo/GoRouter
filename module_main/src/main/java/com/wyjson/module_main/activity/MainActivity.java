@@ -39,7 +39,7 @@ public class MainActivity extends FragmentActivity {
     public void onClickParamActivity(View view) {
         GoRouter.getInstance().build(UserRoute.ParamActivity)
                 .withInt("age", 78)
-                .withString("name", "Wyjson")
+                .withString("nickname", "Wyjson")
                 .go(this);
     }
 
