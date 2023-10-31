@@ -30,7 +30,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="开发阶段可以开启日志GoRouter.openLog(),搜索[doInterceptions]查看拦截器执行状态"
+        android:text="开发阶段可以开启日志GoRouter.openDebug(),搜索[doInterceptions]查看拦截器执行状态"
         android:textColor="@android:color/holo_red_light"
         android:textSize="14sp" />
 

@@ -41,8 +41,8 @@ public class DocumentUtils {
      * @return JSON格式文档
      */
     public static String generate(DocumentModel documentModel, Function<Integer, String> tagFunction) {
-        if (!GoRouter.logger.isShowLog()) {
-            throw new RouterException("Call GoRouter.openLog(); Log enabled after use!");
+        if (!GoRouter.isDebug()) {
+            throw new RouterException("Call GoRouter.openDebug(); Log enabled after use!");
         }
         String json;
         gson = new GsonBuilder()

@@ -179,7 +179,7 @@ public class CardMeta {
 
     @NonNull
     public String toString() {
-        if (!GoRouter.logger.isShowLog()) {
+        if (!GoRouter.isDebug()) {
             return "";
         }
         return "CardMeta{" +

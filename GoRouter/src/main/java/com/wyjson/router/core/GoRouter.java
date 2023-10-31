@@ -50,6 +50,7 @@ public final class GoRouter {
     private static final Map<String, CardMeta> routes = new RouteHashMap<>();
     private volatile static ThreadPoolExecutor executor = DefaultPoolExecutor.getInstance();
     public static ILogger logger = new DefaultLogger("GoRouter");
+    private volatile static boolean isDebug = false;
 
     private GoRouter() {
         logger.info(null, "[GoRouter] init!");
@@ -79,9 +80,14 @@ public final class GoRouter {
         }
     }
 
-    public static synchronized void openLog() {
-        logger.showLog(true);
-        logger.info(null, "[openLog]");
+    public static synchronized void openDebug() {
+        isDebug = true;
+        logger.showLog(isDebug);
+        logger.info(null, "[openDebug]");
+    }
+
+    public static boolean isDebug() {
+        return isDebug;
     }
 
     public static synchronized void printStackTrace() {
@@ -117,7 +123,7 @@ public final class GoRouter {
     void addCardMeta(CardMeta cardMeta) {
         if (cardMeta.getType() != null) {
             // 检查路由是否有重复提交的情况
-            if (logger.isShowLog()) {
+            if (GoRouter.isDebug()) {
                 for (Map.Entry<String, CardMeta> cardMetaEntry : routes.entrySet()) {
                     if (TextUtils.equals(cardMetaEntry.getKey(), cardMeta.getPath())) {
                         logger.error(null, "[addCardMeta] Path duplicate commit!!! path[" + cardMetaEntry.getValue().getPath() + "]");

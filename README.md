@@ -108,11 +108,11 @@
     }
     ```
 
-3.  开启Log
+3.  开启调试
 
     ```java
     if (BuildConfig.DEBUG) {
-        GoRouter.openLog(); // 开启日志，最好放到Application里开启
+        GoRouter.openDebug(); // 开启调试，查看路由详细跳转流程日志，最好放到Application里开启
         // GoRouter.printStackTrace(); // 打印日志的时候打印线程堆栈
     }
     ```
@@ -459,7 +459,7 @@
 5.  生成路由文档
 
     ```java
-    // 调用 GoRouter.openLog(); 开启日志后使用!
+    // 调用 GoRouter.openDebug(); 开启调试后使用!
     // 返回JSON格式文档，打印Log或显示到TextView上
     GoRouter.generateDocument();
     ```
@@ -546,7 +546,7 @@
 
 4.  框架已经对注解方式注入参数做了混淆处理。如果不使用注解方式，使用java方式注册，不要忘记参数加上`@Keep`注解，否则自动注入会失败。
 
-5.  开启日志可以检查路由是否有重复提交的情况
+5.  开启调试,查看日志可以检查路由是否有重复提交的情况
 
     ```log
     [addCardMeta] Path duplicate commit!!! path[/xx/xx]
