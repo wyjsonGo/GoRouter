@@ -244,6 +244,7 @@ public final class GoRouter {
      * @param <T>
      */
     private <T> void inject(T target, Intent intent, Bundle bundle) {
+        logger.debug(null, "[inject] Auto Inject Start!");
         if (bundle == null) {
             if (intent != null) {
                 bundle = intent.getExtras();
@@ -277,7 +278,7 @@ public final class GoRouter {
                 }
             }
         }
-        logger.debug(null, "[inject] Auto Inject Success!");
+        logger.debug(null, "[inject] Auto Inject End!");
     }
 
     @Nullable

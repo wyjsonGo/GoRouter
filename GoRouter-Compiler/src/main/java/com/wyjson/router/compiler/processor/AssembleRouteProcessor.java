@@ -206,17 +206,13 @@ public class AssembleRouteProcessor extends BaseProcessor {
                 if (StringUtils.isEmpty(param.name()) && !param.required()) {
                     tempParamSB.append("\"").append(paramName).append("\"").append(")");
                 } else {
-                    tempParamSB
-                            .append("\"").append(paramName).append("\"")
-                            .append(", ");
+                    tempParamSB.append("\"").append(paramName).append("\"").append(", ");
                     if (!StringUtils.isEmpty(param.name())) {
-                        tempParamSB.append("\"").append(param.name()).append("\"");
+                        tempParamSB.append("\"").append(param.name()).append("\"").append(", ");
                     } else {
-                        tempParamSB.append("null");
+                        tempParamSB.append("null").append(", ");
                     }
-                    tempParamSB.append(", ")
-                            .append(param.required())
-                            .append(")");
+                    tempParamSB.append(param.required()).append(")");
                 }
             }
         }
