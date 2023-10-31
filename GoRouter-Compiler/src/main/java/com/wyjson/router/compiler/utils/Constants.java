@@ -12,6 +12,7 @@ public class Constants {
 
     public static final String PACKAGE_NAME = "com.wyjson.router";
     public static final String MODULE_PACKAGE_NAME = PACKAGE_NAME + ".module";
+    public static final String DOCS_PACKAGE_NAME = PACKAGE_NAME + ".docs";
     public static final String GOROUTER_PACKAGE_NAME = PACKAGE_NAME + ".core.GoRouter";
 
     // Annotation type
@@ -36,6 +37,8 @@ public class Constants {
 
     // Options of processor
     public static final String KEY_MODULE_NAME = "GOROUTER_MODULE_NAME";
+    public static final String KEY_GENERATE_DOC_NAME = "GOROUTER_GENERATE_DOC";
+    public static final String VALUE_ENABLE = "enable";
 
     // Java type
     private static final String LANG = "java.lang";

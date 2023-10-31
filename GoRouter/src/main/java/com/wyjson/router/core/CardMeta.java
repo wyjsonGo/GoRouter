@@ -62,7 +62,7 @@ public class CardMeta {
 
     public Map<String, ParamMeta> getParamsType() {
         if (paramsType == null) {
-            paramsType = new ParamHashMap<>();
+            paramsType = new HashMap<>();
         }
         return paramsType;
     }

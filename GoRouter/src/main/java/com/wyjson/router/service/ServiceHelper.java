@@ -6,6 +6,7 @@ import com.wyjson.router.core.GoRouter;
 import com.wyjson.router.exception.RouterException;
 import com.wyjson.router.interfaces.IService;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class ServiceHelper {
@@ -21,7 +22,7 @@ public class ServiceHelper {
         return InstanceHolder.mInstance;
     }
 
-    private static final Map<Class<? extends IService>, ServiceMeta> services = new ServiceHashMap<>();
+    private static final Map<Class<? extends IService>, ServiceMeta> services = new HashMap<>();
 
     public Map<Class<? extends IService>, ServiceMeta> getServices() {
         return services;

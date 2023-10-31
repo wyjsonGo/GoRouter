@@ -459,76 +459,17 @@
 5.  生成路由文档
 
     ```java
-    // 调用 GoRouter.openDebug(); 开启调试后使用!
-    // 返回JSON格式文档，打印Log或显示到TextView上
-    GoRouter.generateDocument();
-    ```
-
-    Demo路由文档示例[DocumentFragment.java](https://github.com/wyjsonGo/GoRouter/blob/master/module_main/src/main/java/com/wyjson/module_main/fragment/DocumentFragment.java)
-
-    ```json
-    {
-        "services": {
-            "DegradeService": "com.wyjson.module_common.route.service.DegradeServiceImpl",
-            "InterceptorService": "com.wyjson.router.interceptor.service.impl.InterceptorServiceImpl",
-            "PretreatmentService": "com.wyjson.module_common.route.service.PretreatmentServiceImpl",
-            "UserService": "com.wyjson.module_user.route.service.UserServiceImpl"
-        },
-        "interceptors": {
-            "1": "com.wyjson.module_user.route.interceptor.SignInInterceptor",
-            "100": "com.wyjson.module_user.route.interceptor.AuthenticationInterceptor"
-        },
-        "routes": [
-            {
-                "path": "/user/param/activity",
-                "type": "ACTIVITY",
-                "pathClass": "com.wyjson.module_user.activity.ParamActivity",
-                "paramsType": {
-                    "name": "String",
-                    "age": "Int"
-                }
-            },
-            {
-                "path": "/main/splash/activity",
-                "type": "ACTIVITY",
-                "pathClass": "com.wyjson.module_main.activity.SplashActivity"
-            },
-            {
-                "path": "/user/sign_in/activity",
-                "type": "ACTIVITY",
-                "pathClass": "com.wyjson.module_user.activity.SignInActivity"
-            },
-            {
-                "path": "/user/info/activity",
-                "type": "ACTIVITY",
-                "pathClass": "com.wyjson.module_user.activity.UserInfoActivity",
-                "tag": "[LOGIN, AUTHENTICATION]"
-            },
-            {
-                "path": "/user/card/fragment",
-                "type": "FRAGMENT",
-                "pathClass": "com.wyjson.module_user.fragment.CardFragment"
-            },
-            {
-                "path": "/main/document/fragment",
-                "type": "FRAGMENT",
-                "pathClass": "com.wyjson.module_main.fragment.DocumentFragment"
-            },
-            {
-                "path": "/main/activity",
-                "type": "ACTIVITY",
-                "pathClass": "com.wyjson.module_main.activity.MainActivity"
-            },
-            {
-                "path": "/user/param/fragment",
-                "type": "FRAGMENT",
-                "pathClass": "com.wyjson.module_user.fragment.ParamFragment",
-                "paramsType": {
-                    "name": "String",
-                    "age": "Int"
+    // 更新 build.gradle, 添加参数 GOROUTER_GENERATE_DOC = enable
+    // 生成的文档路径 : build/generated/ap_generated_sources/(debug or release)/out/com/wyjson/router/docs/${moduleName}-gorouter-doc.json
+    android {
+        defaultConfig {
+            ...
+            javaCompileOptions {
+                annotationProcessorOptions {
+                    arguments = [GOROUTER_MODULE_NAME: project.getName(), GOROUTER_GENERATE_DOC: "enable"]
                 }
             }
-        ]
+        }
     }
     ```
 

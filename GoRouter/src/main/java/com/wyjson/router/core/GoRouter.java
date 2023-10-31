@@ -11,13 +11,10 @@ import android.os.Looper;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.arch.core.util.Function;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import com.wyjson.router.callback.GoCallback;
-import com.wyjson.router.document.DocumentModel;
-import com.wyjson.router.document.DocumentUtils;
 import com.wyjson.router.enums.ParamType;
 import com.wyjson.router.enums.RouteType;
 import com.wyjson.router.exception.RouterException;
@@ -38,6 +35,7 @@ import com.wyjson.router.utils.MapUtils;
 import com.wyjson.router.utils.TextUtils;
 
 import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -47,7 +45,7 @@ public final class GoRouter {
     public static final String ROUTER_RAW_URI = "go_router_raw_uri";
 
     private final Handler mHandler = new Handler(Looper.getMainLooper());
-    private static final Map<String, CardMeta> routes = new RouteHashMap<>();
+    private static final Map<String, CardMeta> routes = new HashMap<>();
     private volatile static ThreadPoolExecutor executor = DefaultPoolExecutor.getInstance();
     public static ILogger logger = new DefaultLogger("GoRouter");
     private volatile static boolean isDebug = false;
@@ -93,20 +91,6 @@ public final class GoRouter {
     public static synchronized void printStackTrace() {
         logger.showStackTrace(true);
         logger.info(null, "[printStackTrace]");
-    }
-
-    public static String generateDocument() {
-        return generateDocument(null);
-    }
-
-    /**
-     * 生成JSON格式文档
-     *
-     * @param tagFunction 不处理返回默认int类型tag,实现方法可自定义返回tag,示例[LOGIN, AUTHENTICATION]
-     * @return JSON格式文档
-     */
-    public static String generateDocument(Function<Integer, String> tagFunction) {
-        return DocumentUtils.generate(new DocumentModel(routes, ServiceHelper.getInstance().getServices(), InterceptorUtils.getInterceptors()), tagFunction);
     }
 
     @Nullable

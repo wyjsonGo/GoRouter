@@ -99,14 +99,4 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
-    public void onClickGenerateDocument(View view) {
-        Fragment fragment = (Fragment) GoRouter.getInstance().build(MainRoute.DocumentFragment).go(this);
-        if (fragment != null) {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fl_container, fragment)
-                    .commit();
-        }
-    }
-
 }
