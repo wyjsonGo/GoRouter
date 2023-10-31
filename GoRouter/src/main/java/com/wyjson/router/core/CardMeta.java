@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 
 import com.wyjson.router.enums.ParamType;
 import com.wyjson.router.enums.RouteType;
+import com.wyjson.router.param.ParamMeta;
+import com.wyjson.router.utils.TextUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,12 +15,12 @@ public class CardMeta {
     private RouteType type;
     private Class<?> pathClass;
     private int tag;// 额外的标记
-    private Map<String, ParamType> paramsType;// <参数名, 参数类型>
+    private Map<String, ParamMeta> paramsType;// <字段名, 参数元数据对象>
 
     protected CardMeta() {
     }
 
-    public CardMeta(String path, RouteType type, Class<?> pathClass, int tag, Map<String, ParamType> paramsType) {
+    public CardMeta(String path, RouteType type, Class<?> pathClass, int tag, Map<String, ParamMeta> paramsType) {
         this.path = path;
         this.type = type;
         this.pathClass = pathClass;
@@ -58,7 +60,7 @@ public class CardMeta {
         this.tag = tag;
     }
 
-    public Map<String, ParamType> getParamsType() {
+    public Map<String, ParamMeta> getParamsType() {
         if (paramsType == null) {
             paramsType = new HashMap<>();
         }
@@ -83,63 +85,101 @@ public class CardMeta {
     }
 
     public CardMeta putString(String key) {
-        getParamsType().put(key, ParamType.String);
-        return this;
+        return put(key, null, ParamType.String, false);
+    }
+
+    public CardMeta putString(String key, String name, boolean required) {
+        return put(key, name, ParamType.String, required);
     }
 
     public CardMeta putBoolean(String key) {
-        getParamsType().put(key, ParamType.Boolean);
-        return this;
+        return put(key, null, ParamType.Boolean, false);
+    }
+
+    public CardMeta putBoolean(String key, String name, boolean required) {
+        return put(key, name, ParamType.Boolean, required);
     }
 
     public CardMeta putShort(String key) {
-        getParamsType().put(key, ParamType.Short);
-        return this;
+        return put(key, null, ParamType.Short, false);
+    }
+
+    public CardMeta putShort(String key, String name, boolean required) {
+        return put(key, name, ParamType.Short, required);
     }
 
     public CardMeta putInt(String key) {
-        getParamsType().put(key, ParamType.Int);
-        return this;
+        return put(key, null, ParamType.Int, false);
+    }
+
+    public CardMeta putInt(String key, String name, boolean required) {
+        return put(key, name, ParamType.Int, required);
     }
 
     public CardMeta putLong(String key) {
-        getParamsType().put(key, ParamType.Long);
-        return this;
+        return put(key, null, ParamType.Long, false);
+    }
+
+    public CardMeta putLong(String key, String name, boolean required) {
+        return put(key, name, ParamType.Long, required);
     }
 
     public CardMeta putDouble(String key) {
-        getParamsType().put(key, ParamType.Double);
-        return this;
+        return put(key, null, ParamType.Double, false);
+    }
+
+    public CardMeta putDouble(String key, String name, boolean required) {
+        return put(key, name, ParamType.Double, required);
     }
 
     public CardMeta putByte(String key) {
-        getParamsType().put(key, ParamType.Byte);
-        return this;
+        return put(key, null, ParamType.Byte, false);
+    }
+
+    public CardMeta putByte(String key, String name, boolean required) {
+        return put(key, name, ParamType.Byte, required);
     }
 
     public CardMeta putChar(String key) {
-        getParamsType().put(key, ParamType.Char);
-        return this;
+        return put(key, null, ParamType.Char, false);
+    }
+
+    public CardMeta putChar(String key, String name, boolean required) {
+        return put(key, name, ParamType.Char, required);
     }
 
     public CardMeta putFloat(String key) {
-        getParamsType().put(key, ParamType.Float);
-        return this;
+        return put(key, null, ParamType.Float, false);
+    }
+
+    public CardMeta putFloat(String key, String name, boolean required) {
+        return put(key, name, ParamType.Float, required);
     }
 
     public CardMeta putSerializable(String key) {
-        getParamsType().put(key, ParamType.Serializable);
-        return this;
+        return put(key, null, ParamType.Serializable, false);
+    }
+
+    public CardMeta putSerializable(String key, String name, boolean required) {
+        return put(key, name, ParamType.Serializable, required);
     }
 
     public CardMeta putParcelable(String key) {
-        getParamsType().put(key, ParamType.Parcelable);
+        return put(key, null, ParamType.Parcelable, false);
+    }
+
+    public CardMeta putParcelable(String key, String name, boolean required) {
+        return put(key, name, ParamType.Parcelable, required);
+    }
+
+    private CardMeta put(String key, String name, ParamType type, boolean required) {
+        getParamsType().put(key, new ParamMeta(TextUtils.isEmpty(name) ? key : name, type, required));
         return this;
     }
 
     @NonNull
     public String toString() {
-        if (!GoRouter.logger.isShowLog()) {
+        if (!GoRouter.isDebug()) {
             return "";
         }
         return "CardMeta{" +

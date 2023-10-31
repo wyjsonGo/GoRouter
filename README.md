@@ -108,11 +108,11 @@
     }
     ```
 
-3.  开启Log
+3.  开启调试
 
     ```java
     if (BuildConfig.DEBUG) {
-        GoRouter.openLog(); // 开启日志，最好放到Application里开启
+        GoRouter.openDebug(); // 开启调试，查看路由详细跳转流程日志，最好放到Application里开启
         // GoRouter.printStackTrace(); // 打印日志的时候打印线程堆栈
     }
     ```
@@ -189,8 +189,8 @@
     
         @Param
         int age = 18;
-        
-        @Param
+        // 可以自定义参数name
+        @Param(name = "nickname", remark = "昵称", required = true)
         private String name;
 
         @Override
@@ -450,85 +450,26 @@
     String uriStr = getIntent().getStringExtra(GoRouter.ROUTER_RAW_URI);
     ```
 
-4.  获取参数名
+4.  获取当前页面路径
 
     ```java
-    String[] params = getIntent().getStringArrayExtra(GoRouter.ROUTER_PARAM_INJECT);
+    String path = getIntent().getString(GoRouter.ROUTER_CURRENT_PATH);
     ```
 
 5.  生成路由文档
 
     ```java
-    // 调用 GoRouter.openLog(); 开启日志后使用!
-    // 返回JSON格式文档，打印Log或显示到TextView上
-    GoRouter.generateDocument();
-    ```
-
-    Demo路由文档示例[DocumentFragment.java](https://github.com/wyjsonGo/GoRouter/blob/master/module_main/src/main/java/com/wyjson/module_main/fragment/DocumentFragment.java)
-
-    ```json
-    {
-        "services": {
-            "DegradeService": "com.wyjson.module_common.route.service.DegradeServiceImpl",
-            "InterceptorService": "com.wyjson.router.interceptor.service.impl.InterceptorServiceImpl",
-            "PretreatmentService": "com.wyjson.module_common.route.service.PretreatmentServiceImpl",
-            "UserService": "com.wyjson.module_user.route.service.UserServiceImpl"
-        },
-        "interceptors": {
-            "1": "com.wyjson.module_user.route.interceptor.SignInInterceptor",
-            "100": "com.wyjson.module_user.route.interceptor.AuthenticationInterceptor"
-        },
-        "routes": [
-            {
-                "path": "/user/param/activity",
-                "type": "ACTIVITY",
-                "pathClass": "com.wyjson.module_user.activity.ParamActivity",
-                "paramsType": {
-                    "name": "String",
-                    "age": "Int"
-                }
-            },
-            {
-                "path": "/main/splash/activity",
-                "type": "ACTIVITY",
-                "pathClass": "com.wyjson.module_main.activity.SplashActivity"
-            },
-            {
-                "path": "/user/sign_in/activity",
-                "type": "ACTIVITY",
-                "pathClass": "com.wyjson.module_user.activity.SignInActivity"
-            },
-            {
-                "path": "/user/info/activity",
-                "type": "ACTIVITY",
-                "pathClass": "com.wyjson.module_user.activity.UserInfoActivity",
-                "tag": "[LOGIN, AUTHENTICATION]"
-            },
-            {
-                "path": "/user/card/fragment",
-                "type": "FRAGMENT",
-                "pathClass": "com.wyjson.module_user.fragment.CardFragment"
-            },
-            {
-                "path": "/main/document/fragment",
-                "type": "FRAGMENT",
-                "pathClass": "com.wyjson.module_main.fragment.DocumentFragment"
-            },
-            {
-                "path": "/main/activity",
-                "type": "ACTIVITY",
-                "pathClass": "com.wyjson.module_main.activity.MainActivity"
-            },
-            {
-                "path": "/user/param/fragment",
-                "type": "FRAGMENT",
-                "pathClass": "com.wyjson.module_user.fragment.ParamFragment",
-                "paramsType": {
-                    "name": "String",
-                    "age": "Int"
+    // 更新 build.gradle, 添加参数 GOROUTER_GENERATE_DOC = enable
+    // 生成的文档路径 : build/generated/ap_generated_sources/(debug or release)/out/com/wyjson/router/docs/${moduleName}-gorouter-doc.json
+    android {
+        defaultConfig {
+            ...
+            javaCompileOptions {
+                annotationProcessorOptions {
+                    arguments = [GOROUTER_MODULE_NAME: project.getName(), GOROUTER_GENERATE_DOC: "enable"]
                 }
             }
-        ]
+        }
     }
     ```
 
@@ -546,7 +487,7 @@
 
 4.  框架已经对注解方式注入参数做了混淆处理。如果不使用注解方式，使用java方式注册，不要忘记参数加上`@Keep`注解，否则自动注入会失败。
 
-5.  开启日志可以检查路由是否有重复提交的情况
+5.  开启调试,查看日志可以检查路由是否有重复提交的情况
 
     ```log
     [addCardMeta] Path duplicate commit!!! path[/xx/xx]

@@ -10,6 +10,9 @@ import java.lang.annotation.Target;
 @Retention(CLASS)
 public @interface Param {
 
+    // Mark param name
+    String name() default "";
+
     // remark of the field
     String remark() default "";
 

@@ -42,11 +42,15 @@ import com.wyjson.router.annotation.Interceptor;
 import com.wyjson.router.annotation.Param;
 import com.wyjson.router.annotation.Route;
 import com.wyjson.router.annotation.Service;
+import com.wyjson.router.compiler.doc.DocumentUtils;
+import com.wyjson.router.compiler.doc.model.ParamModel;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import javax.annotation.processing.ProcessingEnvironment;
@@ -66,6 +70,7 @@ public class AssembleRouteProcessor extends BaseProcessor {
     TypeMirror serializableType;
     TypeMirror parcelableType;
 
+
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
@@ -79,6 +84,9 @@ public class AssembleRouteProcessor extends BaseProcessor {
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
         if (CollectionUtils.isEmpty(set))
             return false;
+
+        DocumentUtils.createDoc(mFiler, moduleName, logger, isGenerateDoc);
+
         MethodSpec.Builder loadInto = MethodSpec.methodBuilder(METHOD_NAME_LOAD).addModifiers(PUBLIC, STATIC);
         loadInto.addJavadoc("Load the $S route", moduleName);
 
@@ -102,6 +110,7 @@ public class AssembleRouteProcessor extends BaseProcessor {
             logger.error(e);
         }
 
+        DocumentUtils.generate(moduleName, logger);
         return true;
     }
 
@@ -115,6 +124,7 @@ public class AssembleRouteProcessor extends BaseProcessor {
         for (Element element : elements) {
             Service service = element.getAnnotation(Service.class);
             loadInto.addStatement("$T.getInstance().addService($T.class)", mGoRouter, element);
+            DocumentUtils.addService(moduleName, logger, element, service);
         }
     }
 
@@ -128,6 +138,7 @@ public class AssembleRouteProcessor extends BaseProcessor {
         for (Element element : elements) {
             Interceptor interceptor = element.getAnnotation(Interceptor.class);
             loadInto.addStatement("$T.getInstance().addInterceptor(" + interceptor.priority() + ", $T.class)", mGoRouter, element);
+            DocumentUtils.addInterceptor(moduleName, logger, element, interceptor);
         }
     }
 
@@ -145,11 +156,14 @@ public class AssembleRouteProcessor extends BaseProcessor {
             Route route = element.getAnnotation(Route.class);
             TypeMirror tm = element.asType();
 
+            String typeDoc;
             String type;
             // handle type
             if (types.isSubtype(tm, typeActivity)) {
+                typeDoc = "Activity";
                 type = ".commitActivity($T.class)";
             } else if (types.isSubtype(tm, typeFragment)) {
+                typeDoc = "Fragment";
                 type = ".commitFragment($T.class)";
             } else {
                 throw new RuntimeException(PREFIX_OF_LOGGER + moduleName + " The @Route(path='" + route.path() + "') is marked on unsupported class, look at [" + tm.toString() + "].");
@@ -157,19 +171,20 @@ public class AssembleRouteProcessor extends BaseProcessor {
 
             String tag = route.tag() == 0 ? "" : ".putTag(" + route.tag() + ")";
 
+            List<ParamModel> paramModels = new ArrayList<>();
             // Get all fields annotation by @Param
             String param = "";
             try {
-                param = handleParam(new StringBuilder(), element);
+                param = handleParam(new StringBuilder(), element, paramModels);
             } catch (Exception e) {
                 throw new RuntimeException(PREFIX_OF_LOGGER + moduleName + " The @Route(path='" + route.path() + "') under " + e.getMessage());
             }
-
             loadInto.addStatement("$T.getInstance().build($S)" + tag + param + type, mGoRouter, route.path(), element);
+            DocumentUtils.addRoute(moduleName, logger, element, route, typeDoc, paramModels);
         }
     }
 
-    private String handleParam(StringBuilder paramSB, Element element) {
+    private String handleParam(StringBuilder paramSB, Element element, List<ParamModel> paramModels) {
         StringBuilder tempParamSB = new StringBuilder();
         for (Element field : element.getEnclosedElements()) {
             // It must be field, then it has annotation
@@ -178,32 +193,64 @@ public class AssembleRouteProcessor extends BaseProcessor {
                 String paramName = field.getSimpleName().toString();
                 TypeMirror typeMirror = field.asType();
                 String typeStr = typeMirror.toString();
+
+                ParamModel paramModel = new ParamModel();
+                if (!StringUtils.isEmpty(param.remark())) {
+                    paramModel.setRemark(param.remark());
+                }
+                paramModel.setRequired(param.required());
+
                 if (StringUtils.equals(typeStr, BYTE_PACKAGE) || StringUtils.equals(typeStr, BYTE_PRIMITIVE)) {
                     tempParamSB.append(".putByte(");
+                    paramModel.setType("Byte");
                 } else if (StringUtils.equals(typeStr, SHORT_PACKAGE) || StringUtils.equals(typeStr, SHORT_PRIMITIVE)) {
                     tempParamSB.append(".putShort(");
+                    paramModel.setType("Short");
                 } else if (StringUtils.equals(typeStr, INTEGER_PACKAGE) || StringUtils.equals(typeStr, INTEGER_PRIMITIVE)) {
                     tempParamSB.append(".putInt(");
+                    paramModel.setType("int");
                 } else if (StringUtils.equals(typeStr, LONG_PACKAGE) || StringUtils.equals(typeStr, LONG_PRIMITIVE)) {
                     tempParamSB.append(".putLong(");
+                    paramModel.setType("long");
                 } else if (StringUtils.equals(typeStr, FLOAT_PACKAGE) || StringUtils.equals(typeStr, FLOAT_PRIMITIVE)) {
                     tempParamSB.append(".putFloat(");
+                    paramModel.setType("float");
                 } else if (StringUtils.equals(typeStr, DOUBEL_PACKAGE) || StringUtils.equals(typeStr, DOUBEL_PRIMITIVE)) {
                     tempParamSB.append(".putDouble(");
+                    paramModel.setType("double");
                 } else if (StringUtils.equals(typeStr, BOOLEAN_PACKAGE) || StringUtils.equals(typeStr, BOOLEAN_PRIMITIVE)) {
                     tempParamSB.append(".putBoolean(");
+                    paramModel.setType("boolean");
                 } else if (StringUtils.equals(typeStr, CHAR_PACKAGE) || StringUtils.equals(typeStr, CHAR_PRIMITIVE)) {
                     tempParamSB.append(".putChar(");
+                    paramModel.setType("char");
                 } else if (StringUtils.equals(typeStr, STRING_PACKAGE)) {
                     tempParamSB.append(".putString(");
+                    paramModel.setType("String");
                 } else if (types.isSubtype(typeMirror, parcelableType)) {
                     tempParamSB.append(".putParcelable(");
+                    paramModel.setType("Parcelable");
                 } else if (types.isSubtype(typeMirror, serializableType)) {
                     tempParamSB.append(".putSerializable(");
+                    paramModel.setType("Serializable");
                 } else {
                     throw new RuntimeException("@Param(type='" + typeMirror.toString() + "') is marked as an unsupported type");
                 }
-                tempParamSB.append("\"").append(paramName).append("\"").append(")");
+                if (StringUtils.isEmpty(param.name()) && !param.required()) {
+                    tempParamSB.append("\"").append(paramName).append("\"").append(")");
+                    paramModel.setName(paramName);
+                } else {
+                    tempParamSB.append("\"").append(paramName).append("\"").append(", ");
+                    if (!StringUtils.isEmpty(param.name())) {
+                        tempParamSB.append("\"").append(param.name()).append("\"").append(", ");
+                        paramModel.setName(param.name());
+                    } else {
+                        tempParamSB.append("null").append(", ");
+                        paramModel.setName(paramName);
+                    }
+                    tempParamSB.append(param.required()).append(")");
+                }
+                paramModels.add(paramModel);
             }
         }
 
@@ -219,7 +266,7 @@ public class AssembleRouteProcessor extends BaseProcessor {
         if (parent instanceof DeclaredType) {
             Element parentElement = ((DeclaredType) parent).asElement();
             if (parentElement instanceof TypeElement && !((TypeElement) parentElement).getQualifiedName().toString().startsWith("android")) {
-                return handleParam(paramSB, parentElement);
+                return handleParam(paramSB, parentElement, paramModels);
             }
         }
         return paramSB.toString();

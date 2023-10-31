@@ -7,13 +7,7 @@ public class DefaultLogger implements ILogger {
 
     private static boolean isShowLog = false;
     private static boolean isShowStackTrace = false;
-
     private String defaultTag = "GoRouter";
-
-    @Override
-    public boolean isShowLog() {
-        return isShowLog;
-    }
 
     @Override
     public String getDefaultTag() {

@@ -39,7 +39,7 @@ public class MainActivity extends FragmentActivity {
     public void onClickParamActivity(View view) {
         GoRouter.getInstance().build(UserRoute.ParamActivity)
                 .withInt("age", 78)
-                .withString("name", "Wyjson")
+                .withString("nickname", "Wyjson")
                 .go(this);
     }
 
@@ -96,16 +96,6 @@ public class MainActivity extends FragmentActivity {
         UserService userService = GoRouter.getInstance().getService(UserService.class);
         if (userService != null) {
             Toast.makeText(this, "userId:" + userService.getUserId(), Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    public void onClickGenerateDocument(View view) {
-        Fragment fragment = (Fragment) GoRouter.getInstance().build(MainRoute.DocumentFragment).go(this);
-        if (fragment != null) {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fl_container, fragment)
-                    .commit();
         }
     }
 

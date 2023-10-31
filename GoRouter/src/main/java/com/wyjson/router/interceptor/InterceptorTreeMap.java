@@ -34,7 +34,7 @@ public class InterceptorTreeMap<K, V> extends TreeMap<K, V> {
     @NonNull
     @Override
     public String toString() {
-        if (!GoRouter.logger.isShowLog()) {
+        if (!GoRouter.isDebug()) {
             return "";
         }
         Iterator<Entry<K, V>> i = entrySet().iterator();

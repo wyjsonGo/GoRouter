@@ -91,17 +91,6 @@
             android:text="获取UserService接口"
             android:textSize="16sp"
             android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:background="#ffaa00"
-            android:onClick="onClickGenerateDocument"
-            android:padding="10dp"
-            android:text="生成文档"
-            android:textSize="16sp"
-            android:textStyle="bold" />
     </LinearLayout>
 
     <FrameLayout
