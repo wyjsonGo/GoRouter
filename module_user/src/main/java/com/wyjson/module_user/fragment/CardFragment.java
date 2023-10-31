@@ -16,7 +16,7 @@ import com.wyjson.router.annotation.Route;
 @Route(path = UserRoute.CardFragment, remark = "卡片碎片")
 public class CardFragment extends Fragment {
 
-    protected UserFragmentCardBinding vb;
+    UserFragmentCardBinding vb;
 
     @Nullable
     @Override

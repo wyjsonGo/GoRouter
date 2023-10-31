@@ -189,8 +189,8 @@
     
         @Param
         int age = 18;
-        
-        @Param
+        // 可以自定义参数name
+        @Param(name = "nickname", remark = "昵称", required = true)
         private String name;
 
         @Override
@@ -450,10 +450,10 @@
     String uriStr = getIntent().getStringExtra(GoRouter.ROUTER_RAW_URI);
     ```
 
-4.  获取参数名
+4.  获取当前页面路径
 
     ```java
-    String[] params = getIntent().getStringArrayExtra(GoRouter.ROUTER_PARAM_INJECT);
+    String path = getIntent().getString(GoRouter.ROUTER_CURRENT_PATH);
     ```
 
 5.  生成路由文档

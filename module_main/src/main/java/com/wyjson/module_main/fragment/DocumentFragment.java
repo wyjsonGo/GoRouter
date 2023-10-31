@@ -23,7 +23,7 @@ import org.json.JSONObject;
 @Route(path = MainRoute.DocumentFragment, remark = "文档碎片")
 public class DocumentFragment extends Fragment {
 
-    protected MainFragmentDocumentBinding vb;
+    MainFragmentDocumentBinding vb;
 
     @Nullable
     @Override

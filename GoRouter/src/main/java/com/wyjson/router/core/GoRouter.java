@@ -43,8 +43,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 public final class GoRouter {
 
-    public static final String ROUTER_PATH = "router_path";
-    public static final String ROUTER_RAW_URI = "router_raw_uri";
+    public static final String ROUTER_CURRENT_PATH = "go_router_current_path";
+    public static final String ROUTER_RAW_URI = "go_router_raw_uri";
 
     private final Handler mHandler = new Handler(Looper.getMainLooper());
     private static final Map<String, CardMeta> routes = new RouteHashMap<>();
@@ -258,8 +258,7 @@ public final class GoRouter {
                 throw new RouterException("inject() method does not get bundle!");
             }
         }
-
-        String path = bundle.getString(GoRouter.ROUTER_PATH);
+        String path = bundle.getString(GoRouter.ROUTER_CURRENT_PATH);
         CardMeta cardMeta = GoRouter.getInstance().build(path).getCardMeta();
         if (cardMeta != null) {
             Map<String, ParamMeta> paramsType = cardMeta.getParamsType();
@@ -285,6 +284,8 @@ public final class GoRouter {
     Object go(Context context, Card card, int requestCode, GoCallback callback) {
         card.setContext(context);
         card.setInterceptorException(null);
+        card.withString(GoRouter.ROUTER_CURRENT_PATH, card.getPath());
+
         logger.debug(null, "[go] " + card.toString());
         PretreatmentService pretreatmentService = getService(PretreatmentService.class);
         if (pretreatmentService != null) {
@@ -303,10 +304,6 @@ public final class GoRouter {
             card.setTag(cardMeta.getTag());
 
             Map<String, ParamMeta> paramsType = cardMeta.getParamsType();
-//            if (MapUtils.isNotEmpty(paramsType)) {
-//                // 保存需要注入的参数名
-//                card.getExtras().putStringArray(GoRouter.ROUTER_PARAM_INJECT, paramsType.keySet().toArray(new String[]{}));
-//            }
             Uri rawUri = card.getUri();
             if (rawUri != null) {
                 Map<String, String> resultMap = TextUtils.splitQueryParameters(rawUri);
@@ -329,8 +326,6 @@ public final class GoRouter {
                     callback.onFound(card);
                 }
             });
-
-            card.withString(GoRouter.ROUTER_PATH, card.getPath());
 
             switch (card.getType()) {
                 case ACTIVITY:
