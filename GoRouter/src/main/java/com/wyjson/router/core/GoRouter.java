@@ -31,6 +31,7 @@ import com.wyjson.router.interfaces.IService;
 import com.wyjson.router.interfaces.PretreatmentService;
 import com.wyjson.router.logger.DefaultLogger;
 import com.wyjson.router.logger.ILogger;
+import com.wyjson.router.param.ParamMeta;
 import com.wyjson.router.service.ServiceHelper;
 import com.wyjson.router.thread.DefaultPoolExecutor;
 import com.wyjson.router.utils.MapUtils;
@@ -42,13 +43,14 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 public final class GoRouter {
 
-    public static final String ROUTER_RAW_URI = "router_raw_uri";
-    public static final String ROUTER_PARAM_INJECT = "router_param_inject";
+    public static final String ROUTER_CURRENT_PATH = "go_router_current_path";
+    public static final String ROUTER_RAW_URI = "go_router_raw_uri";
 
     private final Handler mHandler = new Handler(Looper.getMainLooper());
     private static final Map<String, CardMeta> routes = new RouteHashMap<>();
     private volatile static ThreadPoolExecutor executor = DefaultPoolExecutor.getInstance();
     public static ILogger logger = new DefaultLogger("GoRouter");
+    private volatile static boolean isDebug = false;
 
     private GoRouter() {
         logger.info(null, "[GoRouter] init!");
@@ -78,9 +80,14 @@ public final class GoRouter {
         }
     }
 
-    public static synchronized void openLog() {
-        logger.showLog(true);
-        logger.info(null, "[openLog]");
+    public static synchronized void openDebug() {
+        isDebug = true;
+        logger.showLog(isDebug);
+        logger.info(null, "[openDebug]");
+    }
+
+    public static boolean isDebug() {
+        return isDebug;
     }
 
     public static synchronized void printStackTrace() {
@@ -116,7 +123,7 @@ public final class GoRouter {
     void addCardMeta(CardMeta cardMeta) {
         if (cardMeta.getType() != null) {
             // 检查路由是否有重复提交的情况
-            if (logger.isShowLog()) {
+            if (GoRouter.isDebug()) {
                 for (Map.Entry<String, CardMeta> cardMetaEntry : routes.entrySet()) {
                     if (TextUtils.equals(cardMetaEntry.getKey(), cardMeta.getPath())) {
                         logger.error(null, "[addCardMeta] Path duplicate commit!!! path[" + cardMetaEntry.getValue().getPath() + "]");
@@ -237,6 +244,7 @@ public final class GoRouter {
      * @param <T>
      */
     private <T> void inject(T target, Intent intent, Bundle bundle) {
+        logger.debug(null, "[inject] Auto Inject Start!");
         if (bundle == null) {
             if (intent != null) {
                 bundle = intent.getExtras();
@@ -247,17 +255,22 @@ public final class GoRouter {
                     bundle = ((Fragment) target).getArguments();
                 }
             }
+            if (bundle == null) {
+                throw new RouterException("inject() method does not get bundle!");
+            }
         }
-
-        String[] autoInjectParams = bundle.getStringArray(GoRouter.ROUTER_PARAM_INJECT);
-        if (null != autoInjectParams && autoInjectParams.length > 0) {
-            for (String paramsName : autoInjectParams) {
-                Object value = bundle.get(paramsName);
+        String path = bundle.getString(GoRouter.ROUTER_CURRENT_PATH);
+        CardMeta cardMeta = GoRouter.getInstance().build(path).getCardMeta();
+        if (cardMeta != null) {
+            Map<String, ParamMeta> paramsType = cardMeta.getParamsType();
+            for (Map.Entry<String, ParamMeta> params : paramsType.entrySet()) {
+                String paramName = params.getValue().getName();
+                Object value = bundle.get(paramName);
                 if (value == null)
                     continue;
-                logger.debug(null, "[inject] " + paramsName + ":" + value);
+                logger.debug(null, "[inject] " + paramName + ":" + value);
                 try {
-                    Field injectField = target.getClass().getDeclaredField(paramsName);
+                    Field injectField = target.getClass().getDeclaredField(params.getKey());
                     injectField.setAccessible(true);
                     injectField.set(target, value);
                 } catch (Exception e) {
@@ -265,13 +278,15 @@ public final class GoRouter {
                 }
             }
         }
-        logger.debug(null, "[inject] Auto Inject Success!");
+        logger.debug(null, "[inject] Auto Inject End!");
     }
 
     @Nullable
     Object go(Context context, Card card, int requestCode, GoCallback callback) {
         card.setContext(context);
         card.setInterceptorException(null);
+        card.withString(GoRouter.ROUTER_CURRENT_PATH, card.getPath());
+
         logger.debug(null, "[go] " + card.toString());
         PretreatmentService pretreatmentService = getService(PretreatmentService.class);
         if (pretreatmentService != null) {
@@ -289,20 +304,16 @@ public final class GoRouter {
             card.setPathClass(cardMeta.getPathClass());
             card.setTag(cardMeta.getTag());
 
-            Map<String, ParamType> paramsType = cardMeta.getParamsType();
-            if (MapUtils.isNotEmpty(paramsType)) {
-                // 保存需要注入的参数名
-                card.getExtras().putStringArray(GoRouter.ROUTER_PARAM_INJECT, paramsType.keySet().toArray(new String[]{}));
-            }
+            Map<String, ParamMeta> paramsType = cardMeta.getParamsType();
             Uri rawUri = card.getUri();
             if (rawUri != null) {
                 Map<String, String> resultMap = TextUtils.splitQueryParameters(rawUri);
                 if (MapUtils.isNotEmpty(paramsType)) {
                     // 按类型设置值
-                    for (Map.Entry<String, ParamType> params : paramsType.entrySet()) {
+                    for (Map.Entry<String, ParamMeta> params : paramsType.entrySet()) {
                         setValue(card,
-                                params.getValue(),
-                                params.getKey(),
+                                params.getValue().getType(),
+                                params.getValue().getName(),
                                 resultMap.get(params.getKey()));
                     }
                 }
@@ -316,6 +327,7 @@ public final class GoRouter {
                     callback.onFound(card);
                 }
             });
+
             switch (card.getType()) {
                 case ACTIVITY:
                     InterceptorService interceptorService = getService(InterceptorService.class);

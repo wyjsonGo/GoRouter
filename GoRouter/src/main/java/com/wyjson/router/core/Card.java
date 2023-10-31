@@ -297,7 +297,7 @@ public final class Card extends CardMeta {
     @NonNull
     @Override
     public String toString() {
-        if (!GoRouter.logger.isShowLog()) {
+        if (!GoRouter.isDebug()) {
             return "";
         }
         return "Card{" +

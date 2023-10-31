@@ -13,10 +13,12 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import com.wyjson.router.core.CardMeta;
 import com.wyjson.router.core.GoRouter;
+import com.wyjson.router.core.ParamHashMap;
 import com.wyjson.router.core.RouteHashMap;
 import com.wyjson.router.exception.RouterException;
 import com.wyjson.router.interceptor.InterceptorTreeMap;
 import com.wyjson.router.interfaces.IService;
+import com.wyjson.router.param.ParamMeta;
 import com.wyjson.router.service.ServiceHashMap;
 import com.wyjson.router.service.ServiceMeta;
 import com.wyjson.router.utils.MapUtils;
@@ -39,8 +41,8 @@ public class DocumentUtils {
      * @return JSON格式文档
      */
     public static String generate(DocumentModel documentModel, Function<Integer, String> tagFunction) {
-        if (!GoRouter.logger.isShowLog()) {
-            throw new RouterException("Call GoRouter.openLog(); Log enabled after use!");
+        if (!GoRouter.isDebug()) {
+            throw new RouterException("Call GoRouter.openDebug(); Log enabled after use!");
         }
         String json;
         gson = new GsonBuilder()
@@ -51,6 +53,8 @@ public class DocumentUtils {
                 .registerTypeAdapter(ServiceMeta.class, new ServiceMetaTypeAdapter())
                 .registerTypeAdapter(InterceptorTreeMap.class, new InterceptorTreeMapTypeAdapter())
                 .registerTypeAdapter(CardMeta.class, new CardMetaTypeAdapter(tagFunction))
+                .registerTypeAdapter(ParamMeta.class, new ParamMetaTypeAdapter())
+                .registerTypeAdapter(ParamHashMap.class, new ParamHashMapTypeAdapter())
                 .create();
         json = gson.toJson(documentModel);
         return json;
@@ -203,6 +207,46 @@ public class DocumentUtils {
 
         @Override
         public CardMeta read(JsonReader in) throws IOException {
+            return null;
+        }
+    }
+
+    static class ParamHashMapTypeAdapter<K, V> extends TypeAdapter<ParamHashMap<K, V>> {
+
+        @Override
+        public void write(JsonWriter out, ParamHashMap<K, V> map) throws IOException {
+            if (MapUtils.isEmpty(map)) {
+                out.nullValue();
+                return;
+            }
+
+            out.beginArray();
+            for (Map.Entry<K, V> entry : map.entrySet()) {
+                out.jsonValue(gson.toJson(entry.getValue()));
+            }
+            out.endArray();
+        }
+
+        @Override
+        public ParamHashMap<K, V> read(JsonReader in) throws IOException {
+            return null;
+        }
+
+    }
+
+    static class ParamMetaTypeAdapter extends TypeAdapter<ParamMeta> {
+
+        @Override
+        public void write(JsonWriter out, ParamMeta value) throws IOException {
+            out.beginObject();
+            out.name("name").value(value.getName());
+            out.name("type").value(value.getType().toString());
+            out.name("required").value(value.isRequired());
+            out.endObject();
+        }
+
+        @Override
+        public ParamMeta read(JsonReader in) throws IOException {
             return null;
         }
     }

@@ -203,7 +203,17 @@ public class AssembleRouteProcessor extends BaseProcessor {
                 } else {
                     throw new RuntimeException("@Param(type='" + typeMirror.toString() + "') is marked as an unsupported type");
                 }
-                tempParamSB.append("\"").append(paramName).append("\"").append(")");
+                if (StringUtils.isEmpty(param.name()) && !param.required()) {
+                    tempParamSB.append("\"").append(paramName).append("\"").append(")");
+                } else {
+                    tempParamSB.append("\"").append(paramName).append("\"").append(", ");
+                    if (!StringUtils.isEmpty(param.name())) {
+                        tempParamSB.append("\"").append(param.name()).append("\"").append(", ");
+                    } else {
+                        tempParamSB.append("null").append(", ");
+                    }
+                    tempParamSB.append(param.required()).append(")");
+                }
             }
         }
 

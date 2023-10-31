@@ -2,12 +2,6 @@ package com.wyjson.router.logger;
 
 public interface ILogger {
 
-    boolean isShowLog = false;
-    boolean isShowStackTrace = false;
-    String defaultTag = "GoRouter";
-
-    boolean isShowLog();
-
     String getDefaultTag();
 
     void showLog(boolean isShowLog);

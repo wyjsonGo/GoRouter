@@ -11,7 +11,7 @@ public class CommonApplication implements IApplication {
     @Override
     public void init(Application app) {
         if (BuildConfig.DEBUG) {
-            GoRouter.openLog();
+            GoRouter.openDebug();
 //            GoRouter.printStackTrace();
         }
         ModuleCommonGoRouter.load();
