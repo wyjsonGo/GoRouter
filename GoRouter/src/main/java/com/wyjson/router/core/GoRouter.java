@@ -224,6 +224,7 @@ public final class GoRouter {
      */
     private <T> void inject(T target, Intent intent, Bundle bundle) {
         logger.debug(null, "[inject] Auto Inject Start!");
+
         if (bundle == null) {
             if (intent != null) {
                 bundle = intent.getExtras();
@@ -238,11 +239,13 @@ public final class GoRouter {
                 throw new RouterException("inject() method does not get bundle!");
             }
         }
+
         String path = bundle.getString(GoRouter.ROUTER_CURRENT_PATH);
         if (TextUtils.isEmpty(path)) {
             logger.error(null, "[inject] path Parameter is invalid!");
             return;
         }
+
         CardMeta cardMeta = GoRouter.getInstance().build(path).getCardMeta();
         if (cardMeta != null) {
             Map<String, ParamMeta> paramsType = cardMeta.getParamsType();
@@ -253,15 +256,29 @@ public final class GoRouter {
                     continue;
                 logger.debug(null, "[inject] " + paramName + ":" + value);
                 try {
-                    Field injectField = target.getClass().getDeclaredField(params.getKey());
+                    Field injectField = getDeclaredField(target.getClass(), params.getKey());
                     injectField.setAccessible(true);
                     injectField.set(target, value);
                 } catch (Exception e) {
-                    throw new RouterException("Inject values for activity error! [" + e.getMessage() + "]");
+                    throw new RouterException("Inject values for activity/fragment error! [" + e.getMessage() + "]");
                 }
             }
         }
         logger.debug(null, "[inject] Auto Inject End!");
+    }
+
+    @NonNull
+    private static <T> Field getDeclaredField(Class<?> cls, String key) throws NoSuchFieldException {
+        try {
+            return cls.getDeclaredField(key);
+        } catch (NoSuchFieldException e) {
+            Class<?> superclass = cls.getSuperclass();
+            if (superclass != null && !superclass.getName().startsWith("android")) {
+                return getDeclaredField(superclass, key);
+            } else {
+                throw new NoSuchFieldException(e.getMessage());
+            }
+        }
     }
 
     @Nullable

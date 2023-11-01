@@ -40,6 +40,7 @@ public class MainActivity extends FragmentActivity {
         GoRouter.getInstance().build(UserRoute.ParamActivity)
                 .withInt("age", 78)
                 .withString("nickname", "Wyjson")
+                .withInt("base", 7758)// 父类里定义的参数
                 .go(this);
     }
 

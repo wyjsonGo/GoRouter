@@ -184,11 +184,13 @@
     ```java
     // 为每一个参数声明一个字段，并使用 @Param 标注
     // URL中不能传递Parcelable类型数据，通过GoRouter api可以传递Parcelable对象
-    @Route(path = "/test/activity")
-    public class TestActivity extends Activity {
+    // 支持父类字段自动注入
+    @Route(path = "/user/param/activity")
+    public class ParamActivity extends BaseParamActivity {
     
         @Param
         int age = 18;
+
         // 可以自定义参数name
         @Param(name = "nickname", remark = "昵称", required = true)
         private String name;
@@ -197,9 +199,8 @@
         protected void onCreate(Bundle savedInstanceState) {
            super.onCreate(savedInstanceState);
            GoRouter.getInstance().inject(this);
-
            // GoRouter会自动对字段进行赋值，无需主动获取
-           Log.d("param", "age:" + age + ",name:" + name);
+           Log.d("param", "base:" + base + "age:" + age + ",name:" + name);
         }
         
 	    @Override
@@ -207,6 +208,11 @@
 	        super.onNewIntent(intent);
 	        GoRouter.getInstance().inject(this, intent);
 	    }
+    }
+
+    public class BaseParamActivity extends Activity {
+        @Param(remark = "我是一个父类字段")
+        protected int base;
     }
     ```
 
