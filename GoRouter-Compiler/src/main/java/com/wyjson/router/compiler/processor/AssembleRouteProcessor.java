@@ -43,14 +43,11 @@ import com.wyjson.router.annotation.Param;
 import com.wyjson.router.annotation.Route;
 import com.wyjson.router.annotation.Service;
 import com.wyjson.router.compiler.doc.DocumentUtils;
-import com.wyjson.router.compiler.doc.model.ParamModel;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 import javax.annotation.processing.ProcessingEnvironment;
@@ -171,20 +168,19 @@ public class AssembleRouteProcessor extends BaseProcessor {
 
             String tag = route.tag() == 0 ? "" : ".putTag(" + route.tag() + ")";
 
-            List<ParamModel> paramModels = new ArrayList<>();
             // Get all fields annotation by @Param
             String param = "";
             try {
-                param = handleParam(new StringBuilder(), element, paramModels);
+                param = handleParam(new StringBuilder(), element);
             } catch (Exception e) {
                 throw new RuntimeException(PREFIX_OF_LOGGER + moduleName + " The @Route(path='" + route.path() + "') under " + e.getMessage());
             }
             loadInto.addStatement("$T.getInstance().build($S)" + tag + param + type, mGoRouter, route.path(), element);
-            DocumentUtils.addRoute(moduleName, logger, element, route, typeDoc, paramModels);
+            DocumentUtils.addRoute(moduleName, logger, element, route, typeDoc);
         }
     }
 
-    private String handleParam(StringBuilder paramSB, Element element, List<ParamModel> paramModels) {
+    private String handleParam(StringBuilder paramSB, Element element) {
         StringBuilder tempParamSB = new StringBuilder();
         for (Element field : element.getEnclosedElements()) {
             // It must be field, then it has annotation
@@ -193,64 +189,64 @@ public class AssembleRouteProcessor extends BaseProcessor {
                 String paramName = field.getSimpleName().toString();
                 TypeMirror typeMirror = field.asType();
                 String typeStr = typeMirror.toString();
-
-                ParamModel paramModel = new ParamModel();
-                if (!StringUtils.isEmpty(param.remark())) {
-                    paramModel.setRemark(param.remark());
+                switch (typeStr) {
+                    case BYTE_PACKAGE:
+                    case BYTE_PRIMITIVE:
+                        tempParamSB.append(".putByte(");
+                        break;
+                    case SHORT_PACKAGE:
+                    case SHORT_PRIMITIVE:
+                        tempParamSB.append(".putShort(");
+                        break;
+                    case INTEGER_PACKAGE:
+                    case INTEGER_PRIMITIVE:
+                        tempParamSB.append(".putInt(");
+                        break;
+                    case LONG_PACKAGE:
+                    case LONG_PRIMITIVE:
+                        tempParamSB.append(".putLong(");
+                        break;
+                    case FLOAT_PACKAGE:
+                    case FLOAT_PRIMITIVE:
+                        tempParamSB.append(".putFloat(");
+                        break;
+                    case DOUBEL_PACKAGE:
+                    case DOUBEL_PRIMITIVE:
+                        tempParamSB.append(".putDouble(");
+                        break;
+                    case BOOLEAN_PACKAGE:
+                    case BOOLEAN_PRIMITIVE:
+                        tempParamSB.append(".putBoolean(");
+                        break;
+                    case CHAR_PACKAGE:
+                    case CHAR_PRIMITIVE:
+                        tempParamSB.append(".putChar(");
+                        break;
+                    case STRING_PACKAGE:
+                        tempParamSB.append(".putString(");
+                        break;
+                    default:
+                        if (types.isSubtype(typeMirror, parcelableType)) {
+                            tempParamSB.append(".putParcelable(");
+                        } else if (types.isSubtype(typeMirror, serializableType)) {
+                            tempParamSB.append(".putSerializable(");
+                        } else {
+                            throw new RuntimeException("@Param(type='" + typeMirror.toString() + "') is marked as an unsupported type");
+                        }
+                        break;
                 }
-                paramModel.setRequired(param.required());
 
-                if (StringUtils.equals(typeStr, BYTE_PACKAGE) || StringUtils.equals(typeStr, BYTE_PRIMITIVE)) {
-                    tempParamSB.append(".putByte(");
-                    paramModel.setType("Byte");
-                } else if (StringUtils.equals(typeStr, SHORT_PACKAGE) || StringUtils.equals(typeStr, SHORT_PRIMITIVE)) {
-                    tempParamSB.append(".putShort(");
-                    paramModel.setType("Short");
-                } else if (StringUtils.equals(typeStr, INTEGER_PACKAGE) || StringUtils.equals(typeStr, INTEGER_PRIMITIVE)) {
-                    tempParamSB.append(".putInt(");
-                    paramModel.setType("int");
-                } else if (StringUtils.equals(typeStr, LONG_PACKAGE) || StringUtils.equals(typeStr, LONG_PRIMITIVE)) {
-                    tempParamSB.append(".putLong(");
-                    paramModel.setType("long");
-                } else if (StringUtils.equals(typeStr, FLOAT_PACKAGE) || StringUtils.equals(typeStr, FLOAT_PRIMITIVE)) {
-                    tempParamSB.append(".putFloat(");
-                    paramModel.setType("float");
-                } else if (StringUtils.equals(typeStr, DOUBEL_PACKAGE) || StringUtils.equals(typeStr, DOUBEL_PRIMITIVE)) {
-                    tempParamSB.append(".putDouble(");
-                    paramModel.setType("double");
-                } else if (StringUtils.equals(typeStr, BOOLEAN_PACKAGE) || StringUtils.equals(typeStr, BOOLEAN_PRIMITIVE)) {
-                    tempParamSB.append(".putBoolean(");
-                    paramModel.setType("boolean");
-                } else if (StringUtils.equals(typeStr, CHAR_PACKAGE) || StringUtils.equals(typeStr, CHAR_PRIMITIVE)) {
-                    tempParamSB.append(".putChar(");
-                    paramModel.setType("char");
-                } else if (StringUtils.equals(typeStr, STRING_PACKAGE)) {
-                    tempParamSB.append(".putString(");
-                    paramModel.setType("String");
-                } else if (types.isSubtype(typeMirror, parcelableType)) {
-                    tempParamSB.append(".putParcelable(");
-                    paramModel.setType("Parcelable");
-                } else if (types.isSubtype(typeMirror, serializableType)) {
-                    tempParamSB.append(".putSerializable(");
-                    paramModel.setType("Serializable");
-                } else {
-                    throw new RuntimeException("@Param(type='" + typeMirror.toString() + "') is marked as an unsupported type");
-                }
                 if (StringUtils.isEmpty(param.name()) && !param.required()) {
                     tempParamSB.append("\"").append(paramName).append("\"").append(")");
-                    paramModel.setName(paramName);
                 } else {
                     tempParamSB.append("\"").append(paramName).append("\"").append(", ");
                     if (!StringUtils.isEmpty(param.name())) {
                         tempParamSB.append("\"").append(param.name()).append("\"").append(", ");
-                        paramModel.setName(param.name());
                     } else {
                         tempParamSB.append("null").append(", ");
-                        paramModel.setName(paramName);
                     }
                     tempParamSB.append(param.required()).append(")");
                 }
-                paramModels.add(paramModel);
             }
         }
 
@@ -266,7 +262,7 @@ public class AssembleRouteProcessor extends BaseProcessor {
         if (parent instanceof DeclaredType) {
             Element parentElement = ((DeclaredType) parent).asElement();
             if (parentElement instanceof TypeElement && !((TypeElement) parentElement).getQualifiedName().toString().startsWith("android")) {
-                return handleParam(paramSB, parentElement, paramModels);
+                return handleParam(paramSB, parentElement);
             }
         }
         return paramSB.toString();

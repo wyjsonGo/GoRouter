@@ -3,9 +3,9 @@ package com.wyjson.router.compiler.doc.model;
 public class ParamModel {
 
     private String name;
-    private String remark;
     private String type;
     private boolean required;
+    private String remark;
 
     public ParamModel() {
     }

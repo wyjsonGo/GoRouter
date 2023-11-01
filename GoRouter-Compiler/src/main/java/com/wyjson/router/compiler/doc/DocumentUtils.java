@@ -1,9 +1,27 @@
 package com.wyjson.router.compiler.doc;
 
+import static com.wyjson.router.compiler.utils.Constants.BOOLEAN_PACKAGE;
+import static com.wyjson.router.compiler.utils.Constants.BOOLEAN_PRIMITIVE;
+import static com.wyjson.router.compiler.utils.Constants.BYTE_PACKAGE;
+import static com.wyjson.router.compiler.utils.Constants.BYTE_PRIMITIVE;
+import static com.wyjson.router.compiler.utils.Constants.CHAR_PACKAGE;
+import static com.wyjson.router.compiler.utils.Constants.CHAR_PRIMITIVE;
 import static com.wyjson.router.compiler.utils.Constants.DOCS_PACKAGE_NAME;
+import static com.wyjson.router.compiler.utils.Constants.DOUBEL_PACKAGE;
+import static com.wyjson.router.compiler.utils.Constants.DOUBEL_PRIMITIVE;
+import static com.wyjson.router.compiler.utils.Constants.FLOAT_PACKAGE;
+import static com.wyjson.router.compiler.utils.Constants.FLOAT_PRIMITIVE;
+import static com.wyjson.router.compiler.utils.Constants.INTEGER_PACKAGE;
+import static com.wyjson.router.compiler.utils.Constants.INTEGER_PRIMITIVE;
+import static com.wyjson.router.compiler.utils.Constants.LONG_PACKAGE;
+import static com.wyjson.router.compiler.utils.Constants.LONG_PRIMITIVE;
+import static com.wyjson.router.compiler.utils.Constants.SHORT_PACKAGE;
+import static com.wyjson.router.compiler.utils.Constants.SHORT_PRIMITIVE;
+import static com.wyjson.router.compiler.utils.Constants.STRING_PACKAGE;
 
 import com.google.gson.GsonBuilder;
 import com.wyjson.router.annotation.Interceptor;
+import com.wyjson.router.annotation.Param;
 import com.wyjson.router.annotation.Route;
 import com.wyjson.router.annotation.Service;
 import com.wyjson.router.compiler.doc.model.DocumentModel;
@@ -13,13 +31,18 @@ import com.wyjson.router.compiler.doc.model.RouteModel;
 import com.wyjson.router.compiler.doc.model.ServiceModel;
 import com.wyjson.router.compiler.utils.Logger;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.processing.Filer;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeMirror;
 import javax.tools.StandardLocation;
 
 public class DocumentUtils {
@@ -78,7 +101,7 @@ public class DocumentUtils {
         }
     }
 
-    public static void addRoute(String moduleName, Logger logger, Element element, Route route, String typeDoc, List<ParamModel> paramModels) {
+    public static void addRoute(String moduleName, Logger logger, Element element, Route route, String typeDoc) {
         if (!isDocEnable)
             return;
         try {
@@ -90,12 +113,60 @@ public class DocumentUtils {
             if (route.tag() != 0) {
                 routeModel.setTag(route.tag());
             }
-            if (!paramModels.isEmpty()) {
-                routeModel.setParamsType(paramModels);
-            }
+            addParam(moduleName, logger, element, routeModel);
             documentModel.getRoutes().add(routeModel);
         } catch (Exception e) {
             logger.error(moduleName + " Failed to add route [" + element.toString() + "] document, " + e.getMessage());
+        }
+    }
+
+    private static void addParam(String moduleName, Logger logger, Element element, RouteModel routeModel) {
+        List<ParamModel> tempParamModels = new ArrayList<>();
+        for (Element field : element.getEnclosedElements()) {
+            if (field.getKind().isField() && field.getAnnotation(Param.class) != null) {
+                Param param = field.getAnnotation(Param.class);
+                String paramName = field.getSimpleName().toString();
+                TypeMirror typeMirror = field.asType();
+                String typeStr = typeMirror.toString();
+
+                ParamModel paramModel = new ParamModel();
+                if (!StringUtils.isEmpty(param.remark())) {
+                    paramModel.setRemark(param.remark());
+                }
+                paramModel.setRequired(param.required());
+
+                if (typeStr.contains(".")) {
+                    paramModel.setType(typeStr.substring(typeStr.lastIndexOf(".") + 1));
+                } else {
+                    paramModel.setType(typeStr);
+                }
+
+                if (StringUtils.isEmpty(param.name()) && !param.required()) {
+                    paramModel.setName(paramName);
+                } else {
+                    if (!StringUtils.isEmpty(param.name())) {
+                        paramModel.setName(param.name());
+                    } else {
+                        paramModel.setName(paramName);
+                    }
+                }
+                tempParamModels.add(paramModel);
+            }
+        }
+
+        // The parent class parameter is processed before the subclass parameter
+        if (!tempParamModels.isEmpty()) {
+            tempParamModels.addAll(routeModel.getParamsType());
+            routeModel.setParamsType(tempParamModels);
+        }
+
+        // if has parent?
+        TypeMirror parent = ((TypeElement) element).getSuperclass();
+        if (parent instanceof DeclaredType) {
+            Element parentElement = ((DeclaredType) parent).asElement();
+            if (parentElement instanceof TypeElement && !((TypeElement) parentElement).getQualifiedName().toString().startsWith("android")) {
+                addParam(moduleName, logger, parentElement, routeModel);
+            }
         }
     }
 

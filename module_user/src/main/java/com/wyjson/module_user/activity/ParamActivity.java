@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
-import androidx.fragment.app.FragmentActivity;
 
 import com.wyjson.module_common.route.UserRoute;
 import com.wyjson.module_user.databinding.UserActivityParamBinding;
@@ -13,12 +12,13 @@ import com.wyjson.router.annotation.Route;
 import com.wyjson.router.core.GoRouter;
 
 @Route(path = UserRoute.ParamActivity, remark = "参数页面")
-public class ParamActivity extends FragmentActivity {
+public class ParamActivity extends BaseParamActivity {
 
     UserActivityParamBinding vb;
 
     @Param
     private int age = 18;
+
     @Param(name = "nickname", remark = "昵称", required = true)
     private String name;
 
@@ -29,13 +29,13 @@ public class ParamActivity extends FragmentActivity {
         setContentView(vb.getRoot());
 
         GoRouter.getInstance().inject(this);
-        vb.tvTitle.setText("age:" + age + ",name:" + name);
+        vb.tvTitle.setText("base:" + base + ",age:" + age + ",name:" + name);
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         GoRouter.getInstance().inject(this, intent);
-        vb.tvTitle.setText("age:" + age + ",name:" + name);
+        vb.tvTitle.setText("base:" + base + ",age:" + age + ",name:" + name);
     }
 }

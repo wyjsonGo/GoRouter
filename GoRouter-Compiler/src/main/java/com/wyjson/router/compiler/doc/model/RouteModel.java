@@ -1,5 +1,6 @@
 package com.wyjson.router.compiler.doc.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RouteModel {
@@ -21,6 +22,13 @@ public class RouteModel {
         this.tag = tag;
         this.paramsType = paramsType;
         this.remark = remark;
+    }
+
+    public List<ParamModel> getParamsType() {
+        if (paramsType == null) {
+            paramsType = new ArrayList<>();
+        }
+        return paramsType;
     }
 
     public void setPath(String path) {
