@@ -16,7 +16,6 @@ import androidx.fragment.app.Fragment;
 
 import com.wyjson.router.callback.GoCallback;
 import com.wyjson.router.enums.ParamType;
-import com.wyjson.router.enums.RouteType;
 import com.wyjson.router.exception.RouterException;
 import com.wyjson.router.interceptor.InterceptorCallback;
 import com.wyjson.router.interceptor.InterceptorUtils;
@@ -105,24 +104,23 @@ public final class GoRouter {
     }
 
     void addCardMeta(CardMeta cardMeta) {
-        if (cardMeta.getType() != null) {
-            // 检查路由是否有重复提交的情况
-            if (GoRouter.isDebug()) {
-                for (Map.Entry<String, CardMeta> cardMetaEntry : routes.entrySet()) {
-                    if (TextUtils.equals(cardMetaEntry.getKey(), cardMeta.getPath())) {
-                        logger.error(null, "[addCardMeta] Path duplicate commit!!! path[" + cardMetaEntry.getValue().getPath() + "]");
-                        break;
-                    } else if (cardMetaEntry.getValue().getPathClass() == cardMeta.getPathClass()) {
-                        logger.error(null, "[addCardMeta] PathClass duplicate commit!!! pathClass[" + cardMetaEntry.getValue().getPathClass() + "]");
-                        break;
-                    }
+        if (TextUtils.isEmpty(cardMeta.getPath())) {
+            throw new RouterException("path Parameter is invalid!");
+        }
+        // 检查路由是否有重复提交的情况
+        if (GoRouter.isDebug()) {
+            for (Map.Entry<String, CardMeta> cardMetaEntry : routes.entrySet()) {
+                if (TextUtils.equals(cardMetaEntry.getKey(), cardMeta.getPath())) {
+                    logger.error(null, "[addCardMeta] Path duplicate commit!!! path[" + cardMetaEntry.getValue().getPath() + "]");
+                    break;
+                } else if (cardMetaEntry.getValue().getPathClass() == cardMeta.getPathClass()) {
+                    logger.error(null, "[addCardMeta] PathClass duplicate commit!!! pathClass[" + cardMetaEntry.getValue().getPathClass() + "]");
+                    break;
                 }
             }
-            routes.put(cardMeta.getPath(), cardMeta);
-            logger.debug(null, "[addCardMeta] size:" + routes.size() + ", commit:" + cardMeta.toString());
-        } else {
-            throw new RouterException("The route type is incorrect! The path[" + cardMeta.getPath() + "] type can only end with " + RouteType.toStringByValues());
         }
+        routes.put(cardMeta.getPath(), cardMeta);
+        logger.debug(null, "[addCardMeta] size:" + routes.size() + ", commit:" + cardMeta.toString());
     }
 
     /**
@@ -174,15 +172,12 @@ public final class GoRouter {
     }
 
     public Card build(String path, Bundle bundle) {
-        if (TextUtils.isEmpty(path)) {
-            throw new RouterException("[path] Parameter is invalid!");
-        }
         return new Card(path, bundle);
     }
 
     public Card build(Uri uri) {
         if (uri == null || TextUtils.isEmpty(uri.toString())) {
-            throw new RouterException("[uri] Parameter is invalid!");
+            throw new RouterException("uri Parameter is invalid!");
         }
         return new Card(uri);
     }
@@ -244,6 +239,10 @@ public final class GoRouter {
             }
         }
         String path = bundle.getString(GoRouter.ROUTER_CURRENT_PATH);
+        if (TextUtils.isEmpty(path)) {
+            logger.error(null, "[inject] path Parameter is invalid!");
+            return;
+        }
         CardMeta cardMeta = GoRouter.getInstance().build(path).getCardMeta();
         if (cardMeta != null) {
             Map<String, ParamMeta> paramsType = cardMeta.getParamsType();
