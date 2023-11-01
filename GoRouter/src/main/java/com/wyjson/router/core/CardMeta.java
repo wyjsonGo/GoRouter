@@ -1,6 +1,7 @@
 package com.wyjson.router.core;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.wyjson.router.enums.ParamType;
 import com.wyjson.router.enums.RouteType;
@@ -28,11 +29,12 @@ public class CardMeta {
         this.paramsType = paramsType;
     }
 
+    @Nullable
     public String getPath() {
         return path;
     }
 
-    protected void setPath(String path) {
+    protected void setPath(@NonNull String path) {
         this.path = path;
     }
 
