@@ -41,6 +41,6 @@ dependencies {
 //    api project(path: ':GoRouter')
 //    annotationProcessor project(path: ':GoRouter-Compiler')
 
-    api 'com.github.wyjsonGo.GoRouter:GoRouter:1.1.1'
-    annotationProcessor 'com.github.wyjsonGo.GoRouter:GoRouter-Compiler:1.1.1'
+    api 'com.github.wyjsonGo.GoRouter:GoRouter:1.1.2'
+    annotationProcessor 'com.github.wyjsonGo.GoRouter:GoRouter-Compiler:1.1.2'
 }

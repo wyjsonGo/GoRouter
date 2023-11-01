@@ -41,5 +41,5 @@ android {
 dependencies {
     api project(path: ':module_common')
 //    annotationProcessor project(path: ':GoRouter-Compiler')
-    annotationProcessor 'com.github.wyjsonGo.GoRouter:GoRouter-Compiler:1.1.1'
+    annotationProcessor 'com.github.wyjsonGo.GoRouter:GoRouter-Compiler:1.1.2'
 }
