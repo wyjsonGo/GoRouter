@@ -200,42 +200,61 @@ public class AssembleRouteProcessor extends BaseProcessor {
                 }
                 paramModel.setRequired(param.required());
 
-                if (StringUtils.equals(typeStr, BYTE_PACKAGE) || StringUtils.equals(typeStr, BYTE_PRIMITIVE)) {
-                    tempParamSB.append(".putByte(");
-                    paramModel.setType("Byte");
-                } else if (StringUtils.equals(typeStr, SHORT_PACKAGE) || StringUtils.equals(typeStr, SHORT_PRIMITIVE)) {
-                    tempParamSB.append(".putShort(");
-                    paramModel.setType("Short");
-                } else if (StringUtils.equals(typeStr, INTEGER_PACKAGE) || StringUtils.equals(typeStr, INTEGER_PRIMITIVE)) {
-                    tempParamSB.append(".putInt(");
-                    paramModel.setType("int");
-                } else if (StringUtils.equals(typeStr, LONG_PACKAGE) || StringUtils.equals(typeStr, LONG_PRIMITIVE)) {
-                    tempParamSB.append(".putLong(");
-                    paramModel.setType("long");
-                } else if (StringUtils.equals(typeStr, FLOAT_PACKAGE) || StringUtils.equals(typeStr, FLOAT_PRIMITIVE)) {
-                    tempParamSB.append(".putFloat(");
-                    paramModel.setType("float");
-                } else if (StringUtils.equals(typeStr, DOUBEL_PACKAGE) || StringUtils.equals(typeStr, DOUBEL_PRIMITIVE)) {
-                    tempParamSB.append(".putDouble(");
-                    paramModel.setType("double");
-                } else if (StringUtils.equals(typeStr, BOOLEAN_PACKAGE) || StringUtils.equals(typeStr, BOOLEAN_PRIMITIVE)) {
-                    tempParamSB.append(".putBoolean(");
-                    paramModel.setType("boolean");
-                } else if (StringUtils.equals(typeStr, CHAR_PACKAGE) || StringUtils.equals(typeStr, CHAR_PRIMITIVE)) {
-                    tempParamSB.append(".putChar(");
-                    paramModel.setType("char");
-                } else if (StringUtils.equals(typeStr, STRING_PACKAGE)) {
-                    tempParamSB.append(".putString(");
-                    paramModel.setType("String");
-                } else if (types.isSubtype(typeMirror, parcelableType)) {
-                    tempParamSB.append(".putParcelable(");
-                    paramModel.setType("Parcelable");
-                } else if (types.isSubtype(typeMirror, serializableType)) {
-                    tempParamSB.append(".putSerializable(");
-                    paramModel.setType("Serializable");
+                if (typeStr.contains(".")) {
+                    paramModel.setType(typeStr.substring(typeStr.lastIndexOf(".")+1));
                 } else {
-                    throw new RuntimeException("@Param(type='" + typeMirror.toString() + "') is marked as an unsupported type");
+                    paramModel.setType(typeStr);
                 }
+
+                switch (typeStr) {
+                    case BYTE_PACKAGE:
+                    case BYTE_PRIMITIVE:
+                        tempParamSB.append(".putByte(");
+                        break;
+                    case SHORT_PACKAGE:
+                    case SHORT_PRIMITIVE:
+                        tempParamSB.append(".putShort(");
+                        break;
+                    case INTEGER_PACKAGE:
+                    case INTEGER_PRIMITIVE:
+                        tempParamSB.append(".putInt(");
+                        break;
+                    case LONG_PACKAGE:
+                    case LONG_PRIMITIVE:
+                        tempParamSB.append(".putLong(");
+                        break;
+                    case FLOAT_PACKAGE:
+                    case FLOAT_PRIMITIVE:
+                        tempParamSB.append(".putFloat(");
+                        break;
+                    case DOUBEL_PACKAGE:
+                    case DOUBEL_PRIMITIVE:
+                        tempParamSB.append(".putDouble(");
+                        break;
+                    case BOOLEAN_PACKAGE:
+                    case BOOLEAN_PRIMITIVE:
+                        tempParamSB.append(".putBoolean(");
+                        break;
+                    case CHAR_PACKAGE:
+                    case CHAR_PRIMITIVE:
+                        tempParamSB.append(".putChar(");
+                        break;
+                    case STRING_PACKAGE:
+                        tempParamSB.append(".putString(");
+                        break;
+                    default:
+                        if (types.isSubtype(typeMirror, parcelableType)) {
+                            tempParamSB.append(".putParcelable(");
+                            paramModel.setType("Parcelable");
+                        } else if (types.isSubtype(typeMirror, serializableType)) {
+                            tempParamSB.append(".putSerializable(");
+                            paramModel.setType("Serializable");
+                        } else {
+                            throw new RuntimeException("@Param(type='" + typeMirror.toString() + "') is marked as an unsupported type");
+                        }
+                        break;
+                }
+
                 if (StringUtils.isEmpty(param.name()) && !param.required()) {
                     tempParamSB.append("\"").append(paramName).append("\"").append(")");
                     paramModel.setName(paramName);

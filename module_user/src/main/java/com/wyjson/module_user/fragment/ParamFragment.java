@@ -15,7 +15,7 @@ import com.wyjson.router.annotation.Param;
 import com.wyjson.router.annotation.Route;
 import com.wyjson.router.core.GoRouter;
 
-@Route(path = UserRoute.ParamFragment, remark = "参数碎片")
+@Route(path = UserRoute.ParamFragment, remark = "参数片段")
 public class ParamFragment extends Fragment {
 
     UserFragmentParamBinding vb;
