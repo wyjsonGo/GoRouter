@@ -1,10 +1,6 @@
 package com.wyjson.router.compiler.processor;
 
 import static com.wyjson.router.compiler.utils.Constants.ACTIVITY;
-import static com.wyjson.router.compiler.utils.Constants.ANNOTATION_TYPE_INTERCEPTOR;
-import static com.wyjson.router.compiler.utils.Constants.ANNOTATION_TYPE_PARAM;
-import static com.wyjson.router.compiler.utils.Constants.ANNOTATION_TYPE_ROUTE;
-import static com.wyjson.router.compiler.utils.Constants.ANNOTATION_TYPE_SERVICE;
 import static com.wyjson.router.compiler.utils.Constants.BOOLEAN_PACKAGE;
 import static com.wyjson.router.compiler.utils.Constants.BOOLEAN_PRIMITIVE;
 import static com.wyjson.router.compiler.utils.Constants.BYTE_PACKAGE;
@@ -48,25 +44,33 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
-import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 
 @AutoService(Processor.class)
-@SupportedAnnotationTypes({ANNOTATION_TYPE_SERVICE, ANNOTATION_TYPE_INTERCEPTOR, ANNOTATION_TYPE_ROUTE, ANNOTATION_TYPE_PARAM})
 public class AssembleRouteProcessor extends BaseProcessor {
 
     TypeElement mGoRouter;
     TypeMirror serializableType;
     TypeMirror parcelableType;
 
+    @Override
+    public Set<String> getSupportedAnnotationTypes() {
+        Set<String> set = new LinkedHashSet<>();
+        set.add(Service.class.getCanonicalName());
+        set.add(Interceptor.class.getCanonicalName());
+        set.add(Route.class.getCanonicalName());
+        set.add(Param.class.getCanonicalName());
+        return set;
+    }
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {

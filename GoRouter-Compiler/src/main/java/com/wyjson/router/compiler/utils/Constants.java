@@ -15,12 +15,6 @@ public class Constants {
     public static final String DOCS_PACKAGE_NAME = PACKAGE_NAME + ".docs";
     public static final String GOROUTER_PACKAGE_NAME = PACKAGE_NAME + ".core.GoRouter";
 
-    // Annotation type
-    public static final String ANNOTATION_TYPE_SERVICE = PACKAGE_NAME + ".annotation.Service";
-    public static final String ANNOTATION_TYPE_INTERCEPTOR = PACKAGE_NAME + ".annotation.Interceptor";
-    public static final String ANNOTATION_TYPE_ROUTE = PACKAGE_NAME + ".annotation.Route";
-    public static final String ANNOTATION_TYPE_PARAM = PACKAGE_NAME + ".annotation.Param";
-
     // Log
     public static final String PREFIX_OF_LOGGER = PROJECT + "::Compiler ";
     public static final String NO_MODULE_NAME_TIPS = "These no module name, at 'build.gradle', like :\n" +
