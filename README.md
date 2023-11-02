@@ -72,7 +72,7 @@
     }
     ```
 
-2.  在module下添加注解依赖和配置(可选)
+2.  在module下添加注解依赖和配置(如只使用java方式注册,可忽略此步骤)
 
     ```groovy
     android {
@@ -368,7 +368,7 @@
     // 注册拦截器
     GoRouter.getInstance().addInterceptor(1, TestInterceptor.class);
     // 注册拦截器(适用于动态插件加载时使用)
-    GoRouter.getInstance().setInterceptor(2, Test2Interceptor.class);
+    GoRouter.getInstance().setInterceptor(1, TestInterceptor.class);
     ```
 
 #### 五、更多功能
