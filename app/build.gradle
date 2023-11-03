@@ -1,15 +1,16 @@
 plugins {
     id 'com.android.application'
+    id 'com.wyjson.gorouter'
 }
 
 android {
-    compileSdkVersion 33
-    buildToolsVersion '33.0.2'
+    namespace 'com.wyjson.go_router'
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.wyjson.go_router"
-        minSdkVersion 19
-        targetSdkVersion 33
+        minSdk 19
+        targetSdk 33
         versionCode 1
         versionName "1.0.0"
     }
@@ -20,7 +21,6 @@ android {
 
     buildTypes {
         release {
-            zipAlignEnabled true
             shrinkResources true
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'

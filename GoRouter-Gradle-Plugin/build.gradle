@@ -1,0 +1,34 @@
+plugins {
+    id 'groovy'
+    id 'maven-publish'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
+dependencies {
+    implementation gradleApi()
+    implementation localGroovy()
+    implementation 'com.android.tools.build:gradle:8.0.0'
+}
+
+// 发布到本地maven仓库
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = 'com.github.wyjsonGo.GoRouter'
+            artifactId = 'Gradle-Plugin'
+            version = '1.0.0'
+
+            from components.java
+        }
+    }
+
+    repositories {
+        maven {
+            url = "../repo"
+        }
+    }
+}

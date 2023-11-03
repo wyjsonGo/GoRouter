@@ -1,10 +1,29 @@
+pluginManagement {
+    repositories {
+//        maven { url 'https://jitpack.io' }
+        maven { url './repo' }
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        maven { url 'https://jitpack.io' }
+        google()
+        mavenCentral()
+    }
+}
+
 rootProject.name = "GoRouter"
+
 include ':app'
 include ':module_main'
 include ':module_user'
 include ':module_common'
 
-include ':GoRouter-Compiler'
-include ':GoRouter-Annotation'
 include ':GoRouter-Api'
-
+include ':GoRouter-Annotation'
+include ':GoRouter-Compiler'
+include ':GoRouter-Gradle-Plugin'
