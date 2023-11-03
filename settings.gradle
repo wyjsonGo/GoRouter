@@ -6,5 +6,5 @@ include ':module_common'
 
 include ':GoRouter-Compiler'
 include ':GoRouter-Annotation'
-include ':GoRouter'
+include ':GoRouter-Api'
 
