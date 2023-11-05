@@ -17,7 +17,7 @@
 # 代码优化
 -dontshrink
 # 不优化输入的类文件
--dontoptimize
+#-dontoptimize
 # 保留注解不混淆
 -keepattributes *Annotation*,InnerClasses
 # 避免混淆泛型
@@ -76,6 +76,16 @@
 # #   ########## WebView # end ##########
 
 
+# #   ########## GoRouter # start ##########
+# 删除GoRouter logger
+# 需要删除-dontoptimize
+-assumenosideeffects class com.wyjson.router.logger.DefaultLogger {
+    public *** debug(...);
+    public *** info(...);
+    public *** warning(...);
+    public *** error(...);
+}
+# #   ########## GoRouter # end ##########
 
 
 

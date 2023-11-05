@@ -80,7 +80,7 @@ public class DefaultLogger implements ILogger {
         }
     }
 
-    public static String getExtInfo(StackTraceElement stackTraceElement) {
+    private static String getExtInfo(StackTraceElement stackTraceElement) {
         String separator = " & ";
         StringBuilder sb = new StringBuilder(" <-> [");
         if (isShowStackTrace) {
