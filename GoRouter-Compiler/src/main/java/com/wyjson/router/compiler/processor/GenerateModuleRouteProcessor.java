@@ -15,6 +15,7 @@ import static com.wyjson.router.compiler.utils.Constants.FRAGMENT;
 import static com.wyjson.router.compiler.utils.Constants.GOROUTER_PACKAGE_NAME;
 import static com.wyjson.router.compiler.utils.Constants.INTEGER_PACKAGE;
 import static com.wyjson.router.compiler.utils.Constants.INTEGER_PRIMITIVE;
+import static com.wyjson.router.compiler.utils.Constants.I_ROUTE_MODULE_PACKAGE_NAME;
 import static com.wyjson.router.compiler.utils.Constants.LONG_PACKAGE;
 import static com.wyjson.router.compiler.utils.Constants.LONG_PRIMITIVE;
 import static com.wyjson.router.compiler.utils.Constants.METHOD_NAME_LOAD;
@@ -22,15 +23,16 @@ import static com.wyjson.router.compiler.utils.Constants.MODULE_PACKAGE_NAME;
 import static com.wyjson.router.compiler.utils.Constants.PARCELABLE_PACKAGE;
 import static com.wyjson.router.compiler.utils.Constants.PREFIX_OF_LOGGER;
 import static com.wyjson.router.compiler.utils.Constants.PROJECT;
+import static com.wyjson.router.compiler.utils.Constants.SEPARATOR;
 import static com.wyjson.router.compiler.utils.Constants.SERIALIZABLE_PACKAGE;
 import static com.wyjson.router.compiler.utils.Constants.SHORT_PACKAGE;
 import static com.wyjson.router.compiler.utils.Constants.SHORT_PRIMITIVE;
 import static com.wyjson.router.compiler.utils.Constants.STRING_PACKAGE;
 import static com.wyjson.router.compiler.utils.Constants.WARNING_TIPS;
 import static javax.lang.model.element.Modifier.PUBLIC;
-import static javax.lang.model.element.Modifier.STATIC;
 
 import com.google.auto.service.AutoService;
+import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
@@ -56,9 +58,10 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 
 @AutoService(Processor.class)
-public class AssembleRouteProcessor extends BaseProcessor {
+public class GenerateModuleRouteProcessor extends BaseProcessor {
 
     TypeElement mGoRouter;
+    TypeElement mIRouteModule;
     TypeMirror serializableType;
     TypeMirror parcelableType;
 
@@ -75,8 +78,9 @@ public class AssembleRouteProcessor extends BaseProcessor {
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
-        logger.info(moduleName + " >>> AssembleRouteProcessor init. <<<");
+        logger.info(moduleName + " >>> GenerateModuleRouteProcessor init. <<<");
         mGoRouter = elementUtils.getTypeElement(GOROUTER_PACKAGE_NAME);
+        mIRouteModule = elementUtils.getTypeElement(I_ROUTE_MODULE_PACKAGE_NAME);
         serializableType = elementUtils.getTypeElement(SERIALIZABLE_PACKAGE).asType();
         parcelableType = elementUtils.getTypeElement(PARCELABLE_PACKAGE).asType();
     }
@@ -88,24 +92,27 @@ public class AssembleRouteProcessor extends BaseProcessor {
 
         DocumentUtils.createDoc(mFiler, moduleName, logger, isGenerateDoc);
 
-        MethodSpec.Builder loadInto = MethodSpec.methodBuilder(METHOD_NAME_LOAD).addModifiers(PUBLIC, STATIC);
+        MethodSpec.Builder loadInto = MethodSpec.methodBuilder(METHOD_NAME_LOAD)
+                .addModifiers(PUBLIC)
+                .addAnnotation(Override.class);
         loadInto.addJavadoc("Load the $S route", moduleName);
 
         addService(roundEnvironment, loadInto);
         addInterceptor(roundEnvironment, loadInto);
         addRoute(roundEnvironment, loadInto);
 
-        String className = generateClassName + PROJECT;
+        String className = generateClassName + SEPARATOR + PROJECT;
         try {
             JavaFile.builder(MODULE_PACKAGE_NAME,
                     TypeSpec.classBuilder(className)
                             .addModifiers(PUBLIC)
+                            .addSuperinterface(ClassName.get(mIRouteModule))
                             .addJavadoc(WARNING_TIPS)
                             .addMethod(loadInto.build())
                             .build()
             ).indent("    ").build().writeTo(mFiler);
 
-            logger.info(moduleName + " >>> AssembleRouteProcessor over. <<<");
+            logger.info(moduleName + " >>> GenerateModuleRouteProcessor over. <<<");
         } catch (IOException e) {
             logger.error(moduleName + " Failed to generate [" + className + "] class!");
             logger.error(e);

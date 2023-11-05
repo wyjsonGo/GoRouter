@@ -1,17 +1,20 @@
 plugins {
     id 'groovy'
+    id 'org.jetbrains.kotlin.jvm'
     id 'maven-publish'
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 dependencies {
     implementation gradleApi()
     implementation localGroovy()
     implementation 'com.android.tools.build:gradle:8.0.0'
+    implementation 'org.ow2.asm:asm:9.2'
+    implementation 'org.ow2.asm:asm-commons:9.2'
 }
 
 // 发布到本地maven仓库
@@ -19,7 +22,7 @@ publishing {
     publications {
         maven(MavenPublication) {
             groupId = 'com.github.wyjsonGo.GoRouter'
-            artifactId = 'Gradle-Plugin'
+            artifactId = 'GoRouter-Gradle-Plugin'
             version = '1.0.0'
 
             from components.java

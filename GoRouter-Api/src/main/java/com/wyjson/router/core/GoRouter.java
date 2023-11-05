@@ -2,6 +2,7 @@ package com.wyjson.router.core;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -25,6 +26,7 @@ import com.wyjson.router.interfaces.DegradeService;
 import com.wyjson.router.interfaces.IInterceptor;
 import com.wyjson.router.interfaces.IService;
 import com.wyjson.router.interfaces.PretreatmentService;
+import com.wyjson.router.load.RouteModuleLoadUtils;
 import com.wyjson.router.logger.DefaultLogger;
 import com.wyjson.router.logger.ILogger;
 import com.wyjson.router.param.ParamMeta;
@@ -50,7 +52,7 @@ public final class GoRouter {
     private volatile static boolean isDebug = false;
 
     private GoRouter() {
-        logger.info(null, "[GoRouter] init!");
+        logger.info(null, "[GoRouter] constructor!");
         InterceptorUtils.clearIterator();
         addService(InterceptorServiceImpl.class);
     }
@@ -63,18 +65,14 @@ public final class GoRouter {
         return InstanceHolder.mInstance;
     }
 
-    public static synchronized void setExecutor(ThreadPoolExecutor tpe) {
-        executor = tpe;
-    }
-
-    public ThreadPoolExecutor getExecutor() {
-        return executor;
-    }
-
-    public static void setLogger(ILogger userLogger) {
-        if (userLogger != null) {
-            logger = userLogger;
-        }
+    /**
+     * 自动加载模块路由
+     *
+     * @param application
+     */
+    public static synchronized void autoLoadModuleRoute(Application application) {
+        logger.info(null, "[GoRouter] autoLoadModuleRoute!");
+        RouteModuleLoadUtils.loadModuleRoute(application);
     }
 
     public static synchronized void openDebug() {
@@ -90,6 +88,20 @@ public final class GoRouter {
     public static synchronized void printStackTrace() {
         logger.showStackTrace(true);
         logger.info(null, "[printStackTrace]");
+    }
+
+    public static synchronized void setExecutor(ThreadPoolExecutor tpe) {
+        executor = tpe;
+    }
+
+    public ThreadPoolExecutor getExecutor() {
+        return executor;
+    }
+
+    public static void setLogger(ILogger userLogger) {
+        if (userLogger != null) {
+            logger = userLogger;
+        }
     }
 
     @Nullable
@@ -268,7 +280,7 @@ public final class GoRouter {
     }
 
     @NonNull
-    private static <T> Field getDeclaredField(Class<?> cls, String key) throws NoSuchFieldException {
+    private static Field getDeclaredField(Class<?> cls, String key) throws NoSuchFieldException {
         try {
             return cls.getDeclaredField(key);
         } catch (NoSuchFieldException e) {
@@ -352,7 +364,7 @@ public final class GoRouter {
                     }
                     break;
                 case FRAGMENT:
-                    return goFragment(context, card, cardMeta.getPathClass(), callback);
+                    return goFragment(card, cardMeta.getPathClass(), callback);
             }
         } else {
             onLost(context, card, callback);
@@ -463,7 +475,7 @@ public final class GoRouter {
     }
 
     @NonNull
-    private Object goFragment(Context context, Card card, Class<?> cls, GoCallback callback) {
+    private Object goFragment(Card card, Class<?> cls, GoCallback callback) {
         try {
             Object instance = cls.getConstructor().newInstance();
             if (instance instanceof Fragment) {
