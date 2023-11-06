@@ -12,6 +12,7 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityOptionsCompat;
 
 import com.wyjson.router.callback.GoCallback;
+import com.wyjson.router.route.RouteHelper;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -90,7 +91,7 @@ public final class Card extends CardMeta {
 
     @Nullable
     public CardMeta getCardMeta() {
-        return GoRouter.getInstance().getCardMeta(this);
+        return RouteHelper.getInstance().getCardMeta(this);
     }
 
     public Bundle getExtras() {

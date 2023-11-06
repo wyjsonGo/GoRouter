@@ -6,14 +6,22 @@ import com.wyjson.router.interfaces.IInterceptor;
 
 import java.util.Map;
 
-public class InterceptorUtils {
+public class InterceptorHelper {
 
-    private InterceptorUtils() {
+    private InterceptorHelper() {
+    }
+
+    private static class InstanceHolder {
+        private static final InterceptorHelper mInstance = new InterceptorHelper();
+    }
+
+    public static InterceptorHelper getInstance() {
+        return InterceptorHelper.InstanceHolder.mInstance;
     }
 
     private static final Map<Integer, IInterceptor> interceptors = new InterceptorTreeMap<>("More than one interceptors use same priority [%s]");
 
-    public static Map<Integer, IInterceptor> getInterceptors() {
+    public Map<Integer, IInterceptor> getInterceptors() {
         return interceptors;
     }
 
@@ -25,7 +33,7 @@ public class InterceptorUtils {
      * @param interceptor
      * @param isForce
      */
-    public static void addInterceptor(int priority, Class<? extends IInterceptor> interceptor, boolean isForce) {
+    public void addInterceptor(int priority, Class<? extends IInterceptor> interceptor, boolean isForce) {
         try {
             if (isForce) {
                 interceptors.remove(priority);
@@ -48,11 +56,11 @@ public class InterceptorUtils {
      * @param priority
      * @param interceptor
      */
-    public static void setInterceptor(int priority, Class<? extends IInterceptor> interceptor) {
+    public void setInterceptor(int priority, Class<? extends IInterceptor> interceptor) {
         addInterceptor(priority, interceptor, true);
     }
 
-    public static void clearIterator() {
+    public void clearIterator() {
         interceptors.clear();
     }
 }

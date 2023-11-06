@@ -6,6 +6,7 @@ import androidx.annotation.Nullable;
 import com.wyjson.router.enums.ParamType;
 import com.wyjson.router.enums.RouteType;
 import com.wyjson.router.param.ParamMeta;
+import com.wyjson.router.route.RouteHelper;
 import com.wyjson.router.utils.TextUtils;
 
 import java.util.HashMap;
@@ -78,7 +79,7 @@ public class CardMeta {
     }
 
     public void commit(Class<?> cls, RouteType type) {
-        GoRouter.getInstance().addCardMeta(new CardMeta(this.path, type, cls, this.tag, this.paramsType));
+        RouteHelper.getInstance().addCardMeta(new CardMeta(this.path, type, cls, this.tag, this.paramsType));
     }
 
     public CardMeta putTag(int tag) {

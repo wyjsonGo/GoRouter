@@ -1,5 +1,7 @@
 package com.wyjson.router.utils;
 
+import static com.wyjson.router.load.RouteModuleLoadUtils.GOROUTER_SP_CACHE_KEY;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
@@ -8,9 +10,6 @@ import android.content.pm.PackageManager;
 import com.wyjson.router.core.GoRouter;
 
 public class PackageUtils {
-
-    private static final String GOROUTER_SP_CACHE_KEY = "SP_GOROUTER_CACHE";
-    private static final String GOROUTER_SP_KEY_MAP = "ROUTER_MAP";
 
     private static final String LAST_VERSION_NAME = "LAST_VERSION_NAME";
     private static final String LAST_VERSION_CODE = "LAST_VERSION_CODE";

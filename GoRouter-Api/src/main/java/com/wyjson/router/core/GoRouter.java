@@ -19,7 +19,7 @@ import com.wyjson.router.callback.GoCallback;
 import com.wyjson.router.enums.ParamType;
 import com.wyjson.router.exception.RouterException;
 import com.wyjson.router.interceptor.InterceptorCallback;
-import com.wyjson.router.interceptor.InterceptorUtils;
+import com.wyjson.router.interceptor.InterceptorHelper;
 import com.wyjson.router.interceptor.service.InterceptorService;
 import com.wyjson.router.interceptor.service.impl.InterceptorServiceImpl;
 import com.wyjson.router.interfaces.DegradeService;
@@ -30,13 +30,13 @@ import com.wyjson.router.load.RouteModuleLoadUtils;
 import com.wyjson.router.logger.DefaultLogger;
 import com.wyjson.router.logger.ILogger;
 import com.wyjson.router.param.ParamMeta;
+import com.wyjson.router.route.RouteHelper;
 import com.wyjson.router.service.ServiceHelper;
 import com.wyjson.router.thread.DefaultPoolExecutor;
 import com.wyjson.router.utils.MapUtils;
 import com.wyjson.router.utils.TextUtils;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -46,15 +46,14 @@ public final class GoRouter {
     public static final String ROUTER_RAW_URI = "go_router_raw_uri";
 
     private final Handler mHandler = new Handler(Looper.getMainLooper());
-    private static final Map<String, CardMeta> routes = new HashMap<>();
     private volatile static ThreadPoolExecutor executor = DefaultPoolExecutor.getInstance();
     public static ILogger logger = new DefaultLogger("GoRouter");
     private volatile static boolean isDebug = false;
 
     private GoRouter() {
         logger.info(null, "[GoRouter] constructor!");
-        InterceptorUtils.clearIterator();
-        addService(InterceptorServiceImpl.class);
+        InterceptorHelper.getInstance().clearIterator();
+        ServiceHelper.getInstance().addService(InterceptorServiceImpl.class);
     }
 
     private static class InstanceHolder {
@@ -104,37 +103,6 @@ public final class GoRouter {
         }
     }
 
-    @Nullable
-    CardMeta getCardMeta(Card card) {
-        CardMeta cardMeta = routes.get(card.getPath());
-        if (cardMeta != null) {
-            logger.info(null, "[getCardMeta] " + cardMeta.toString());
-        } else {
-            logger.warning(null, "[getCardMeta] null");
-        }
-        return cardMeta;
-    }
-
-    void addCardMeta(CardMeta cardMeta) {
-        if (TextUtils.isEmpty(cardMeta.getPath())) {
-            throw new RouterException("path Parameter is invalid!");
-        }
-        // 检查路由是否有重复提交的情况
-        if (GoRouter.isDebug()) {
-            for (Map.Entry<String, CardMeta> cardMetaEntry : routes.entrySet()) {
-                if (TextUtils.equals(cardMetaEntry.getKey(), cardMeta.getPath())) {
-                    logger.error(null, "[addCardMeta] Path duplicate commit!!! path[" + cardMetaEntry.getValue().getPath() + "]");
-                    break;
-                } else if (cardMetaEntry.getValue().getPathClass() == cardMeta.getPathClass()) {
-                    logger.error(null, "[addCardMeta] PathClass duplicate commit!!! pathClass[" + cardMetaEntry.getValue().getPathClass() + "]");
-                    break;
-                }
-            }
-        }
-        routes.put(cardMeta.getPath(), cardMeta);
-        logger.debug(null, "[addCardMeta] size:" + routes.size() + ", commit:" + cardMeta.toString());
-    }
-
     /**
      * 实现相同接口的service会被覆盖(更新)
      * 调用时机可以在application或插件模块加载时
@@ -165,7 +133,7 @@ public final class GoRouter {
      * @param interceptor
      */
     public void addInterceptor(int priority, Class<? extends IInterceptor> interceptor) {
-        InterceptorUtils.addInterceptor(priority, interceptor, false);
+        InterceptorHelper.getInstance().addInterceptor(priority, interceptor, false);
     }
 
     /**
@@ -176,7 +144,7 @@ public final class GoRouter {
      * @param interceptor
      */
     public void setInterceptor(int priority, Class<? extends IInterceptor> interceptor) {
-        InterceptorUtils.setInterceptor(priority, interceptor);
+        InterceptorHelper.getInstance().setInterceptor(priority, interceptor);
     }
 
     public Card build(String path) {
@@ -299,7 +267,7 @@ public final class GoRouter {
         card.setInterceptorException(null);
         card.withString(GoRouter.ROUTER_CURRENT_PATH, card.getPath());
 
-        logger.debug(null, "[go] " + card.toString());
+        logger.debug(null, "[go] " + card);
         PretreatmentService pretreatmentService = getService(PretreatmentService.class);
         if (pretreatmentService != null) {
             if (!pretreatmentService.onPretreatment(context, card)) {
@@ -310,7 +278,7 @@ public final class GoRouter {
         } else {
             logger.warning(null, "[go] This [PretreatmentService] was not found!");
         }
-        CardMeta cardMeta = getCardMeta(card);
+        CardMeta cardMeta = RouteHelper.getInstance().getCardMeta(card);
         if (cardMeta != null) {
             card.setType(cardMeta.getType());
             card.setPathClass(cardMeta.getPathClass());
@@ -334,7 +302,7 @@ public final class GoRouter {
             }
 
             runInMainThread(() -> {
-                logger.debug(null, "[go] [onFound] " + card.toString());
+                logger.debug(null, "[go] [onFound] " + card);
                 if (callback != null) {
                     callback.onFound(card);
                 }

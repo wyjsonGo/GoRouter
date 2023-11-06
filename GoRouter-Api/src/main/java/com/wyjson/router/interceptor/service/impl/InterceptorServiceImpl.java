@@ -6,7 +6,7 @@ import com.wyjson.router.core.Card;
 import com.wyjson.router.core.GoRouter;
 import com.wyjson.router.exception.RouterException;
 import com.wyjson.router.interceptor.InterceptorCallback;
-import com.wyjson.router.interceptor.InterceptorUtils;
+import com.wyjson.router.interceptor.InterceptorHelper;
 import com.wyjson.router.interceptor.service.InterceptorService;
 import com.wyjson.router.interfaces.IInterceptor;
 import com.wyjson.router.thread.CancelableCountDownLatch;
@@ -20,13 +20,13 @@ public class InterceptorServiceImpl implements InterceptorService {
 
     @Override
     public void doInterceptions(Card card, InterceptorCallback callback) {
-        GoRouter.logger.info(null, "[doInterceptions] " + InterceptorUtils.getInterceptors());
-        if (MapUtils.isNotEmpty(InterceptorUtils.getInterceptors())) {
-            Iterator<Map.Entry<Integer, IInterceptor>> iterator = InterceptorUtils.getInterceptors().entrySet().iterator();
+        GoRouter.logger.info(null, "[doInterceptions] " + InterceptorHelper.getInstance().getInterceptors());
+        if (MapUtils.isNotEmpty(InterceptorHelper.getInstance().getInterceptors())) {
+            Iterator<Map.Entry<Integer, IInterceptor>> iterator = InterceptorHelper.getInstance().getInterceptors().entrySet().iterator();
             GoRouter.getInstance().getExecutor().execute(new Runnable() {
                 @Override
                 public void run() {
-                    CancelableCountDownLatch interceptorCounter = new CancelableCountDownLatch(InterceptorUtils.getInterceptors().size());
+                    CancelableCountDownLatch interceptorCounter = new CancelableCountDownLatch(InterceptorHelper.getInstance().getInterceptors().size());
                     try {
                         execute(card, iterator, interceptorCounter);
                         interceptorCounter.await(card.getTimeout(), TimeUnit.SECONDS);
