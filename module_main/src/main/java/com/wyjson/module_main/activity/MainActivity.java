@@ -17,7 +17,7 @@ import com.wyjson.module_main.R;
 import com.wyjson.module_main.databinding.MainActivityMainBinding;
 import com.wyjson.router.annotation.Route;
 import com.wyjson.router.callback.GoCallback;
-import com.wyjson.router.core.Card;
+import com.wyjson.router.card.Card;
 import com.wyjson.router.core.GoRouter;
 
 @Route(path = MainRoute.MainActivity, remark = "主页")

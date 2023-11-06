@@ -1,6 +1,6 @@
 package com.wyjson.router.interfaces;
 
-import com.wyjson.router.core.Card;
+import com.wyjson.router.card.Card;
 import com.wyjson.router.interceptor.InterceptorCallback;
 
 /**

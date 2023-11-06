@@ -2,7 +2,7 @@ package com.wyjson.router.interceptor.service.impl;
 
 import androidx.annotation.NonNull;
 
-import com.wyjson.router.core.Card;
+import com.wyjson.router.card.Card;
 import com.wyjson.router.core.GoRouter;
 import com.wyjson.router.exception.RouterException;
 import com.wyjson.router.interceptor.InterceptorCallback;

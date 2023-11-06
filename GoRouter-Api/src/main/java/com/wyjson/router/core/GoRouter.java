@@ -16,6 +16,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import com.wyjson.router.callback.GoCallback;
+import com.wyjson.router.card.Card;
+import com.wyjson.router.card.CardMeta;
 import com.wyjson.router.enums.ParamType;
 import com.wyjson.router.exception.RouterException;
 import com.wyjson.router.interceptor.InterceptorCallback;
@@ -262,7 +264,7 @@ public final class GoRouter {
     }
 
     @Nullable
-    Object go(Context context, Card card, int requestCode, GoCallback callback) {
+    public Object go(Context context, Card card, int requestCode, GoCallback callback) {
         card.setContext(context);
         card.setInterceptorException(null);
         card.withString(GoRouter.ROUTER_CURRENT_PATH, card.getPath());
@@ -280,9 +282,7 @@ public final class GoRouter {
         }
         CardMeta cardMeta = RouteHelper.getInstance().getCardMeta(card);
         if (cardMeta != null) {
-            card.setType(cardMeta.getType());
-            card.setPathClass(cardMeta.getPathClass());
-            card.setTag(cardMeta.getTag());
+            card.setCardMeta(cardMeta.getType(), cardMeta.getPathClass(), cardMeta.getTag());
 
             Map<String, ParamMeta> paramsType = cardMeta.getParamsType();
             Uri rawUri = card.getUri();

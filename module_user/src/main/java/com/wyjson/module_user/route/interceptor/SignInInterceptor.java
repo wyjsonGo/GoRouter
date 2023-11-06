@@ -5,7 +5,7 @@ import static com.wyjson.module_common.route.BaseRoute.IS_LOGIN;
 import com.wyjson.module_common.route.UserRoute;
 import com.wyjson.module_common.route.utils.RouteTagUtils;
 import com.wyjson.router.annotation.Interceptor;
-import com.wyjson.router.core.Card;
+import com.wyjson.router.card.Card;
 import com.wyjson.router.core.GoRouter;
 import com.wyjson.router.exception.RouterException;
 import com.wyjson.router.interceptor.InterceptorCallback;

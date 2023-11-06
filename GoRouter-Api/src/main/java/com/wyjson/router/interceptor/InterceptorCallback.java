@@ -2,7 +2,7 @@ package com.wyjson.router.interceptor;
 
 import androidx.annotation.NonNull;
 
-import com.wyjson.router.core.Card;
+import com.wyjson.router.card.Card;
 
 public interface InterceptorCallback {
 

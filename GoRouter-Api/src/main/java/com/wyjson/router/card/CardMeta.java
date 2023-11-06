@@ -1,8 +1,9 @@
-package com.wyjson.router.core;
+package com.wyjson.router.card;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.wyjson.router.core.GoRouter;
 import com.wyjson.router.enums.ParamType;
 import com.wyjson.router.enums.RouteType;
 import com.wyjson.router.param.ParamMeta;
@@ -43,7 +44,7 @@ public class CardMeta {
         return type;
     }
 
-    public void setType(RouteType type) {
+    void setType(RouteType type) {
         this.type = type;
     }
 
@@ -51,7 +52,7 @@ public class CardMeta {
         return pathClass;
     }
 
-    protected void setPathClass(Class<?> pathClass) {
+    void setPathClass(Class<?> pathClass) {
         this.pathClass = pathClass;
     }
 
@@ -59,7 +60,7 @@ public class CardMeta {
         return tag;
     }
 
-    protected void setTag(int tag) {
+    void setTag(int tag) {
         this.tag = tag;
     }
 

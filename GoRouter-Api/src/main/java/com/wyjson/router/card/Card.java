@@ -1,4 +1,4 @@
-package com.wyjson.router.core;
+package com.wyjson.router.card;
 
 import android.content.Context;
 import android.net.Uri;
@@ -12,6 +12,8 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityOptionsCompat;
 
 import com.wyjson.router.callback.GoCallback;
+import com.wyjson.router.core.GoRouter;
+import com.wyjson.router.enums.RouteType;
 import com.wyjson.router.route.RouteHelper;
 
 import java.io.Serializable;
@@ -92,6 +94,12 @@ public final class Card extends CardMeta {
     @Nullable
     public CardMeta getCardMeta() {
         return RouteHelper.getInstance().getCardMeta(this);
+    }
+
+    public void setCardMeta(RouteType type, Class<?> pathClass, int tag) {
+        setType(type);
+        setPathClass(pathClass);
+        setTag(tag);
     }
 
     public Bundle getExtras() {

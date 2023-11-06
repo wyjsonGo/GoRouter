@@ -2,8 +2,8 @@ package com.wyjson.router.route;
 
 import androidx.annotation.Nullable;
 
-import com.wyjson.router.core.Card;
-import com.wyjson.router.core.CardMeta;
+import com.wyjson.router.card.Card;
+import com.wyjson.router.card.CardMeta;
 import com.wyjson.router.core.GoRouter;
 import com.wyjson.router.exception.RouterException;
 import com.wyjson.router.utils.TextUtils;

@@ -2,7 +2,7 @@ package com.wyjson.router.interfaces;
 
 import android.content.Context;
 
-import com.wyjson.router.core.Card;
+import com.wyjson.router.card.Card;
 
 /**
  * 预处理
