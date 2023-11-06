@@ -16,8 +16,6 @@ class GradlePluginLaunch : Plugin<Project> {
         if (!isApp) {
             Logger.e("Plugin ['com.wyjson.Gorouter'] can only be used under the application, not under the module library invalid!")
             return
-        } else {
-            Logger.i("Project enabled gradle plugin")
         }
 
         val androidComponents = project.extensions.getByType(AndroidComponentsExtension::class.java)
