@@ -76,6 +76,15 @@ public final class GoRouter {
         RouteModuleLoadUtils.loadModuleRoute(application);
     }
 
+    /**
+     * 获取路由注册模式
+     *
+     * @return true [GoRouter-Gradle-Plugin] ,false [scan dex file]
+     */
+    public boolean isRouteRegisterMode() {
+        return RouteModuleLoadUtils.isRegisterByPlugin();
+    }
+
     public static synchronized void openDebug() {
         isDebug = true;
         logger.showLog(isDebug);

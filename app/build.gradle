@@ -36,3 +36,8 @@ dependencies {
     api project(path: ':module_main')
     api project(path: ':module_user')
 }
+
+GoRouter {
+    // 允许执行自动注册任务的集合,未设置表示全部任务都可执行
+    buildTypes "release"
+}

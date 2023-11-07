@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#00ff00"
+    android:background="#8000ff00"
     android:gravity="center"
     android:orientation="vertical"
     tools:context=".activity.UserInfoActivity">
@@ -32,7 +32,8 @@
         android:gravity="center"
         android:text="开发阶段可以开启日志GoRouter.openDebug(),搜索[doInterceptions]查看拦截器执行状态"
         android:textColor="@android:color/holo_red_light"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        android:textStyle="bold" />
 
 
 </LinearLayout>

@@ -20,6 +20,15 @@ public class RouteModuleLoadUtils {
 
     private static boolean registerByPlugin;
 
+    /**
+     * 获取路由注册模式
+     *
+     * @return true [GoRouter-Gradle-Plugin] ,false [scan dex file]
+     */
+    public static boolean isRegisterByPlugin() {
+        return registerByPlugin;
+    }
+
     public static void loadModuleRoute(Application application) {
         loadModuleRouteByPlugin();
         if (registerByPlugin) {
@@ -57,18 +66,24 @@ public class RouteModuleLoadUtils {
         // register("class name");
     }
 
+    private static void register(String className) {
+        register(className, true);
+    }
+
     /**
      * register by class name
      * Sacrificing a bit of efficiency to solve
      * the problem that the main dex file size is too large
      */
-    private static void register(String className) {
+    private static void register(String className, boolean isPlugin) {
         if (!TextUtils.isEmpty(className)) {
             try {
                 Class<?> clazz = Class.forName(className);
                 Object obj = clazz.getConstructor().newInstance();
                 if (obj instanceof IRouteModule) {
-                    markRegisteredByPlugin();
+                    if (isPlugin) {
+                        markRegisteredByPlugin();
+                    }
                     ((IRouteModule) obj).load();
                 } else {
                     GoRouter.logger.error(null,
@@ -115,7 +130,7 @@ public class RouteModuleLoadUtils {
             startTime = System.currentTimeMillis();
 
             for (String className : routeModuleMap) {
-                register(className);
+                register(className, false);
             }
 
             GoRouter.logger.info(null, "The loading module route is complete, cost " + (System.currentTimeMillis() - startTime) + "ms.");

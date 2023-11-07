@@ -71,10 +71,9 @@
         android:background="#ffaa00"
         android:onClick="onClickUserInfoActivity"
         android:padding="10dp"
-        android:text="go UserInfoActivity(这个页面需要登录后才能进入,未登录会触发SignInInterceptor"
+        android:text="go UserInfoActivity(进入这个页面会触发SignInInterceptor,需要登录后才能进入"
         android:textSize="16sp"
         android:textStyle="bold" />
-
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -90,6 +89,21 @@
             android:padding="10dp"
             android:text="获取UserService接口"
             android:textSize="16sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_load_mode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="路由注册模式:"
+            android:textSize="12sp"
             android:textStyle="bold" />
     </LinearLayout>
 

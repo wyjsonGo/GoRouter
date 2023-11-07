@@ -20,6 +20,7 @@ import java.io.FileOutputStream
 import java.util.jar.JarEntry
 import java.util.jar.JarFile
 import java.util.jar.JarOutputStream
+import java.util.zip.ZipException
 import kotlin.system.measureTimeMillis
 
 abstract class AssembleModuleRouteTask : DefaultTask() {
@@ -85,8 +86,7 @@ abstract class AssembleModuleRouteTask : DefaultTask() {
                 val jarEntry = enumeration.nextElement()
                 try {
                     val entryName = jarEntry.name
-//                    Logger.i("Scan the classes in the jar [$entryName]")
-                    if (jarEntry.isDirectory || jarEntry.name.isEmpty() || !jarEntry.name.endsWith(".class") || jarEntry.name.contains("META-INF/")) {
+                    if (jarEntry.isDirectory || jarEntry.name.isEmpty()) {
                         continue
                     }
                     if (Constants.dotToSlash(INJECT_CLASS_NAME) + _CLASS == entryName) {
@@ -110,7 +110,9 @@ abstract class AssembleModuleRouteTask : DefaultTask() {
                         jarOutput!!.closeEntry()
                     }
                 } catch (e: Exception) {
-                    Logger.w("Merge jar error entry:[${jarEntry.name}], error message:$e")
+                    if (!(e is ZipException && e.message?.startsWith("duplicate entry:") == true)) {
+                        Logger.w("Merge jar error entry:[${jarEntry.name}], error message:$e")
+                    }
                 }
             }
             moduleRouteClassList.addAll(tempList)
