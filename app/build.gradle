@@ -1,6 +1,6 @@
 plugins {
     id 'com.android.application'
-//    id 'com.wyjson.gorouter'
+    id 'com.wyjson.gorouter'
 }
 
 android {
