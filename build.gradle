@@ -1,7 +1,7 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     dependencies {
-        classpath 'com.github.wyjsonGo.GoRouter:GoRouter-Gradle-Plugin:1.0.0'
+//        classpath "com.github.wyjsonGo.GoRouter:GoRouter-Gradle-Plugin:${VERSION}"
     }
 }
 

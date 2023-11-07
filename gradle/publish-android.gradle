@@ -1,0 +1,28 @@
+apply plugin: "maven-publish"
+android {
+    publishing {
+        singleVariant('release') {
+            withSourcesJar()
+            withJavadocJar()
+        }
+    }
+}
+afterEvaluate { project ->
+    publishing {
+        publications {
+            maven(MavenPublication) {
+                groupId = GROUP_ID
+                artifactId = ARTIFACT_ID
+                version = VERSION
+                afterEvaluate {
+                    if (plugins.hasPlugin('com.android.application') || plugins.hasPlugin('com.android.library')) {
+                        from components.release
+                    } else if (plugins.hasPlugin("java") || plugins.hasPlugin("groovy")) {
+                        from components.java
+                    }
+                }
+            }
+        }
+    }
+
+}

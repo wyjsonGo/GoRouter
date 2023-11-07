@@ -1,7 +1,6 @@
 plugins {
     id 'groovy'
     id 'org.jetbrains.kotlin.jvm'
-    id 'maven-publish'
 }
 
 java {
@@ -17,21 +16,4 @@ dependencies {
     implementation 'org.ow2.asm:asm-commons:9.2'
 }
 
-// 发布到本地maven仓库
-publishing {
-    publications {
-        maven(MavenPublication) {
-            groupId = 'com.github.wyjsonGo.GoRouter'
-            artifactId = 'GoRouter-Gradle-Plugin'
-            version = '1.0.0'
-
-            from components.java
-        }
-    }
-
-    repositories {
-        maven {
-            url = "../repo"
-        }
-    }
-}
+apply from: rootProject.file('gradle/publish-java.gradle')
