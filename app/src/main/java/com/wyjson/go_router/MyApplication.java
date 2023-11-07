@@ -1,17 +1,19 @@
 package com.wyjson.go_router;
 
-import com.wyjson.module_common.CommonApplication;
-import com.wyjson.module_main.MainApplication;
-import com.wyjson.module_user.UserApplication;
-import com.wyjson.module_common.application.SuperApplication;
+import android.app.Application;
 
-public class MyApplication extends SuperApplication {
+import com.wyjson.module_common.BuildConfig;
+import com.wyjson.router.core.GoRouter;
+
+public class MyApplication extends Application {
 
     @Override
-    protected void initModuleApplication() {
-        registerModuleApplication(CommonApplication.class);
-        registerModuleApplication(MainApplication.class);
-        registerModuleApplication(UserApplication.class);
+    public void onCreate() {
+        super.onCreate();
+        if (BuildConfig.DEBUG) {
+            GoRouter.openDebug();
+//            GoRouter.printStackTrace();
+        }
+        GoRouter.autoLoadModuleRoute(this);
     }
-
 }

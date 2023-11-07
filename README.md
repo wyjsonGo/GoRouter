@@ -12,9 +12,7 @@
 
 | 功能           | ARouter | GoRouter | 描述                                                   |
 | ------------ | ------- | -------- | ---------------------------------------------------- |
-| 初始化          | 需要      | 不需要      |                                                      |
-| 集成难易程度       | 费劲      | 简单       | ARouter因为长期未更新,导致项目开发和发布期间会报各种错误,导致失败 |
-| 路由注册方式       | 注解      | 注解、java     | GoRouter不仅提供了注解，还能使用java方式注册，参见4-10 |
+| 路由注册方式       | 注解      | 注解、java     | GoRouter不仅提供了注解，还能使用java方式注册，参见5-6 |
 | 服务           | 一对多     | 一对一      | ARouter可以为一个服务接口注册多个实现类(没啥用),本库一个服务接口对应一个实现方法(调用更方便) |
 | 动态注册拦截器      | 不支持     | 支持       | ARouter只能动态注册路由,不能动态注册拦截器 |
 | 重写跳转URL服务    | 支持      | 不支持      | 可以在`PretreatmentService`里实现相同功能 |
@@ -68,11 +66,11 @@
     ```groovy
     dependencies {
         // x.x.x 替换为jitpack最新版本
-        implementation 'com.github.wyjsonGo.GoRouter:GoRouter:x.x.x'
+        implementation 'com.github.wyjsonGo.GoRouter:GoRouter-Api:x.x.x'
     }
     ```
 
-2.  在module下添加注解依赖和配置(如只使用java方式注册,可忽略此步骤)
+2.  在module项目下添加注解生成类依赖和配置 (如只使用java方式注册,可忽略此步骤)
 
     ```groovy
     android {
@@ -108,16 +106,17 @@
     }
     ```
 
-3.  开启调试
+4.  初始化SDK
 
     ```java
     if (BuildConfig.DEBUG) {
-        GoRouter.openDebug(); // 开启调试，查看路由详细跳转流程日志，最好放到Application里开启
+        GoRouter.openDebug(); // 开启调试，查看路由详细注册和跳转过程日志
         // GoRouter.printStackTrace(); // 打印日志的时候打印线程堆栈
     }
+    GoRouter.autoLoadModuleRoute(this);// 尽可能早，推荐在Application中初始化
     ```
 
-4.  发起路由操作
+5.  发起路由操作
 
     ```java
     // 1. 应用内简单的跳转(通过URL跳转在'进阶用法'中)
@@ -130,18 +129,38 @@
                 .go(this);
     ```
 
-5.  加载注解方式生成的路由表
+6.  使用Gradle插件实现路由表的自动加载，支持Gradle8.0+ (可选)
 
-    模块项目里至少使用一条注解`@Route`、`@Param`、`@Service`、`@Interceptor`，就会生成对应路由表的加载类。路由表加载类命名规则会根据`GOROUTER_MODULE_NAME `设置的模块名称转换成大写驼峰命名+GoRouter.java，所有模块生成的路由表加载类都会放到`com.wyjson.router.module`包下。
-
-    例如模块名称`module_user`会生成`ModuleUserGoRouter.java`
-
-    ```java
-    // 在模块自己的application里调用路由表加载方法
-    ModuleUserGoRouter.load();
+    ```groovy
+    // 项目根目录下的settings.gradle
+    pluginManagement {
+        repositories {
+            ...
+            maven { url 'https://jitpack.io' }
+        }
+    }
     ```
 
-    模块路由表加载Demo示例[UserApplication.java](https://github.com/wyjsonGo/GoRouter/blob/master/module_user/src/main/java/com/wyjson/module_user/UserApplication.java)
+    [![Release Version](https://jitpack.io/v/wyjsonGo/GoRouter.svg)](https://jitpack.io/#wyjsonGo/GoRouter)
+
+    ```groovy
+    // 项目根目录下的build.gradle
+    buildscript {
+        dependencies {
+            // x.x.x 替换为jitpack最新版本
+            classpath 'com.github.wyjsonGo.GoRouter:GoRouter-Gradle-Plugin:x.x.x'
+        }
+    }
+    ```
+
+    ```groovy
+    // app目录下的build.gradle
+    plugins {
+        ...
+        id 'com.wyjson.gorouter'
+    }
+    ```
+    可选使用，通过GoRouter提供的注册插件进行路由表的自动加载，默认通过扫描dex的方式进行加载(在运行时注册,节省打包时间)，通过gradle插件进行自动注册可以缩短运行时初始化时间(在打包时注册,节省运行时间)，解决应用加固导致无法直接访问dex文件。支持Gradle8.0+，Gradle8.0以下参见5-7。
 
 #### 四、进阶用法
 
@@ -354,23 +373,6 @@
     }
     ```
 
-10. java方式动态注册路由信息
-
-    适用于插件化架构的App以及需要动态注册路由信息和拦截器的场景，可以通过 GoRouter 提供的接口实现动态注册路由信息和拦截器。
-
-    ```java
-    // 注册Activity
-    GoRouter.getInstance().build("/user/info/activity").commitActivity(UserInfoActivity.class);
-    // 注册Fragment
-    GoRouter.getInstance().build("/user/card/fragment").commitFragment(CardFragment.class);
-    // 注册服务
-    GoRouter.getInstance().addService(UserServiceImpl.class);
-    // 注册拦截器
-    GoRouter.getInstance().addInterceptor(1, TestInterceptor.class);
-    // 注册拦截器(适用于动态插件加载时使用)
-    GoRouter.getInstance().setInterceptor(1, TestInterceptor.class);
-    ```
-
 #### 五、更多功能
 
 1.  根据路径获取元数据
@@ -462,7 +464,58 @@
     String path = getIntent().getString(GoRouter.ROUTER_CURRENT_PATH);
     ```
 
-5.  生成路由文档
+5.  获取路由注册模式
+
+    ```java
+    // true: Gradle插件进行自动注册(在打包时注册,节省运行时间)
+    // false: 扫描dex的方式(在运行时注册,节省打包时间)
+    GoRouter.getInstance().isRouteRegisterMode();
+    ```
+
+6. java方式动态注册路由信息
+
+    适用于插件化架构的App以及需要动态注册路由信息和拦截器的场景，可以通过 GoRouter 提供的接口实现动态注册路由信息和拦截器。
+
+    ```java
+    // 注册Activity
+    GoRouter.getInstance().build("/user/info/activity").commitActivity(UserInfoActivity.class);
+    // 注册Fragment
+    GoRouter.getInstance().build("/user/card/fragment").commitFragment(CardFragment.class);
+    // 注册服务
+    GoRouter.getInstance().addService(UserServiceImpl.class);
+    // 注册拦截器
+    GoRouter.getInstance().addInterceptor(1, TestInterceptor.class);
+    // 注册拦截器(适用于动态插件加载时使用)
+    GoRouter.getInstance().setInterceptor(1, TestInterceptor.class);
+    ```
+
+7.  自定义模块路由加载方式
+
+    如不使用gradle插件[3-6]进行自动注册，也不想走默认扫描dex的方式，可以不调用`GoRouter.autoLoadModuleRoute(this);`方法，但需要自行调用模块生成的路由加载类。
+    模块项目里至少使用一条注解`@Route`、`@Param`、`@Service`、`@Interceptor`，就会生成对应路由表的加载类。路由表加载类命名规则会根据`GOROUTER_MODULE_NAME `设置的模块名称转换成大写驼峰命名+`$$GoRouter.java`，所有模块生成的路由表加载类都会放到`com.wyjson.router.module`包下。
+    例如模块名称`module_user`会生成`ModuleUser$$GoRouter.java`
+
+    ```java
+    // 可在任意地方调用模块路由加载类
+    new ModuleUser$$GoRouter().load();
+    ```
+
+8.  Gradle插件自定义执行的任务
+
+    ```groovy
+    // app目录下的build.gradle
+    plugins {
+        ...
+        id 'com.wyjson.gorouter'
+    }
+    // 不写下面的配置，默认android.buildTypes任务全部执行自动注册。
+    GoRouter {
+        // 允许执行自动注册任务的集合
+        buildTypes "release", "sandbox"
+    }
+    ```
+
+8.  生成路由文档
 
     ```java
     // 更新 build.gradle, 添加参数 GOROUTER_GENERATE_DOC = enable
@@ -502,7 +555,7 @@
     ```log
     [addCardMeta] PathClass duplicate commit!!! pathClass[class xx.xx]
     ```
-    GoRouter日志tag为`GoRouter`，GoRouter-Compiler日志tag为`GoRouter::Compiler `。
+    GoRouter日志tag为`GoRouter`，GoRouter-Compiler日志tag为`GoRouter::Compiler`，GoRouter-Gradle-Plugin日志tag为`GoRouter::Gradle-Plugin`。
 
 6.  ARouter迁移指南
 
