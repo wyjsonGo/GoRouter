@@ -1,23 +1,6 @@
 package com.wyjson.router.compiler.doc;
 
-import static com.wyjson.router.compiler.utils.Constants.BOOLEAN_PACKAGE;
-import static com.wyjson.router.compiler.utils.Constants.BOOLEAN_PRIMITIVE;
-import static com.wyjson.router.compiler.utils.Constants.BYTE_PACKAGE;
-import static com.wyjson.router.compiler.utils.Constants.BYTE_PRIMITIVE;
-import static com.wyjson.router.compiler.utils.Constants.CHAR_PACKAGE;
-import static com.wyjson.router.compiler.utils.Constants.CHAR_PRIMITIVE;
 import static com.wyjson.router.compiler.utils.Constants.DOCS_PACKAGE_NAME;
-import static com.wyjson.router.compiler.utils.Constants.DOUBEL_PACKAGE;
-import static com.wyjson.router.compiler.utils.Constants.DOUBEL_PRIMITIVE;
-import static com.wyjson.router.compiler.utils.Constants.FLOAT_PACKAGE;
-import static com.wyjson.router.compiler.utils.Constants.FLOAT_PRIMITIVE;
-import static com.wyjson.router.compiler.utils.Constants.INTEGER_PACKAGE;
-import static com.wyjson.router.compiler.utils.Constants.INTEGER_PRIMITIVE;
-import static com.wyjson.router.compiler.utils.Constants.LONG_PACKAGE;
-import static com.wyjson.router.compiler.utils.Constants.LONG_PRIMITIVE;
-import static com.wyjson.router.compiler.utils.Constants.SHORT_PACKAGE;
-import static com.wyjson.router.compiler.utils.Constants.SHORT_PRIMITIVE;
-import static com.wyjson.router.compiler.utils.Constants.STRING_PACKAGE;
 
 import com.google.gson.GsonBuilder;
 import com.wyjson.router.annotation.Interceptor;

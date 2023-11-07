@@ -5,7 +5,7 @@ import android.content.Intent;
 
 import com.wyjson.module_common.route.UserRoute;
 import com.wyjson.router.annotation.Service;
-import com.wyjson.router.core.Card;
+import com.wyjson.router.card.Card;
 import com.wyjson.router.interfaces.PretreatmentService;
 
 @Service(remark = "预处理服务")

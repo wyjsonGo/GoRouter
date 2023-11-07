@@ -4,7 +4,7 @@ import android.content.Context;
 import android.widget.Toast;
 
 import com.wyjson.router.annotation.Service;
-import com.wyjson.router.core.Card;
+import com.wyjson.router.card.Card;
 import com.wyjson.router.interfaces.DegradeService;
 
 @Service(remark = "全局降级策略")

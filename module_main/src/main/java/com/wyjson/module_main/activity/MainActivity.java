@@ -1,5 +1,6 @@
 package com.wyjson.module_main.activity;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -17,7 +18,7 @@ import com.wyjson.module_main.R;
 import com.wyjson.module_main.databinding.MainActivityMainBinding;
 import com.wyjson.router.annotation.Route;
 import com.wyjson.router.callback.GoCallback;
-import com.wyjson.router.core.Card;
+import com.wyjson.router.card.Card;
 import com.wyjson.router.core.GoRouter;
 
 @Route(path = MainRoute.MainActivity, remark = "主页")
@@ -30,6 +31,7 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         vb = MainActivityMainBinding.inflate(getLayoutInflater());
         setContentView(vb.getRoot());
+        showRouteLoadMode();
     }
 
     public void onClickSignInActivity(View view) {
@@ -97,6 +99,16 @@ public class MainActivity extends FragmentActivity {
         UserService userService = GoRouter.getInstance().getService(UserService.class);
         if (userService != null) {
             Toast.makeText(this, "userId:" + userService.getUserId(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void showRouteLoadMode() {
+        if (GoRouter.getInstance().isRouteRegisterMode()) {
+            vb.tvLoadMode.setText("路由注册模式:GoRouter-Gradle-Plugin(在打包时注册,节省运行时间)");
+            vb.tvLoadMode.setTextColor(Color.parseColor("#0000ff"));
+        } else {
+            vb.tvLoadMode.setText("路由注册模式:scan dex file(在运行时注册,节省打包时间)");
+            vb.tvLoadMode.setTextColor(Color.parseColor("#ff0000"));
         }
     }
 

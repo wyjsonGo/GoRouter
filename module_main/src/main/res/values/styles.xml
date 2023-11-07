@@ -3,7 +3,7 @@
 
     <style name="Main.AppTheme.Activity.Splash" parent="Base.Theme.GoRouter">
         <item name="android:windowFullscreen">true</item>
-        <item name="android:windowBackground">#ffaa00</item>
+        <item name="android:windowBackground">@drawable/main_splash_bg</item>
     </style>
 
 </resources>
