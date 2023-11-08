@@ -35,7 +35,7 @@ public final class Card extends CardMeta {
     private Throwable interceptorException;// 拦截执行中断异常信息
     private int timeout = 300;// go() timeout, TimeUnit.Second
 
-    private void setUri(Uri uri) {
+    public void setUri(Uri uri) {
         this.uri = uri;
         setPath(uri.getPath());
     }
@@ -299,8 +299,12 @@ public final class Card extends CardMeta {
         return timeout;
     }
 
-    public void setTimeout(int timeout) {
+    /**
+     * @param timeout Second
+     */
+    public Card setTimeout(int timeout) {
         this.timeout = timeout;
+        return this;
     }
 
     @NonNull

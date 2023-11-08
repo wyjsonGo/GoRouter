@@ -36,7 +36,7 @@ public class CardMeta {
         return path;
     }
 
-    protected void setPath(@NonNull String path) {
+    public void setPath(@NonNull String path) {
         this.path = path;
     }
 
