@@ -4,11 +4,11 @@
 
 > 一个用于帮助 Android App 进行组件化改造的框架 —— 支持模块间的路由、通信、解耦
 
-## 简介
+#### 简介
 
-###### 之前一直在用阿里开源的[ARouter](https://github.com/alibaba/ARouter)项目，因为ARouter多年未更新，ARouter 开始有些不太适合了，所以重新开发了这款Android路由框架。
+之前一直在用阿里开源的[ARouter](https://github.com/alibaba/ARouter)项目，因为ARouter多年未更新，ARouter 开始有些不太适合了，所以重新开发了这款Android路由框架。
 
-### GoRouter和ARouter功能差异对比
+#### GoRouter和ARouter功能差异对比
 
 | 功能           | ARouter | GoRouter | 描述                                                   |
 | ------------ | ------- | -------- | ---------------------------------------------------- |
