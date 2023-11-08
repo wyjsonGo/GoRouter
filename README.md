@@ -19,6 +19,8 @@
 | 获取元数据        | 不支持     | 支持       | 有些场景需要判断某个页面当前是否存在,就需要获取页面class等信息，参见5-1 |
 | withObject() | 支持      | 不支持      | ARouter实现原理是转JSON后使用`withString()`方法传递 |
 | inject(T)    | 单一      | 更多       | ARouter不能在`onNewIntent()`方法里使用，GoRouter提供了更多使用场景 |
+| 按组分类、按需初始化 | 支持  | 不支持     | 待开发，对于路由页面多的项目有一定提升 |
+| 模块Application生命周期 | 不支持    | 待开发    | 模块化路由都有了，肯定也需要模块Application生命周期，正好本库Api、生成类、自动注册都有，所以开发一下这个功能很方便 |
 
 ***
 
@@ -160,7 +162,9 @@
         id 'com.wyjson.gorouter'
     }
     ```
-    可选使用，通过GoRouter提供的注册插件进行路由表的自动加载，默认通过扫描dex的方式进行加载(在运行时注册,节省打包时间)，通过gradle插件进行自动注册可以缩短运行时初始化时间(在打包时注册,节省运行时间)，解决应用加固导致无法直接访问dex文件。支持Gradle8.0+，Gradle8.0以下参见5-7。
+    *   支持Gradle8.0+，Gradle8.0以下参见5-7。
+    *   开发阶段构建加速参见5-8(最好在开发阶段开启,节省build时间)。
+    *   可选使用，通过GoRouter提供的注册插件进行路由表的自动加载，默认通过扫描dex的方式进行加载(在运行时注册,节省打包时间)，通过gradle插件进行自动注册可以缩短运行时初始化时间(在打包时注册,节省运行时间)，解决应用加固导致无法直接访问dex文件。
 
 #### 四、进阶用法
 
@@ -489,10 +493,10 @@
     GoRouter.getInstance().setInterceptor(1, TestInterceptor.class);
     ```
 
-7.  自定义模块路由加载方式
+7.  自定义模块路由加载
 
     如不使用gradle插件[3-6]进行自动注册，也不想走默认扫描dex的方式，可以不调用`GoRouter.autoLoadModuleRoute(this);`方法，但需要自行调用模块生成的路由加载类。
-    模块项目里至少使用一条注解`@Route`、`@Param`、`@Service`、`@Interceptor`，就会生成对应路由表的加载类。路由表加载类命名规则会根据`GOROUTER_MODULE_NAME `设置的模块名称转换成大写驼峰命名+`$$GoRouter.java`，所有模块生成的路由表加载类都会放到`com.wyjson.router.module`包下。
+    模块项目里至少使用一条注解`@Route`、`@Service`、`@Interceptor`，就会生成对应路由表的加载类。路由表加载类命名规则会根据`GOROUTER_MODULE_NAME `设置的模块名称转换成大写驼峰命名+`$$GoRouter.java`，所有模块生成的路由表加载类都会放到`com.wyjson.router.module`包下。
     例如模块名称`module_user`会生成`ModuleUser$$GoRouter.java`
 
     ```java
@@ -501,6 +505,8 @@
     ```
 
 8.  Gradle插件自定义执行的任务
+
+    由于在开发阶段需要经常build项目，每次运行都走gradle插件自动注册后，会导致gradle自带任务`dexBuilderDebug`(转换class文件为dex文件)会很耗时,所以在开发阶段最好忽略buildType等于debug的情况，debug的情况就会走默认扫描dex方式注册，节省开发build时间。
 
     ```groovy
     // app目录下的build.gradle
@@ -511,11 +517,11 @@
     // 不写下面的配置，默认android.buildTypes任务全部执行自动注册。
     GoRouter {
         // 允许执行自动注册任务的集合
-        buildTypes "release", "sandbox"
+        buildTypes "release", "sandbox", "more"
     }
     ```
 
-8.  生成路由文档
+9.  生成路由文档
 
     ```java
     // 更新 build.gradle, 添加参数 GOROUTER_GENERATE_DOC = enable
