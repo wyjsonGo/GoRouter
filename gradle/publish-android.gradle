@@ -15,11 +15,7 @@ afterEvaluate { project ->
                 artifactId = ARTIFACT_ID
                 version = VERSION
                 afterEvaluate {
-                    if (plugins.hasPlugin('com.android.application') || plugins.hasPlugin('com.android.library')) {
-                        from components.release
-                    } else if (plugins.hasPlugin("java") || plugins.hasPlugin("groovy")) {
-                        from components.java
-                    }
+                    from components.release
                 }
             }
         }
