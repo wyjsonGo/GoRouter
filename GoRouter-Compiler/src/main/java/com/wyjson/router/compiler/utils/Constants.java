@@ -8,6 +8,7 @@ public class Constants {
     public static final String METHOD_NAME_LOAD = "load";
     public static final String METHOD_NAME_LOAD_ROUTE_GROUP = "loadRouteGroup";
     public static final String METHOD_NAME_LOAD_ROUTE_FOR_x_GROUP = "loadRouteFor%sGroup";
+    public static final String FIELD_NAME_ROUTE_GROUPS = "routeGroups";
 
     // System interface
     public static final String ACTIVITY = "android.app.Activity";
@@ -18,20 +19,24 @@ public class Constants {
     public static final String DOCS_PACKAGE_NAME = PACKAGE_NAME + ".docs";
     public static final String GOROUTER_PACKAGE_NAME = PACKAGE_NAME + ".core.GoRouter";
     public static final String I_ROUTE_MODULE_PACKAGE_NAME = PACKAGE_NAME + ".load.IRouteModule";
+    public static final String I_ROUTE_MODULE_GROUP_PACKAGE_NAME = PACKAGE_NAME + ".load.IRouteModuleGroup";
+    public static final String I_ROUTE_MODULE_GROUP_METHOD_NAME_LOAD = "load";
 
     // Log
     public static final String PREFIX_OF_LOGGER = PROJECT + "::Compiler ";
-    public static final String NO_MODULE_NAME_TIPS = "These no module name, at 'build.gradle', like :\n" +
-            "android {\n" +
-            "    defaultConfig {\n" +
-            "        ...\n" +
-            "        javaCompileOptions {\n" +
-            "            annotationProcessorOptions {\n" +
-            "                arguments = [GOROUTER_MODULE_NAME: project.getName()]\n" +
-            "            }\n" +
-            "        }\n" +
-            "    }\n" +
-            "}\n";
+    public static final String NO_MODULE_NAME_TIPS = """
+            These no module name, at 'build.gradle', like :
+            android {
+                defaultConfig {
+                    ...
+                    javaCompileOptions {
+                        annotationProcessorOptions {
+                            arguments = [GOROUTER_MODULE_NAME: project.getName()]
+                        }
+                    }
+                }
+            }
+            """;
 
     // Options of processor
     public static final String KEY_MODULE_NAME = "GOROUTER_MODULE_NAME";
