@@ -19,6 +19,7 @@ import static com.wyjson.router.compiler.utils.Constants.I_ROUTE_MODULE_PACKAGE_
 import static com.wyjson.router.compiler.utils.Constants.LONG_PACKAGE;
 import static com.wyjson.router.compiler.utils.Constants.LONG_PRIMITIVE;
 import static com.wyjson.router.compiler.utils.Constants.METHOD_NAME_LOAD;
+import static com.wyjson.router.compiler.utils.Constants.METHOD_NAME_LOAD_ROUTE_GROUP;
 import static com.wyjson.router.compiler.utils.Constants.MODULE_PACKAGE_NAME;
 import static com.wyjson.router.compiler.utils.Constants.PARCELABLE_PACKAGE;
 import static com.wyjson.router.compiler.utils.Constants.PREFIX_OF_LOGGER;
@@ -29,10 +30,12 @@ import static com.wyjson.router.compiler.utils.Constants.SHORT_PACKAGE;
 import static com.wyjson.router.compiler.utils.Constants.SHORT_PRIMITIVE;
 import static com.wyjson.router.compiler.utils.Constants.STRING_PACKAGE;
 import static com.wyjson.router.compiler.utils.Constants.WARNING_TIPS;
+import static javax.lang.model.element.Modifier.PRIVATE;
 import static javax.lang.model.element.Modifier.PUBLIC;
 
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
@@ -95,11 +98,12 @@ public class GenerateModuleRouteProcessor extends BaseProcessor {
         MethodSpec.Builder loadInto = MethodSpec.methodBuilder(METHOD_NAME_LOAD)
                 .addModifiers(PUBLIC)
                 .addAnnotation(Override.class);
-        loadInto.addJavadoc("Load the $S route", moduleName);
+        loadInto.addJavadoc("load the $S route", moduleName);
 
         addService(roundEnvironment, loadInto);
         addInterceptor(roundEnvironment, loadInto);
         addRoute(roundEnvironment, loadInto);
+        LinkedHashSet<MethodSpec> routeGroupMethods = addRouteGroup(roundEnvironment, loadInto);
 
         String className = generateClassName + SEPARATOR + PROJECT;
         try {
@@ -109,6 +113,7 @@ public class GenerateModuleRouteProcessor extends BaseProcessor {
                             .addSuperinterface(ClassName.get(mIRouteModule))
                             .addJavadoc(WARNING_TIPS)
                             .addMethod(loadInto.build())
+                            .addMethods(routeGroupMethods)
                             .build()
             ).indent("    ").build().writeTo(mFiler);
 
@@ -118,7 +123,7 @@ public class GenerateModuleRouteProcessor extends BaseProcessor {
             logger.error(e);
         }
 
-        DocumentUtils.generate(moduleName, logger);
+        DocumentUtils.generateDoc(moduleName, logger);
         return true;
     }
 
@@ -132,7 +137,7 @@ public class GenerateModuleRouteProcessor extends BaseProcessor {
         for (Element element : elements) {
             Service service = element.getAnnotation(Service.class);
             loadInto.addStatement("$T.getInstance().addService($T.class)", mGoRouter, element);
-            DocumentUtils.addService(moduleName, logger, element, service);
+            DocumentUtils.addServiceDoc(moduleName, logger, element, service);
         }
     }
 
@@ -146,8 +151,18 @@ public class GenerateModuleRouteProcessor extends BaseProcessor {
         for (Element element : elements) {
             Interceptor interceptor = element.getAnnotation(Interceptor.class);
             loadInto.addStatement("$T.getInstance().addInterceptor(" + interceptor.priority() + ", $T.class)", mGoRouter, element);
-            DocumentUtils.addInterceptor(moduleName, logger, element, interceptor);
+            DocumentUtils.addInterceptorDoc(moduleName, logger, element, interceptor);
         }
+    }
+
+    private LinkedHashSet<MethodSpec> addRouteGroup(RoundEnvironment roundEnvironment, MethodSpec.Builder loadInto) {
+        LinkedHashSet<MethodSpec> methodSpecs = new LinkedHashSet<>();
+        MethodSpec.Builder loadRouteGroup = MethodSpec.methodBuilder(METHOD_NAME_LOAD_ROUTE_GROUP).addModifiers(PRIVATE);
+        loadRouteGroup.addJavadoc("load route group");
+
+        loadInto.addStatement("$N()", loadRouteGroup.build());
+        methodSpecs.add(loadRouteGroup.build());
+        return methodSpecs;
     }
 
     private void addRoute(RoundEnvironment roundEnvironment, MethodSpec.Builder loadInto) {
@@ -164,108 +179,122 @@ public class GenerateModuleRouteProcessor extends BaseProcessor {
             Route route = element.getAnnotation(Route.class);
             TypeMirror tm = element.asType();
 
-            String typeDoc;
-            String type;
-            // handle type
-            if (types.isSubtype(tm, typeActivity)) {
-                typeDoc = "Activity";
-                type = ".commitActivity($T.class)";
-            } else if (types.isSubtype(tm, typeFragment)) {
-                typeDoc = "Fragment";
-                type = ".commitFragment($T.class)";
-            } else {
-                throw new RuntimeException(PREFIX_OF_LOGGER + moduleName + " The @Route(path='" + route.path() + "') is marked on unsupported class, look at [" + tm.toString() + "].");
+//            String typeDoc;
+//            String type;
+//            // handle type
+//            if (types.isSubtype(tm, typeActivity)) {
+//                typeDoc = "Activity";
+//                type = ".commitActivity($T.class)";
+//            } else if (types.isSubtype(tm, typeFragment)) {
+//                typeDoc = "Fragment";
+//                type = ".commitFragment($T.class)";
+//            } else {
+//                throw new RuntimeException(PREFIX_OF_LOGGER + moduleName + " The @Route(path='" + route.path() + "') is marked on unsupported class, look at [" + tm.toString() + "].");
+//            }
+//
+//            String tag = route.tag() == 0 ? "" : ".putTag(" + route.tag() + ")";
+//
+//            // Get all fields annotation by @Param
+//            String param = "";
+//            try {
+//                param = handleParam(new StringBuilder(), element);
+//            } catch (Exception e) {
+//                throw new RuntimeException(PREFIX_OF_LOGGER + moduleName + " The @Route(path='" + route.path() + "') under " + e.getMessage());
+//            }
+//            loadInto.addStatement("$T.getInstance().build($S)" + tag + param + type, mGoRouter, route.path(), element);
+//            DocumentUtils.addRoute(moduleName, logger, element, route, typeDoc);
+
+            CodeBlock.Builder unifyCode = CodeBlock.builder();
+            // GoRouter.getInstance().build(xxx)
+            CodeBlock.Builder buildCode = CodeBlock.builder().add("$T.getInstance().build($S)", mGoRouter, route.path());
+            unifyCode.add(buildCode.build());
+
+            // .putTag(x)
+            CodeBlock.Builder tagCode = CodeBlock.builder();
+            if (route.tag() != 0) {
+                tagCode.add(".putTag($L)", route.tag());
             }
+            unifyCode.add(tagCode.build());
 
-            String tag = route.tag() == 0 ? "" : ".putTag(" + route.tag() + ")";
-
+            // .putInt(x).putString(x) ...
             // Get all fields annotation by @Param
-            String param = "";
+            CodeBlock.Builder paramCode = CodeBlock.builder();
             try {
-                param = handleParam(new StringBuilder(), element);
+                paramCode = handleParam(paramCode, element);
             } catch (Exception e) {
                 throw new RuntimeException(PREFIX_OF_LOGGER + moduleName + " The @Route(path='" + route.path() + "') under " + e.getMessage());
             }
-            loadInto.addStatement("$T.getInstance().build($S)" + tag + param + type, mGoRouter, route.path(), element);
-            DocumentUtils.addRoute(moduleName, logger, element, route, typeDoc);
+            unifyCode.add(paramCode.build());
+
+            // .commitXXX(x)
+            String typeDoc;
+            CodeBlock.Builder typeCode = CodeBlock.builder();
+            if (types.isSubtype(tm, typeActivity)) {
+                typeDoc = "Activity";
+                typeCode.add(".commitActivity($T.class)", element);
+            } else if (types.isSubtype(tm, typeFragment)) {
+                typeDoc = "Fragment";
+                typeCode.add(".commitFragment($T.class)", element);
+            } else {
+                throw new RuntimeException(PREFIX_OF_LOGGER + moduleName + " The @Route(path='" + route.path() + "') is marked on unsupported class, look at [" + tm.toString() + "].");
+            }
+            unifyCode.add(typeCode.build());
+
+            loadInto.addStatement(unifyCode.build());
+            DocumentUtils.addRouteDoc(moduleName, logger, element, route, typeDoc);
         }
     }
 
-    private String handleParam(StringBuilder paramSB, Element element) {
-        StringBuilder tempParamSB = new StringBuilder();
+    private CodeBlock.Builder handleParam(CodeBlock.Builder paramCode, Element element) {
+        CodeBlock.Builder tempParamCode = CodeBlock.builder();
         for (Element field : element.getEnclosedElements()) {
             // It must be field, then it has annotation
             if (field.getKind().isField() && field.getAnnotation(Param.class) != null) {
                 Param param = field.getAnnotation(Param.class);
-                String paramName = field.getSimpleName().toString();
+                String key = field.getSimpleName().toString();
                 TypeMirror typeMirror = field.asType();
                 String typeStr = typeMirror.toString();
+                String paramType;
                 switch (typeStr) {
-                    case BYTE_PACKAGE:
-                    case BYTE_PRIMITIVE:
-                        tempParamSB.append(".putByte(");
-                        break;
-                    case SHORT_PACKAGE:
-                    case SHORT_PRIMITIVE:
-                        tempParamSB.append(".putShort(");
-                        break;
-                    case INTEGER_PACKAGE:
-                    case INTEGER_PRIMITIVE:
-                        tempParamSB.append(".putInt(");
-                        break;
-                    case LONG_PACKAGE:
-                    case LONG_PRIMITIVE:
-                        tempParamSB.append(".putLong(");
-                        break;
-                    case FLOAT_PACKAGE:
-                    case FLOAT_PRIMITIVE:
-                        tempParamSB.append(".putFloat(");
-                        break;
-                    case DOUBEL_PACKAGE:
-                    case DOUBEL_PRIMITIVE:
-                        tempParamSB.append(".putDouble(");
-                        break;
-                    case BOOLEAN_PACKAGE:
-                    case BOOLEAN_PRIMITIVE:
-                        tempParamSB.append(".putBoolean(");
-                        break;
-                    case CHAR_PACKAGE:
-                    case CHAR_PRIMITIVE:
-                        tempParamSB.append(".putChar(");
-                        break;
-                    case STRING_PACKAGE:
-                        tempParamSB.append(".putString(");
-                        break;
-                    default:
+                    case BYTE_PACKAGE, BYTE_PRIMITIVE -> paramType = "putByte";
+                    case SHORT_PACKAGE, SHORT_PRIMITIVE -> paramType = "putShort";
+                    case INTEGER_PACKAGE, INTEGER_PRIMITIVE -> paramType = "putInt";
+                    case LONG_PACKAGE, LONG_PRIMITIVE -> paramType = "putLong";
+                    case FLOAT_PACKAGE, FLOAT_PRIMITIVE -> paramType = "putFloat";
+                    case DOUBEL_PACKAGE, DOUBEL_PRIMITIVE -> paramType = "putDouble";
+                    case BOOLEAN_PACKAGE, BOOLEAN_PRIMITIVE -> paramType = "putBoolean";
+                    case CHAR_PACKAGE, CHAR_PRIMITIVE -> paramType = "putChar";
+                    case STRING_PACKAGE -> paramType = "putString";
+                    default -> {
                         if (types.isSubtype(typeMirror, parcelableType)) {
-                            tempParamSB.append(".putParcelable(");
+                            paramType = "putParcelable";
                         } else if (types.isSubtype(typeMirror, serializableType)) {
-                            tempParamSB.append(".putSerializable(");
+                            paramType = "putSerializable";
                         } else {
-                            throw new RuntimeException("@Param(type='" + typeMirror.toString() + "') is marked as an unsupported type");
+                            throw new RuntimeException("@Param(type='" + typeMirror + "') is marked as an unsupported type");
                         }
-                        break;
+                    }
                 }
 
                 if (StringUtils.isEmpty(param.name()) && !param.required()) {
-                    tempParamSB.append("\"").append(paramName).append("\"").append(")");
+                    tempParamCode.add(".$N($S)", paramType, key);
                 } else {
-                    tempParamSB.append("\"").append(paramName).append("\"").append(", ");
                     if (!StringUtils.isEmpty(param.name())) {
-                        tempParamSB.append("\"").append(param.name()).append("\"").append(", ");
+                        tempParamCode.add(".$N($S, $S, $L)", paramType, key, param.name(), param.required());
                     } else {
-                        tempParamSB.append("null").append(", ");
+                        tempParamCode.add(".$N($S, $L, $L)", paramType, key, "null", param.required());
                     }
-                    tempParamSB.append(param.required()).append(")");
                 }
             }
         }
 
         // Processing subclass parameters overrides parent class parameters
-        if (StringUtils.isEmpty(paramSB)) {
-            paramSB.append(tempParamSB);
+        if (paramCode.isEmpty()) {
+            paramCode.add(tempParamCode.build());
         } else {
-            paramSB.insert(0, tempParamSB);
+            tempParamCode.add(paramCode.build());
+            paramCode.clear();
+            paramCode.add(tempParamCode.build());
         }
 
         // if has parent?
@@ -273,10 +302,10 @@ public class GenerateModuleRouteProcessor extends BaseProcessor {
         if (parent instanceof DeclaredType) {
             Element parentElement = ((DeclaredType) parent).asElement();
             if (parentElement instanceof TypeElement && !((TypeElement) parentElement).getQualifiedName().toString().startsWith("android")) {
-                return handleParam(paramSB, parentElement);
+                return handleParam(paramCode, parentElement);
             }
         }
-        return paramSB.toString();
+        return paramCode;
     }
 
 }
