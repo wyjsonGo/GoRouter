@@ -1,13 +1,12 @@
-package com.wyjson.router.interceptor.service.impl;
+package com.wyjson.router.core;
 
 import androidx.annotation.NonNull;
 
-import com.wyjson.router.card.Card;
-import com.wyjson.router.core.GoRouter;
+import com.wyjson.router.GoRouter;
+import com.wyjson.router.callback.InterceptorCallback;
+import com.wyjson.router.model.Card;
+import com.wyjson.router.core.interfaces.IInterceptorService;
 import com.wyjson.router.exception.RouterException;
-import com.wyjson.router.interceptor.InterceptorCallback;
-import com.wyjson.router.interceptor.InterceptorHelper;
-import com.wyjson.router.interceptor.service.InterceptorService;
 import com.wyjson.router.interfaces.IInterceptor;
 import com.wyjson.router.thread.CancelableCountDownLatch;
 import com.wyjson.router.utils.MapUtils;
@@ -16,17 +15,17 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-public class InterceptorServiceImpl implements InterceptorService {
+public class InterceptorServiceImpl implements IInterceptorService {
 
     @Override
     public void doInterceptions(Card card, InterceptorCallback callback) {
-        GoRouter.logger.info(null, "[doInterceptions] " + InterceptorHelper.getInstance().getInterceptors());
-        if (MapUtils.isNotEmpty(InterceptorHelper.getInstance().getInterceptors())) {
-            Iterator<Map.Entry<Integer, IInterceptor>> iterator = InterceptorHelper.getInstance().getInterceptors().entrySet().iterator();
+        GoRouter.logger.info(null, "[doInterceptions] " + Warehouse.interceptors);
+        if (MapUtils.isNotEmpty(Warehouse.interceptors)) {
+            Iterator<Map.Entry<Integer, IInterceptor>> iterator = Warehouse.interceptors.entrySet().iterator();
             GoRouter.getInstance().getExecutor().execute(new Runnable() {
                 @Override
                 public void run() {
-                    CancelableCountDownLatch interceptorCounter = new CancelableCountDownLatch(InterceptorHelper.getInstance().getInterceptors().size());
+                    CancelableCountDownLatch interceptorCounter = new CancelableCountDownLatch(Warehouse.interceptors.size());
                     try {
                         execute(card, iterator, interceptorCounter);
                         interceptorCounter.await(card.getTimeout(), TimeUnit.SECONDS);

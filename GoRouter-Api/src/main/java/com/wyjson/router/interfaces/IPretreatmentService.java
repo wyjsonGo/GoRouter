@@ -2,12 +2,12 @@ package com.wyjson.router.interfaces;
 
 import android.content.Context;
 
-import com.wyjson.router.card.Card;
+import com.wyjson.router.model.Card;
 
 /**
  * 预处理
  */
-public interface PretreatmentService extends IService {
+public interface IPretreatmentService extends IService {
 
     /**
      * 跳转前预处理

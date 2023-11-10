@@ -1,4 +1,4 @@
-package com.wyjson.router.load;
+package com.wyjson.router.module.interfaces;
 
 /**
  * Do not use this interface.

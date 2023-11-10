@@ -1,8 +1,8 @@
-package com.wyjson.router.param;
+package com.wyjson.router.model;
 
 import androidx.annotation.NonNull;
 
-import com.wyjson.router.core.GoRouter;
+import com.wyjson.router.GoRouter;
 import com.wyjson.router.enums.ParamType;
 
 public class ParamMeta {

@@ -5,5 +5,5 @@
     @com.wyjson.router.annotation.Param <fields>;
 }
 # 自动注册模块路由加载类不混淆
--keep class * implements com.wyjson.router.load.IRouteModule
+-keep class * implements com.wyjson.router.module.interfaces.IRouteModule
 # #   ########## GoRouter # end ##########

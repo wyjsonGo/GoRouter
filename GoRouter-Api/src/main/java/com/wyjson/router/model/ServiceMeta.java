@@ -1,4 +1,4 @@
-package com.wyjson.router.service;
+package com.wyjson.router.model;
 
 import com.wyjson.router.interfaces.IService;
 

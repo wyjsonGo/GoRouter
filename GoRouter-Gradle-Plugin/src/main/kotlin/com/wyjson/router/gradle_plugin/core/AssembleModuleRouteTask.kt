@@ -2,6 +2,7 @@ package com.wyjson.router.gradle_plugin.core
 
 import com.wyjson.router.gradle_plugin.utils.Constants
 import com.wyjson.router.gradle_plugin.utils.Constants.INJECT_CLASS_NAME
+import com.wyjson.router.gradle_plugin.utils.Constants.MODULE_ROUTE_NAME_SUFFIX
 import com.wyjson.router.gradle_plugin.utils.Constants.SCAN_TARGET_INJECT_PACKAGE_NAME
 import com.wyjson.router.gradle_plugin.utils.Constants._CLASS
 import com.wyjson.router.gradle_plugin.utils.Logger
@@ -61,8 +62,8 @@ abstract class AssembleModuleRouteTask : DefaultTask() {
 //            Logger.i("Scan to directory [${directory.asFile.absolutePath}]")
             directory.asFile.walk().forEach { file ->
                 if (file.isFile) {
-                    if (file.name.endsWith(Constants.MODULE_ROUTE_NAME_SUFFIX)) {
-                        Logger.i("Scan to class [${file.name}]  be from directory [${directory.asFile.absolutePath}]")
+                    if (file.name.endsWith(MODULE_ROUTE_NAME_SUFFIX + _CLASS)) {
+                        Logger.i("Scan to class [${file.name}] be from directory [${directory.asFile.absolutePath}]")
                         moduleRouteClassList.add(file.name)
                     }
                     val relativePath = directory.asFile.toURI().relativize(file.toURI()).path
@@ -96,7 +97,8 @@ abstract class AssembleModuleRouteTask : DefaultTask() {
                         }
                     } else {
                         val startsWith = entryName.startsWith(Constants.dotToSlash(SCAN_TARGET_INJECT_PACKAGE_NAME))
-                        if (startsWith) {
+                        val endsWith = entryName.endsWith(Constants.dotToSlash(MODULE_ROUTE_NAME_SUFFIX) + _CLASS)
+                        if (startsWith && endsWith) {
                             val className = entryName.substring(entryName.lastIndexOf("/") + 1)
                             Logger.i("Scan to class [$className] be from jar [${file.asFile.absolutePath}]")
                             if (className.isNotEmpty()) {

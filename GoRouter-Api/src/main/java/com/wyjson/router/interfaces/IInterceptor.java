@@ -1,7 +1,7 @@
 package com.wyjson.router.interfaces;
 
-import com.wyjson.router.card.Card;
-import com.wyjson.router.interceptor.InterceptorCallback;
+import com.wyjson.router.model.Card;
+import com.wyjson.router.callback.InterceptorCallback;
 
 /**
  * 拦截器

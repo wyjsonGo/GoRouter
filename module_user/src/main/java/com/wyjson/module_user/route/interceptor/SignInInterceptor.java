@@ -2,7 +2,6 @@ package com.wyjson.module_user.route.interceptor;
 
 import static com.wyjson.module_common.route.BaseRoute.IS_LOGIN;
 
-import android.content.DialogInterface;
 import android.os.Handler;
 import android.os.Looper;
 
@@ -11,10 +10,10 @@ import androidx.appcompat.app.AlertDialog;
 import com.wyjson.module_common.route.UserRoute;
 import com.wyjson.module_common.route.utils.RouteTagUtils;
 import com.wyjson.router.annotation.Interceptor;
-import com.wyjson.router.card.Card;
-import com.wyjson.router.core.GoRouter;
+import com.wyjson.router.model.Card;
+import com.wyjson.router.GoRouter;
 import com.wyjson.router.exception.RouterException;
-import com.wyjson.router.interceptor.InterceptorCallback;
+import com.wyjson.router.callback.InterceptorCallback;
 import com.wyjson.router.interfaces.IInterceptor;
 
 @Interceptor(priority = 1, remark = "登录拦截器")

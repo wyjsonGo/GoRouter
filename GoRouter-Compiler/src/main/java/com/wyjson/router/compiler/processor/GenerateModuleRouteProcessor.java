@@ -9,7 +9,6 @@ import static com.wyjson.router.compiler.utils.Constants.CHAR_PACKAGE;
 import static com.wyjson.router.compiler.utils.Constants.CHAR_PRIMITIVE;
 import static com.wyjson.router.compiler.utils.Constants.DOUBEL_PACKAGE;
 import static com.wyjson.router.compiler.utils.Constants.DOUBEL_PRIMITIVE;
-import static com.wyjson.router.compiler.utils.Constants.FIELD_NAME_ROUTE_GROUPS;
 import static com.wyjson.router.compiler.utils.Constants.FLOAT_PACKAGE;
 import static com.wyjson.router.compiler.utils.Constants.FLOAT_PRIMITIVE;
 import static com.wyjson.router.compiler.utils.Constants.FRAGMENT;
@@ -19,12 +18,15 @@ import static com.wyjson.router.compiler.utils.Constants.INTEGER_PRIMITIVE;
 import static com.wyjson.router.compiler.utils.Constants.I_ROUTE_MODULE_GROUP_METHOD_NAME_LOAD;
 import static com.wyjson.router.compiler.utils.Constants.I_ROUTE_MODULE_GROUP_PACKAGE_NAME;
 import static com.wyjson.router.compiler.utils.Constants.I_ROUTE_MODULE_PACKAGE_NAME;
+import static com.wyjson.router.compiler.utils.Constants.LOGISTICS_CENTER_METHOD_NAME_GET_ROUTE_GROUPS;
+import static com.wyjson.router.compiler.utils.Constants.LOGISTICS_CENTER_PACKAGE_NAME;
 import static com.wyjson.router.compiler.utils.Constants.LONG_PACKAGE;
 import static com.wyjson.router.compiler.utils.Constants.LONG_PRIMITIVE;
 import static com.wyjson.router.compiler.utils.Constants.METHOD_NAME_LOAD;
 import static com.wyjson.router.compiler.utils.Constants.METHOD_NAME_LOAD_ROUTE_FOR_x_GROUP;
 import static com.wyjson.router.compiler.utils.Constants.METHOD_NAME_LOAD_ROUTE_GROUP;
 import static com.wyjson.router.compiler.utils.Constants.MODULE_PACKAGE_NAME;
+import static com.wyjson.router.compiler.utils.Constants.PARAM_NAME_ROUTE_GROUPS;
 import static com.wyjson.router.compiler.utils.Constants.PARCELABLE_PACKAGE;
 import static com.wyjson.router.compiler.utils.Constants.PREFIX_OF_LOGGER;
 import static com.wyjson.router.compiler.utils.Constants.PROJECT;
@@ -40,9 +42,9 @@ import static javax.lang.model.element.Modifier.PUBLIC;
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
-import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.wyjson.router.annotation.Interceptor;
@@ -66,7 +68,6 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Element;
-import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
@@ -76,6 +77,8 @@ public class GenerateModuleRouteProcessor extends BaseProcessor {
 
     TypeElement mGoRouter;
     TypeElement mIRouteModule;
+
+    TypeElement mLogisticsCenter;
     TypeElement mIRouteModuleGroup;
     TypeMirror serializableType;
     TypeMirror parcelableType;
@@ -99,11 +102,6 @@ public class GenerateModuleRouteProcessor extends BaseProcessor {
         logger.info(moduleName + " >>> GenerateModuleRouteProcessor init. <<<");
         mGoRouter = elementUtils.getTypeElement(GOROUTER_PACKAGE_NAME);
         mIRouteModule = elementUtils.getTypeElement(I_ROUTE_MODULE_PACKAGE_NAME);
-        mIRouteModuleGroup = elementUtils.getTypeElement(I_ROUTE_MODULE_GROUP_PACKAGE_NAME);
-        serializableType = elementUtils.getTypeElement(SERIALIZABLE_PACKAGE).asType();
-        parcelableType = elementUtils.getTypeElement(PARCELABLE_PACKAGE).asType();
-        activityType = elementUtils.getTypeElement(ACTIVITY).asType();
-        fragmentType = elementUtils.getTypeElement(FRAGMENT).asType();
     }
 
     @Override
@@ -114,10 +112,6 @@ public class GenerateModuleRouteProcessor extends BaseProcessor {
         DocumentUtils.createDoc(mFiler, moduleName, logger, isGenerateDoc);
 
         String className = generateClassName + SEPARATOR + PROJECT;
-        TypeSpec.Builder thisClass = TypeSpec.classBuilder(className)
-                .addModifiers(PUBLIC)
-                .addSuperinterface(ClassName.get(mIRouteModule))
-                .addJavadoc(WARNING_TIPS);
 
         MethodSpec.Builder loadIntoMethod = MethodSpec.methodBuilder(METHOD_NAME_LOAD)
                 .addModifiers(PUBLIC)
@@ -126,11 +120,17 @@ public class GenerateModuleRouteProcessor extends BaseProcessor {
 
         addService(roundEnvironment, loadIntoMethod);
         addInterceptor(roundEnvironment, loadIntoMethod);
-        LinkedHashSet<MethodSpec> routeGroupMethods = addRouteGroup(roundEnvironment, thisClass, loadIntoMethod);
+        LinkedHashSet<MethodSpec> routeGroupMethods = addRouteGroup(roundEnvironment, loadIntoMethod);
 
-        thisClass.addMethod(loadIntoMethod.build()).addMethods(routeGroupMethods);
         try {
-            JavaFile.builder(MODULE_PACKAGE_NAME, thisClass.build())
+            JavaFile.builder(MODULE_PACKAGE_NAME,
+                            TypeSpec.classBuilder(className)
+                                    .addModifiers(PUBLIC)
+                                    .addSuperinterface(ClassName.get(mIRouteModule))
+                                    .addJavadoc(WARNING_TIPS)
+                                    .addMethod(loadIntoMethod.build())
+                                    .addMethods(routeGroupMethods)
+                                    .build())
                     .indent("    ")
                     .build()
                     .writeTo(mFiler);
@@ -172,7 +172,7 @@ public class GenerateModuleRouteProcessor extends BaseProcessor {
         }
     }
 
-    private LinkedHashSet<MethodSpec> addRouteGroup(RoundEnvironment roundEnvironment, TypeSpec.Builder thisClass, MethodSpec.Builder loadIntoMethod) {
+    private LinkedHashSet<MethodSpec> addRouteGroup(RoundEnvironment roundEnvironment, MethodSpec.Builder loadIntoMethod) {
         LinkedHashSet<MethodSpec> routeGroupMethods = new LinkedHashSet<>();
 
         Set<? extends Element> elements = roundEnvironment.getElementsAnnotatedWith(Route.class);
@@ -180,23 +180,27 @@ public class GenerateModuleRouteProcessor extends BaseProcessor {
             return routeGroupMethods;
         logger.info(moduleName + " >>> Found Route, size is " + elements.size() + " <<<");
 
-        FieldSpec routeGroupsField = FieldSpec.builder(
-                        ParameterizedTypeName.get(
-                                ClassName.get(Map.class),
-                                ClassName.get(String.class),
-                                ClassName.get(mIRouteModuleGroup)
-                        ),
-                        FIELD_NAME_ROUTE_GROUPS,
-                        Modifier.PRIVATE,
-                        Modifier.FINAL
-                )
-                .initializer("new $T<>()", ClassName.get(HashMap.class))
-                .build();
-        thisClass.addField(routeGroupsField);
+        mLogisticsCenter = elementUtils.getTypeElement(LOGISTICS_CENTER_PACKAGE_NAME);
+        mIRouteModuleGroup = elementUtils.getTypeElement(I_ROUTE_MODULE_GROUP_PACKAGE_NAME);
+        serializableType = elementUtils.getTypeElement(SERIALIZABLE_PACKAGE).asType();
+        parcelableType = elementUtils.getTypeElement(PARCELABLE_PACKAGE).asType();
+        activityType = elementUtils.getTypeElement(ACTIVITY).asType();
+        fragmentType = elementUtils.getTypeElement(FRAGMENT).asType();
 
-        MethodSpec.Builder loadRouteGroupMethod = MethodSpec.methodBuilder(METHOD_NAME_LOAD_ROUTE_GROUP).addModifiers(PRIVATE);
+        ParameterSpec routeGroupsParamSpec = ParameterSpec.builder(
+                ParameterizedTypeName.get(
+                        ClassName.get(Map.class),
+                        ClassName.get(String.class),
+                        ClassName.get(mIRouteModuleGroup)
+                ),
+                PARAM_NAME_ROUTE_GROUPS
+        ).build();
+
+        MethodSpec.Builder loadRouteGroupMethod = MethodSpec
+                .methodBuilder(METHOD_NAME_LOAD_ROUTE_GROUP)
+                .addModifiers(PRIVATE)
+                .addParameter(routeGroupsParamSpec);
         loadRouteGroupMethod.addJavadoc("load route group");
-        loadRouteGroupMethod.addStatement("$N.clear()", routeGroupsField);
 
         saveRouteGroup(elements);
 
@@ -223,13 +227,15 @@ public class GenerateModuleRouteProcessor extends BaseProcessor {
             iRouteModuleGroupCode.add("}");
 
             CodeBlock.Builder routeGroupPutCode = CodeBlock.builder();
-            routeGroupPutCode.add("$N.put($S, $N)", routeGroupsField, groupName, iRouteModuleGroupCode.build().toString());
+            routeGroupPutCode.add("$N.put($S, $N)", routeGroupsParamSpec, groupName, iRouteModuleGroupCode.build().toString());
+
 
             loadRouteGroupMethod.addStatement(routeGroupPutCode.build());
         }
 
         loadIntoMethod.addCode("// call load route group\n");
-        loadIntoMethod.addStatement("$N()", loadRouteGroupMethod.build());
+
+        loadIntoMethod.addStatement("$N($T.$N())", loadRouteGroupMethod.build(), mLogisticsCenter, LOGISTICS_CENTER_METHOD_NAME_GET_ROUTE_GROUPS);
         routeGroupMethods.add(loadRouteGroupMethod.build());
         return routeGroupMethods;
     }
@@ -259,7 +265,7 @@ public class GenerateModuleRouteProcessor extends BaseProcessor {
 
     private String extractRouteGroup(String path) {
         if (StringUtils.isEmpty(path) || !path.startsWith("/")) {
-            throw new RuntimeException(PREFIX_OF_LOGGER + moduleName + "  Extract the path[" + path + "] group failed, Extract the default group failed, the path must be start with '/' and contain more than 2 '/'!");
+            throw new RuntimeException(PREFIX_OF_LOGGER + moduleName + " Extract the path[" + path + "] group failed, Extract the default group failed, the path must be start with '/' and contain more than 2 '/'!");
         }
         try {
             String group = path.substring(1, path.indexOf("/", 1));
@@ -268,7 +274,7 @@ public class GenerateModuleRouteProcessor extends BaseProcessor {
             }
             return group;
         } catch (Exception e) {
-            throw new RuntimeException(PREFIX_OF_LOGGER + moduleName + " Failed to extract path[" + path + "] group! " + e.getMessage());
+            throw new RuntimeException(PREFIX_OF_LOGGER + moduleName + " Extract the path[" + path + "] group failed, Extract the default group failed, the path must be start with '/' and contain more than 2 '/'! " + e.getMessage());
         }
     }
 

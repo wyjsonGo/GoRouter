@@ -565,14 +565,16 @@ GoRouter日志tag为`GoRouter`，GoRouter-Compiler日志tag为`GoRouter::Compile
 
 ##### 6.  ARouter迁移指南
 
-| ARouter            | GoRouter   |
-| ------------------ | ---------- |
-| ARouter            | GoRouter   |
-| navigation()       | go()       |
-| NavigationCallback | GoCallback |
-| IProvider          | IService   |
-| Postcard           | Card       |
-| @Route             | @Route     |
-| @Route             | @Service   |
-| @Route             | @Interceptor |
-| @Autowired         | @Param     |
+| ARouter             | GoRouter             |
+| ------------------- | -------------------- |
+| ARouter             | GoRouter             |
+| navigation()        | go()                 |
+| NavigationCallback  | GoCallback           |
+| IProvider           | IService             |
+| DegradeService      | IDegradeService      |
+| PretreatmentService | IPretreatmentService |
+| Postcard            | Card                 |
+| @Route              | @Route               |
+| @Route              | @Service             |
+| @Route              | @Interceptor         |
+| @Autowired          | @Param               |

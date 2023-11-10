@@ -8,14 +8,14 @@ object Constants {
     const val PROJECT = "GoRouter";
     const val _CLASS = ".class"
 
-    // 路由注册生成类名后缀$$GoRouter.class
-    const val MODULE_ROUTE_NAME_SUFFIX = SEPARATOR + "GoRouter" + _CLASS
+    // 路由注册生成类名后缀$$GoRouter
+    const val MODULE_ROUTE_NAME_SUFFIX = SEPARATOR + "GoRouter"
 
     // 需要扫描注入的类,所在的包名
     const val SCAN_TARGET_INJECT_PACKAGE_NAME = "$PACKAGE_NAME.module"
 
     // 注入到这个类下
-    const val INJECT_CLASS_NAME = "$PACKAGE_NAME.load.RouteModuleLoadUtils"
+    const val INJECT_CLASS_NAME = "$PACKAGE_NAME.core.RouteModuleLoadCenter"
 
     // 注入到这个方法
     const val INJECT_METHOD_NAME = "loadModuleRouteByPlugin"

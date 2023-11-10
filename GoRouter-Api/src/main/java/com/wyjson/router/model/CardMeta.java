@@ -1,14 +1,13 @@
-package com.wyjson.router.card;
+package com.wyjson.router.model;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.wyjson.router.core.GoRouter;
+import com.wyjson.router.GoRouter;
+import com.wyjson.router.core.LogisticsCenter;
 import com.wyjson.router.enums.ParamType;
 import com.wyjson.router.enums.RouteType;
 import com.wyjson.router.exception.RouterException;
-import com.wyjson.router.param.ParamMeta;
-import com.wyjson.router.route.RouteHelper;
 import com.wyjson.router.utils.TextUtils;
 
 import java.util.HashMap;
@@ -63,7 +62,7 @@ public class CardMeta {
                 return group;
             }
         } catch (Exception e) {
-            throw new RouterException("Failed to extract path[" + path + "] group! " + e.getMessage());
+            throw new RouterException("Extract the path[" + path + "] group failed, the path must be start with '/' and contain more than 2 '/'! " + e.getMessage());
         }
     }
 
@@ -107,8 +106,8 @@ public class CardMeta {
         commit(cls, RouteType.FRAGMENT);
     }
 
-    public void commit(Class<?> cls, RouteType type) {
-        RouteHelper.getInstance().addCardMeta(new CardMeta(this.path, type, cls, this.tag, this.paramsType));
+    private void commit(Class<?> cls, RouteType type) {
+        LogisticsCenter.addCardMeta(new CardMeta(this.path, type, cls, this.tag, this.paramsType));
     }
 
     public CardMeta putTag(int tag) {

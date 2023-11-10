@@ -1,13 +1,13 @@
 package com.wyjson.router.utils;
 
-import static com.wyjson.router.load.RouteModuleLoadUtils.GOROUTER_SP_CACHE_KEY;
+import static com.wyjson.router.core.RouteModuleLoadCenter.GOROUTER_SP_CACHE_KEY;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 
-import com.wyjson.router.core.GoRouter;
+import com.wyjson.router.GoRouter;
 
 public class PackageUtils {
 

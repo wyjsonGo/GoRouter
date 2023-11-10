@@ -55,7 +55,7 @@ public abstract class BaseProcessor extends AbstractProcessor {
             logger.info(moduleName + " The user has configuration the module name, it was [" + moduleName + "]");
         } else {
             logger.error(NO_MODULE_NAME_TIPS);
-            throw new RuntimeException(PREFIX_OF_LOGGER + ">>> No module name, for more information, look at gradle log.");
+            throw new RuntimeException(PREFIX_OF_LOGGER + "No module name, for more information, look at gradle log.");
         }
     }
 

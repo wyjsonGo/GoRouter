@@ -1,21 +1,23 @@
-package com.wyjson.router.card;
+package com.wyjson.router.model;
 
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.SparseArray;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityOptionsCompat;
 
+import com.wyjson.router.GoRouter;
 import com.wyjson.router.callback.GoCallback;
-import com.wyjson.router.core.GoRouter;
+import com.wyjson.router.core.LogisticsCenter;
 import com.wyjson.router.enums.RouteType;
+import com.wyjson.router.exception.NoFoundRouteException;
 import com.wyjson.router.exception.RouterException;
-import com.wyjson.router.route.RouteHelper;
 import com.wyjson.router.utils.TextUtils;
 
 import java.io.Serializable;
@@ -98,7 +100,12 @@ public final class Card extends CardMeta {
 
     @Nullable
     public CardMeta getCardMeta() {
-        return RouteHelper.getInstance().getCardMeta(this);
+        try {
+            return LogisticsCenter.getCardMeta(this);
+        } catch (NoFoundRouteException e) {
+            GoRouter.logger.warning(null, e.getMessage());
+        }
+        return null;
     }
 
     public void setCardMeta(RouteType type, Class<?> pathClass, int tag) {

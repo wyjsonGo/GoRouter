@@ -1,8 +1,9 @@
-package com.wyjson.router.callback;
+package com.wyjson.router.callback.impl;
 
 import androidx.annotation.NonNull;
 
-import com.wyjson.router.card.Card;
+import com.wyjson.router.callback.GoCallback;
+import com.wyjson.router.model.Card;
 
 public abstract class GoCallbackImpl implements GoCallback {
     @Override
