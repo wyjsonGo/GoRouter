@@ -190,7 +190,7 @@ public class GenerateModuleRouteProcessor extends BaseProcessor {
                         Modifier.PRIVATE,
                         Modifier.FINAL
                 )
-                .initializer("new $T()", ClassName.get(HashMap.class))
+                .initializer("new $T<>()", ClassName.get(HashMap.class))
                 .build();
         thisClass.addField(routeGroupsField);
 
