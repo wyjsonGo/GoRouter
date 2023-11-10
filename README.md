@@ -6,21 +6,21 @@
 
 ## 简介
 
-之前一直在用阿里开源的[ARouter](https://github.com/alibaba/ARouter)项目，因为ARouter多年未更新，ARouter 开始有些不太适合了，所以重新开发了这款Android路由框架。
+之前一直在用阿里开源的[ARouter](https://github.com/alibaba/ARouter)项目，因为ARouter多年未更新，ARouter开始有些不太适合了，所以重新开发了这款Android路由框架，同样的API，更多的功能，迁移请参见文末6-7。
 
 ## GoRouter和ARouter功能差异对比
 
-| 功能           | ARouter | GoRouter | 描述                                                   |
-| ------------ | ------- | -------- | ---------------------------------------------------- |
-| 路由注册方式       | 注解      | 注解、java     | GoRouter不仅提供了注解，还能使用java方式注册，参见5-6 |
-| 服务           | 一对多     | 一对一      | ARouter可以为一个服务接口注册多个实现类(没啥用),本库一个服务接口对应一个实现方法(调用更方便) |
-| 动态注册拦截器      | 不支持     | 支持       | ARouter只能动态注册路由,不能动态注册拦截器 |
-| 重写跳转URL服务    | 支持      | 不支持      | 可以在`PretreatmentService`里实现相同功能 |
-| 获取元数据        | 不支持     | 支持       | 有些场景需要判断某个页面当前是否存在,就需要获取页面class等信息，参见5-1 |
-| withObject() | 支持      | 不支持      | ARouter实现原理是转JSON后使用`withString()`方法传递 |
-| inject(T)    | 单一      | 更多       | ARouter不能在`onNewIntent()`方法里使用，GoRouter提供了更多使用场景 |
-| 按组分类、按需初始化 | 支持  | 不支持     | 待开发，对于路由页面多的项目有一定提升 |
-| 模块Application生命周期 | 不支持    | 待开发    | 模块化路由都有了，肯定也需要模块Application生命周期，正好本库Api、生成类、自动注册都有，所以开发一下这个功能很方便 |
+| 功能                    | ARouter  | GoRouter  | 描述                                                  |
+| ---------------------- | -------- | --------- | ---------------------------------------------------- |
+| 路由注册方式             | 注解      | 注解、java | GoRouter不仅提供了注解，还能使用java方式注册，参见5-6 |
+| 服务                    | 一对多    | 一对一     | ARouter可以为一个服务接口注册多个实现类(没啥用),本库一个服务接口对应一个实现方法(调用更方便) |
+| 动态注册拦截器            | 不支持    | 支持      | ARouter只能动态注册路由,不能动态注册拦截器 |
+| 重写跳转URL服务          | 支持      | 不支持     | 可以在`PretreatmentService`里实现相同功能 |
+| 获取元数据               | 不支持    | 支持       | 有些场景需要判断某个页面当前是否存在等需求,就需要获取页面class等信息，参见5-1 |
+| withObject()           | 支持      | 不支持     | ARouter实现原理是转JSON后使用`withString()`方法传递 |
+| inject(T)              | 单一      | 更多       | ARouter不能在`onNewIntent()`方法里使用，GoRouter提供了更多使用场景 |
+| 按组分类、按需初始化       | 支持      | 支持       | ARouter不允许多个module中存在相同的分组，GoRouter允许 |
+| 多模块Application生命周期 | 不支持     | 待开发     | 模块化路由都有了，肯定也需要多模块Application生命周期，正好本库Api、注解处理器、自动注册都有，所以开发一下这个功能很方便 |
 
 ***
 
@@ -32,15 +32,16 @@
 4.  **支持依赖注入，可单独作为依赖注入框架使用**
 5.  **支持InstantRun**
 6.  **支持MultiDex**(Google方案)
-7.  支持用户指定全局降级与局部降级策略
-8.  页面、拦截器、服务等组件均自动注册到框架
-9.  支持多种方式配置转场动画
-10. 支持获取Fragment
-11. 完全支持Kotlin以及混编
+7.  映射关系按组分类、多级管理，按需初始化
+8.  支持用户指定全局降级与局部降级策略
+9.  页面、拦截器、服务等组件均自动注册到框架
+10. 支持多种方式配置转场动画
+11. 支持获取Fragment
 12. **支持第三方 App 加固**
 13. **支持生成路由文档**
 14. 支持增量编译
-15. 支持动态注册路由信息和拦截器
+15. 支持动态注册路由、路由组、服务和拦截器
+16. 支持多模块Application生命周期(待开发)
 
 ## 二、典型应用
 
@@ -48,6 +49,7 @@
 2.  跨模块页面跳转，模块间解耦
 3.  拦截跳转过程，处理登陆、埋点等逻辑
 4.  跨模块API调用，通过控制反转来做组件解耦
+5.  多模块Application生命周期(待开发)
 
 ## 三、基础功能
 
@@ -72,7 +74,7 @@ dependencies {
 }
 ```
 
-##### 2.  在module项目下添加注解生成类依赖和配置 (如只使用java方式注册,可忽略此步骤)
+##### 2.  在module项目下添加注解处理器依赖和配置 (如只使用java方式注册,可忽略此步骤)
 
 ```groovy
 android {
@@ -98,10 +100,11 @@ dependencies {
 
 module_user模块Demo示例[module_user/build.gradle](https://github.com/wyjsonGo/GoRouter/blob/master/module_user/build.gradle)
 
-##### 3.  添加Activity/Fragment
+##### 3.  添加路由
 
 ```java
-// 注解
+// 在支持路由的页面上添加注解
+// 这里的路径需要注意的是至少需要有两级，/xx/xx
 @Route(path = "/test/activity")
 public class TestActivity extend Activity {
     ...
@@ -112,10 +115,9 @@ public class TestActivity extend Activity {
 
 ```java
 if (BuildConfig.DEBUG) {
-    GoRouter.openDebug(); // 开启调试，查看路由详细注册和跳转过程日志
-    // GoRouter.printStackTrace(); // 打印日志的时候打印线程堆栈
+    GoRouter.openDebug(); // 开启调试，查看路由详细加载和跳转过程日志
 }
-GoRouter.autoLoadModuleRoute(this);// 尽可能早，推荐在Application中初始化
+GoRouter.autoLoadModuleRoute(this); // 尽可能早，推荐在Application中初始化
 ```
 
 ##### 5.  发起路由操作
@@ -131,7 +133,7 @@ GoRouter.getInstance().build("/test/fragment")
             .go(this);
 ```
 
-##### 6.  使用Gradle插件实现路由表的自动加载，支持Gradle8.0+ (可选)
+##### 6.  使用Gradle插件实现路由表的自动加载，支持Gradle7.4+ (可选)
 
 ```groovy
 // 项目根目录下的settings.gradle
@@ -162,7 +164,7 @@ plugins {
     id 'com.wyjson.gorouter'
 }
 ```
-*   支持Gradle8.0+，Gradle8.0以下参见5-7。
+*   支持Gradle7.4+，Gradle7.4以下参见5-7。
 *   开发阶段构建加速参见5-8(最好在开发阶段开启,节省build时间)。
 *   可选使用，通过GoRouter提供的注册插件进行路由表的自动加载，默认通过扫描dex的方式进行加载(在运行时注册,节省打包时间)，通过gradle插件进行自动注册可以缩短运行时初始化时间(在打包时注册,节省运行时间)，解决应用加固导致无法直接访问dex文件。
 
@@ -413,7 +415,7 @@ GoRouter.getInstance()
 // 指定Flag
 GoRouter.getInstance()
     .build("/main/activity")
-    .withFlags();
+    .withFlags()
     .go(this);
 
 // 获取Fragment
@@ -454,6 +456,9 @@ GoRouter.setLogger();
 
 // 使用自己提供的线程池
 GoRouter.setExecutor();
+
+// 开启openDebug()后,打印日志的时候打印线程堆栈
+GoRouter.printStackTrace();
 ```
 
 ##### 3.  获取原始的URI
@@ -478,19 +483,34 @@ GoRouter.getInstance().isRouteRegisterMode();
 
 ##### 6. java方式动态注册路由信息
 
-适用于插件化架构的App以及需要动态注册路由信息和拦截器的场景，可以通过 GoRouter 提供的接口实现动态注册路由信息和拦截器。
+适用于插件化架构的App以及需要动态注册路由、路由组、服务和拦截器的场景。目标页面、服务和拦截器可以不标注`@Route`、`@Service`、`@Interceptor`注解。
 
 ```java
-// 注册Activity
-GoRouter.getInstance().build("/user/info/activity").commitActivity(UserInfoActivity.class);
-// 注册Fragment
-GoRouter.getInstance().build("/user/card/fragment").commitFragment(CardFragment.class);
-// 注册服务
+// 动态注册服务(重复添加相同服务会被覆盖(更新))
 GoRouter.getInstance().addService(UserServiceImpl.class);
-// 注册拦截器
+
+// 注册拦截器(重复添加相同优先级会catch)
 GoRouter.getInstance().addInterceptor(1, TestInterceptor.class);
-// 注册拦截器(适用于动态插件加载时使用)
+
+// 动态注册拦截器(重复添加相同优先级会覆盖(更新))
 GoRouter.getInstance().setInterceptor(1, TestInterceptor.class);
+
+// 动态注册路由分组,按需加载路由(注意：同一批次仅允许相同group的路由信息注册)
+GoRouter.getInstance().addRouterGroup("show", new IRouteModuleGroup() {
+    @Override
+    public void load() {
+        GoRouter.getInstance().build("/show/list/activity").commitActivity(ShowListActivity.class);
+        GoRouter.getInstance().build("/show/info/fragment").commitFragment(ShowInfoFragment.class);
+        ...
+    }
+});
+
+// 当然,你也可以直接注册Activity、Fragment路由
+// 动态注册Activity
+GoRouter.getInstance().build("/user/info/activity").commitActivity(UserInfoActivity.class);
+// 动态注册Fragment
+GoRouter.getInstance().build("/user/card/fragment").commitFragment(CardFragment.class);
+
 ```
 
 ##### 7.  自定义模块路由加载
@@ -540,19 +560,31 @@ android {
 
 ## 六、其他
 
-##### 1.  拦截器和服务的异同
+##### 1.  路由中的分组概念
+
+*   SDK中针对所有的路径`/test/1`、`/test/2`进行分组，分组只有在分组中的某一个路径第一次被访问的时候，该分组才会被初始化。分组使用路径中第一段字符串(/*/)作为分组，这里的路径需要注意的是至少需要有两级`/xx/xx`。
+*   GRouter允许一个module中存在多个分组，也允许多个module中存在相同的分组，但是最好不要在多个module中存在相同的分组，因为在注册路由组时发现存在相同的分组，会立即注册老的路由组里的全部路由，然后更新新的路由组信息。
+
+##### 2.  拦截器和服务的异同
 
 *   拦截器和服务所需要实现的接口不同，但是结构类似，都存在`init()`方法，但是两者的调用时机不同。
 *   拦截器因为其特殊性，只对Activity路由有效，拦截器会在GoRouter首次调用的时候初始化。
 *   服务没有该限制，某一服务可能在App整个生命周期中都不会用到，所以服务只有被调用的时候才会触发初始化操作。
 
-##### 2.  使用java方式注册服务，实现相同服务（HelloService）的实现类（HelloServiceImpl）调用`addService()`方法会被覆盖(更新)，全局唯一。
+##### 3.  使用java方式注册服务
 
-##### 3.  使用java方式注册拦截器，`addInterceptor(priority,interceptor)`相同优先级添加会catch，`setInterceptor(priority,interceptor)`相同优先级添加会覆盖(更新)。
+*   实现相同服务（HelloService）的实现类（HelloServiceImpl）调用`addService()`方法会被覆盖(更新)，全局唯一。
 
-##### 4.  框架已经对注解方式注入参数做了混淆处理。如果不使用注解方式，使用java方式注册，不要忘记参数加上`@Keep`注解，否则使用`inject`方法自动注入会失败。
+##### 4.  使用java方式注册拦截器
 
-##### 5.  开启调试,查看日志可以检查路由是否有重复提交的情况
+*   `addInterceptor(priority,interceptor)`重复添加相同优先级会catch。
+*   `setInterceptor(priority,interceptor)`重复添加相同优先级会覆盖(更新)。
+
+##### 5.  混淆
+
+*   框架已经做了混淆处理，开发者无需关心。需要注意的是，如果不使用`@Param`注解方式，使用java方式注册，不要忘记参数加上java自带`@Keep`注解，否则使用`inject()`方法自动注入会失败。
+
+##### 6.  开启调试,查看日志可以检查路由是否有重复提交的情况
 
 ```log
 [addCardMeta] Path duplicate commit!!! path[/xx/xx]
@@ -563,7 +595,7 @@ android {
 ```
 GoRouter日志tag为`GoRouter`，GoRouter-Compiler日志tag为`GoRouter::Compiler`，GoRouter-Gradle-Plugin日志tag为`GoRouter::Gradle-Plugin`。
 
-##### 6.  ARouter迁移指南
+##### 7.  ARouter迁移指南
 
 | ARouter             | GoRouter             |
 | ------------------- | -------------------- |
