@@ -14,7 +14,9 @@ import androidx.core.app.ActivityOptionsCompat;
 import com.wyjson.router.callback.GoCallback;
 import com.wyjson.router.core.GoRouter;
 import com.wyjson.router.enums.RouteType;
+import com.wyjson.router.exception.RouterException;
 import com.wyjson.router.route.RouteHelper;
+import com.wyjson.router.utils.TextUtils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -36,6 +38,9 @@ public final class Card extends CardMeta {
     private int timeout = 300;// go() timeout, TimeUnit.Second
 
     public void setUri(Uri uri) {
+        if (uri == null || TextUtils.isEmpty(uri.toString()) || TextUtils.isEmpty(uri.getPath())) {
+            throw new RouterException("uri Parameter is invalid!");
+        }
         this.uri = uri;
         setPath(uri.getPath());
     }

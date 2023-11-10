@@ -6,6 +6,7 @@ import androidx.annotation.Nullable;
 import com.wyjson.router.core.GoRouter;
 import com.wyjson.router.enums.ParamType;
 import com.wyjson.router.enums.RouteType;
+import com.wyjson.router.exception.RouterException;
 import com.wyjson.router.param.ParamMeta;
 import com.wyjson.router.route.RouteHelper;
 import com.wyjson.router.utils.TextUtils;
@@ -15,6 +16,7 @@ import java.util.Map;
 
 public class CardMeta {
     private String path;
+    private String group;
     private RouteType type;
     private Class<?> pathClass;
     private int tag;// 额外的标记
@@ -24,7 +26,7 @@ public class CardMeta {
     }
 
     public CardMeta(String path, RouteType type, Class<?> pathClass, int tag, Map<String, ParamMeta> paramsType) {
-        this.path = path;
+        setPath(path);
         this.type = type;
         this.pathClass = pathClass;
         this.tag = tag;
@@ -37,8 +39,34 @@ public class CardMeta {
     }
 
     public void setPath(@NonNull String path) {
+        if (TextUtils.isEmpty(path)) {
+            throw new RouterException("path Parameter is invalid!");
+        }
         this.path = path;
+        this.group = extractGroup(path);
     }
+
+    public String getGroup() {
+        return group;
+    }
+
+    private String extractGroup(String path) {
+        if (TextUtils.isEmpty(path) || !path.startsWith("/")) {
+            throw new RouterException("Extract the path[" + path + "] group failed, the path must be start with '/' and contain more than 2 '/'!");
+        }
+
+        try {
+            String group = path.substring(1, path.indexOf("/", 1));
+            if (TextUtils.isEmpty(group)) {
+                throw new RouterException("Extract the path[" + path + "] group failed! There's nothing between 2 '/'!");
+            } else {
+                return group;
+            }
+        } catch (Exception e) {
+            throw new RouterException("Failed to extract path[" + path + "] group! " + e.getMessage());
+        }
+    }
+
 
     public RouteType getType() {
         return type;

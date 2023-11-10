@@ -32,7 +32,7 @@ public class RouteHelper {
 
     @Nullable
     public CardMeta getCardMeta(Card card) {
-        CardMeta cardMeta = RouteHelper.getInstance().getRoutes().get(card.getPath());
+        CardMeta cardMeta = routes.get(card.getPath());
         if (cardMeta != null) {
             GoRouter.logger.info(null, "[getCardMeta] " + cardMeta);
         } else {

@@ -167,9 +167,6 @@ public final class GoRouter {
     }
 
     public Card build(Uri uri) {
-        if (uri == null || TextUtils.isEmpty(uri.toString())) {
-            throw new RouterException("uri Parameter is invalid!");
-        }
         return new Card(uri);
     }
 
@@ -289,7 +286,8 @@ public final class GoRouter {
         } else {
             logger.warning(null, "[go] This [PretreatmentService] was not found!");
         }
-        CardMeta cardMeta = RouteHelper.getInstance().getCardMeta(card);
+
+        CardMeta cardMeta = card.getCardMeta();
         if (cardMeta != null) {
             card.setCardMeta(cardMeta.getType(), cardMeta.getPathClass(), cardMeta.getTag());
 
