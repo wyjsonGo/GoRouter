@@ -20,6 +20,9 @@ import com.wyjson.router.annotation.Route;
 import com.wyjson.router.callback.GoCallback;
 import com.wyjson.router.model.Card;
 import com.wyjson.router.GoRouter;
+import com.wyjson.router.module.interfaces.IRouteModuleGroup;
+
+import java.util.Map;
 
 @Route(path = MainRoute.MainActivity, remark = "主页")
 public class MainActivity extends FragmentActivity {
@@ -36,6 +39,13 @@ public class MainActivity extends FragmentActivity {
 
     public void onClickSignInActivity(View view) {
         GoRouter.getInstance().build(UserRoute.SignInActivity).go(this);
+        // TODO: 2023/11/10 :::Test 动态添加路由分组
+        GoRouter.getInstance().addRouterGroup(new GoRouter.Function() {
+            @Override
+            public void apply(Map<String, IRouteModuleGroup> t) {
+                
+            }
+        });
     }
 
     public void onClickParamActivity(View view) {

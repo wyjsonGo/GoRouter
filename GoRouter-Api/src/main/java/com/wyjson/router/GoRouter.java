@@ -22,6 +22,7 @@ import com.wyjson.router.core.InterceptorServiceImpl;
 import com.wyjson.router.core.LogisticsCenter;
 import com.wyjson.router.core.RouteModuleLoadCenter;
 import com.wyjson.router.core.interfaces.IInterceptorService;
+import com.wyjson.router.enums.RouteType;
 import com.wyjson.router.exception.NoFoundRouteException;
 import com.wyjson.router.exception.RouterException;
 import com.wyjson.router.interfaces.IDegradeService;
@@ -31,9 +32,11 @@ import com.wyjson.router.interfaces.IService;
 import com.wyjson.router.logger.DefaultLogger;
 import com.wyjson.router.logger.ILogger;
 import com.wyjson.router.model.Card;
+import com.wyjson.router.module.interfaces.IRouteModuleGroup;
 import com.wyjson.router.thread.DefaultPoolExecutor;
 import com.wyjson.router.utils.TextUtils;
 
+import java.util.Map;
 import java.util.concurrent.ThreadPoolExecutor;
 
 public final class GoRouter {
@@ -151,6 +154,18 @@ public final class GoRouter {
         LogisticsCenter.setInterceptor(priority, interceptor);
     }
 
+    /**
+     * 动态添加路由分组
+     */
+    public void addRouterGroup(Function function) {
+        // TODO: 2023/11/10 :::未完成
+        function.apply(LogisticsCenter.getRouteGroups());
+    }
+
+    public interface Function {
+        void apply(Map<String, IRouteModuleGroup> t);
+    }
+
     private void runInMainThread(Runnable runnable) {
         if (Looper.getMainLooper().getThread() != Thread.currentThread()) {
             mHandler.post(runnable);
@@ -194,7 +209,6 @@ public final class GoRouter {
     public void inject(Fragment fragment, Bundle bundle) {
         LogisticsCenter.inject(fragment, null, bundle);
     }
-
 
     @Nullable
     public Object go(Context context, Card card, int requestCode, GoCallback callback) {
