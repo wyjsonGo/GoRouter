@@ -187,7 +187,8 @@ public class GenerateModuleRouteProcessor extends BaseProcessor {
                                 ClassName.get(mIRouteModuleGroup)
                         ),
                         FIELD_NAME_ROUTE_GROUPS,
-                        Modifier.PRIVATE
+                        Modifier.PRIVATE,
+                        Modifier.FINAL
                 )
                 .initializer("new $T()", ClassName.get(HashMap.class))
                 .build();
