@@ -32,6 +32,24 @@ public class LogisticsCenter {
         return Warehouse.routeGroups;
     }
 
+    /**
+     * 动态添加路由分组,按需加载路由
+     *
+     * @param group
+     * @param routeModuleGroup
+     */
+    public static void addRouterGroup(String group, IRouteModuleGroup routeModuleGroup) {
+        Warehouse.routeGroups.put(group, routeModuleGroup);
+        GoRouter.logger.info(null, "[addRouterGroup] Add a route group[" + group + "] dynamically");
+    }
+
+    /**
+     * 获取路由元数据
+     *
+     * @param card
+     * @return
+     * @throws NoFoundRouteException
+     */
     public static CardMeta getCardMeta(Card card) throws NoFoundRouteException {
         CardMeta cardMeta = Warehouse.routes.get(card.getPath());
         if (cardMeta == null) {
@@ -65,6 +83,11 @@ public class LogisticsCenter {
         return cardMeta;
     }
 
+    /**
+     * 添加路由元数据
+     *
+     * @param cardMeta
+     */
     public static void addCardMeta(CardMeta cardMeta) {
         if (TextUtils.isEmpty(cardMeta.getPath())) {
             throw new RouterException("path Parameter is invalid!");
@@ -88,7 +111,6 @@ public class LogisticsCenter {
 
     /**
      * 实现相同接口的service会被覆盖(更新)
-     * 调用时机可以在application或插件模块加载时
      *
      * @param serviceClass 实现类.class
      */
@@ -130,8 +152,7 @@ public class LogisticsCenter {
     }
 
     /**
-     * 相同优先级添加会catch
-     * 调用时机可以在application或插件模块加载时
+     * 重复添加相同优先级会catch
      *
      * @param priority
      * @param interceptor
@@ -154,8 +175,7 @@ public class LogisticsCenter {
     }
 
     /**
-     * 相同优先级添加会覆盖
-     * 调用时机可以在application或插件模块加载时
+     * 重复添加相同优先级会覆盖(更新)
      *
      * @param priority
      * @param interceptor
@@ -244,6 +264,12 @@ public class LogisticsCenter {
         }
     }
 
+    /**
+     * 组装路由原数组
+     *
+     * @param card
+     * @throws NoFoundRouteException
+     */
     public static synchronized void assembleRouteCard(@NonNull Card card) throws NoFoundRouteException {
         CardMeta cardMeta = getCardMeta(card);
         if (cardMeta != null) {

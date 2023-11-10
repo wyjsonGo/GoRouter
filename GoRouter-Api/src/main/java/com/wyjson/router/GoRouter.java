@@ -22,7 +22,6 @@ import com.wyjson.router.core.InterceptorServiceImpl;
 import com.wyjson.router.core.LogisticsCenter;
 import com.wyjson.router.core.RouteModuleLoadCenter;
 import com.wyjson.router.core.interfaces.IInterceptorService;
-import com.wyjson.router.enums.RouteType;
 import com.wyjson.router.exception.NoFoundRouteException;
 import com.wyjson.router.exception.RouterException;
 import com.wyjson.router.interfaces.IDegradeService;
@@ -36,7 +35,6 @@ import com.wyjson.router.module.interfaces.IRouteModuleGroup;
 import com.wyjson.router.thread.DefaultPoolExecutor;
 import com.wyjson.router.utils.TextUtils;
 
-import java.util.Map;
 import java.util.concurrent.ThreadPoolExecutor;
 
 public final class GoRouter {
@@ -112,7 +110,6 @@ public final class GoRouter {
 
     /**
      * 实现相同接口的service会被覆盖(更新)
-     * 调用时机可以在application或插件模块加载时
      *
      * @param service 实现类.class
      */
@@ -133,8 +130,7 @@ public final class GoRouter {
     }
 
     /**
-     * 相同优先级添加会catch
-     * 调用时机可以在application或插件模块加载时
+     * 重复添加相同优先级会catch
      *
      * @param priority
      * @param interceptor
@@ -144,8 +140,7 @@ public final class GoRouter {
     }
 
     /**
-     * 相同优先级添加会覆盖
-     * 调用时机可以在application或插件模块加载时
+     * 重复添加相同优先级会覆盖(更新)
      *
      * @param priority
      * @param interceptor
@@ -155,15 +150,10 @@ public final class GoRouter {
     }
 
     /**
-     * 动态添加路由分组
+     * 动态添加路由分组,按需加载路由
      */
-    public void addRouterGroup(Function function) {
-        // TODO: 2023/11/10 :::未完成
-        function.apply(LogisticsCenter.getRouteGroups());
-    }
-
-    public interface Function {
-        void apply(Map<String, IRouteModuleGroup> t);
+    public void addRouterGroup(String group, IRouteModuleGroup routeModuleGroup) {
+        LogisticsCenter.addRouterGroup(group, routeModuleGroup);
     }
 
     private void runInMainThread(Runnable runnable) {
