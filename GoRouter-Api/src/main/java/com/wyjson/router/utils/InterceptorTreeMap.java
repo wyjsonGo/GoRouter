@@ -47,9 +47,9 @@ public class InterceptorTreeMap<K, V> extends TreeMap<K, V> {
             Entry<K, V> e = i.next();
             K key = e.getKey();
             V value = e.getValue();
-            sb.append(key == this ? "(this Map)" : key);
+            sb.append(key);
             sb.append("->");
-            sb.append(value == this ? "(this Map)" : value.getClass().getSimpleName());
+            sb.append(value.getClass().getSimpleName());
             if (!i.hasNext())
                 return sb.append('}').toString();
             sb.append(',').append(' ');

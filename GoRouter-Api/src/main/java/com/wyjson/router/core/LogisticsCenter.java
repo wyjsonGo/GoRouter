@@ -55,7 +55,7 @@ public class LogisticsCenter {
                         GoRouter.logger.debug(null, "[getCardMeta] The group [" + card.getGroup() + "] has already been loaded, trigger by [" + card.getPath() + "]");
                     }
                 } catch (Exception e) {
-                    throw new RouterException("Fatal exception when loading group meta. [" + e.getMessage() + "]");
+                    throw new RouterException("Fatal exception when loading route group[" + card.getGroup() + "] meta. [" + e.getMessage() + "]");
                 }
                 return getCardMeta(card);// Reload
             }
