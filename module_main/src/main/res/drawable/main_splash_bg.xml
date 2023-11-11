@@ -16,7 +16,7 @@
             android:dither="true"
             android:filter="true"
             android:gravity="center"
-            android:src="@mipmap/logo"
+            android:src="@mipmap/main_ic_app_logo"
             android:tileMode="disabled" />
     </item>
 </layer-list>
