@@ -7,9 +7,9 @@ import java.util.Map;
 
 public class DocumentModel {
 
-    public Map<String, ServiceModel> services;
-    public List<InterceptorModel> interceptors;
-    public List<RouteModel> routes;
+    private Map<String, ServiceModel> services;
+    private List<InterceptorModel> interceptors;
+    private Map<String, List<RouteModel>> routes;
 
     public DocumentModel() {
     }
@@ -21,6 +21,10 @@ public class DocumentModel {
         return services;
     }
 
+    public void setServices(Map<String, ServiceModel> services) {
+        this.services = services;
+    }
+
     public List<InterceptorModel> getInterceptors() {
         if (interceptors == null) {
             interceptors = new ArrayList<>();
@@ -28,11 +32,19 @@ public class DocumentModel {
         return interceptors;
     }
 
-    public List<RouteModel> getRoutes() {
+    public void setInterceptors(List<InterceptorModel> interceptors) {
+        this.interceptors = interceptors;
+    }
+
+    public Map<String, List<RouteModel>> getRoutes() {
         if (routes == null) {
-            routes = new ArrayList<>();
+            routes = new HashMap<>();
         }
         return routes;
+    }
+
+    public void setRoutes(Map<String, List<RouteModel>> routes) {
+        this.routes = routes;
     }
 
 }

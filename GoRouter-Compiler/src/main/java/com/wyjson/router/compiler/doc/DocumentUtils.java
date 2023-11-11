@@ -84,7 +84,17 @@ public class DocumentUtils {
         }
     }
 
-    public static void addRouteDoc(String moduleName, Logger logger, Element element, Route route, String typeDoc) {
+    public static void addRouteGroupDoc(String moduleName, Logger logger, String group, List<RouteModel> routeModelList) {
+        if (!isDocEnable)
+            return;
+        try {
+            documentModel.getRoutes().put(group, routeModelList);
+        } catch (Exception e) {
+            logger.error(moduleName + " Failed to add route group [" + group + "] document, " + e.getMessage());
+        }
+    }
+
+    public static void addRouteDoc(String moduleName, Logger logger, Element element, List<RouteModel> routeModelList, Route route, String typeDoc) {
         if (!isDocEnable)
             return;
         try {
@@ -97,7 +107,7 @@ public class DocumentUtils {
                 routeModel.setTag(route.tag());
             }
             addParamCode(moduleName, logger, element, routeModel);
-            documentModel.getRoutes().add(routeModel);
+            routeModelList.add(routeModel);
         } catch (Exception e) {
             logger.error(moduleName + " Failed to add route [" + element.toString() + "] document, " + e.getMessage());
         }

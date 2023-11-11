@@ -52,14 +52,17 @@ import com.wyjson.router.annotation.Param;
 import com.wyjson.router.annotation.Route;
 import com.wyjson.router.annotation.Service;
 import com.wyjson.router.compiler.doc.DocumentUtils;
+import com.wyjson.router.compiler.doc.model.RouteModel;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -205,6 +208,7 @@ public class GenerateModuleRouteProcessor extends BaseProcessor {
         saveRouteGroup(elements);
 
         for (Map.Entry<String, Set<Element>> entry : routeGroupMap.entrySet()) {
+            List<RouteModel> routeModelDocList = new ArrayList<>();
             String groupName = entry.getKey();
             // 首字母大写
             String groupNameToUpperCase = groupName.substring(0, 1).toUpperCase() + groupName.substring(1);
@@ -212,7 +216,7 @@ public class GenerateModuleRouteProcessor extends BaseProcessor {
             MethodSpec.Builder loadRouteForXGroupMethod = MethodSpec.methodBuilder(methodName).addModifiers(PRIVATE);
             loadRouteForXGroupMethod.addJavadoc("\"" + groupName + "\" route group");
             for (Element element : entry.getValue()) {
-                addRoute(element, loadRouteForXGroupMethod);
+                addRoute(element, loadRouteForXGroupMethod, routeModelDocList);
             }
             MethodSpec loadRouteForXGroupMethodBuild = loadRouteForXGroupMethod.build();
             routeGroupMethods.add(loadRouteForXGroupMethodBuild);
@@ -229,8 +233,8 @@ public class GenerateModuleRouteProcessor extends BaseProcessor {
             CodeBlock.Builder routeGroupPutCode = CodeBlock.builder();
             routeGroupPutCode.add("$N.put($S, $N)", routeGroupsParamSpec, groupName, iRouteModuleGroupCode.build().toString());
 
-
             loadRouteGroupMethod.addStatement(routeGroupPutCode.build());
+            DocumentUtils.addRouteGroupDoc(moduleName, logger, groupName, routeModelDocList);
         }
 
         loadIntoMethod.addCode("// call load route group\n");
@@ -278,7 +282,7 @@ public class GenerateModuleRouteProcessor extends BaseProcessor {
         }
     }
 
-    private void addRoute(Element element, MethodSpec.Builder loadRouteGroupMethod) {
+    private void addRoute(Element element, MethodSpec.Builder loadRouteGroupMethod, List<RouteModel> routeModelDocList) {
         Route route = element.getAnnotation(Route.class);
         TypeMirror tm = element.asType();
 
@@ -319,7 +323,7 @@ public class GenerateModuleRouteProcessor extends BaseProcessor {
         unifyCode.add(typeCode.build());
 
         loadRouteGroupMethod.addStatement(unifyCode.build());
-        DocumentUtils.addRouteDoc(moduleName, logger, element, route, typeDoc);
+        DocumentUtils.addRouteDoc(moduleName, logger, element, routeModelDocList, route, typeDoc);
     }
 
     private CodeBlock.Builder handleParam(CodeBlock.Builder paramCode, Element element) {

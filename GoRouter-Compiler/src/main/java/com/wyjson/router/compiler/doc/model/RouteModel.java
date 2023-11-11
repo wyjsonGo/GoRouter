@@ -24,6 +24,46 @@ public class RouteModel {
         this.remark = remark;
     }
 
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getPathClass() {
+        return pathClass;
+    }
+
+    public void setPathClass(String pathClass) {
+        this.pathClass = pathClass;
+    }
+
+    public Integer getTag() {
+        return tag;
+    }
+
+    public void setTag(Integer tag) {
+        this.tag = tag;
+    }
+
     public List<ParamModel> getParamsType() {
         if (paramsType == null) {
             paramsType = new ArrayList<>();
@@ -31,27 +71,7 @@ public class RouteModel {
         return paramsType;
     }
 
-    public void setPath(String path) {
-        this.path = path;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public void setPathClass(String pathClass) {
-        this.pathClass = pathClass;
-    }
-
-    public void setTag(Integer tag) {
-        this.tag = tag;
-    }
-
     public void setParamsType(List<ParamModel> paramsType) {
         this.paramsType = paramsType;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark;
     }
 }
