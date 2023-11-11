@@ -86,6 +86,8 @@ public class RouteModuleLoadCenter {
                             "register failed, class name: " + className
                                     + " should implements one of IRouteModule.");
                 }
+            } catch (RouterException e) {
+                throw new RouterException("[register] " + e.getMessage());
             } catch (Exception e) {
                 GoRouter.logger.error(null, "register class error:" + className, e);
             }
@@ -134,6 +136,8 @@ public class RouteModuleLoadCenter {
             }
 
             GoRouter.logger.info(null, "The loading module route is complete, cost " + (System.currentTimeMillis() - startTime) + "ms.");
+        } catch (RouterException e) {
+            throw new RouterException("[loadModuleRouteByDex] " + e.getMessage());
         } catch (Exception e) {
             throw new RouterException("GoRouter [loadModuleRouteByDex] exception! [" + e.getMessage() + "]");
         }

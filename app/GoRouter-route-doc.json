@@ -1,0 +1,113 @@
+{
+  "services": {
+    "UserService": {
+      "remark": "用户服务",
+      "prototype": "com.wyjson.module_common.route.service.user.UserService",
+      "className": "com.wyjson.module_user.route.service.UserServiceImpl"
+    },
+    "IDegradeService": {
+      "remark": "全局降级策略",
+      "prototype": "com.wyjson.router.interfaces.IDegradeService",
+      "className": "com.wyjson.module_common.route.service.DegradeServiceImpl"
+    },
+    "IPretreatmentService": {
+      "remark": "预处理服务",
+      "prototype": "com.wyjson.router.interfaces.IPretreatmentService",
+      "className": "com.wyjson.module_common.route.service.PretreatmentServiceImpl"
+    }
+  },
+  "interceptors": [
+    {
+      "priority": 1,
+      "remark": "登录拦截器",
+      "className": "com.wyjson.module_user.route.interceptor.SignInInterceptor"
+    },
+    {
+      "priority": 100,
+      "remark": "身份验证拦截器",
+      "className": "com.wyjson.module_user.route.interceptor.AuthenticationInterceptor"
+    }
+  ],
+  "routes": {
+    "new": [
+      {
+        "path": "/new/param/activity",
+        "remark": "参数页面",
+        "type": "Activity",
+        "pathClass": "com.wyjson.module_user.activity.ParamActivity",
+        "paramsType": [
+          {
+            "name": "base",
+            "type": "int",
+            "isRequired": false,
+            "remark": "我是一个父类字段"
+          },
+          {
+            "name": "age",
+            "type": "int",
+            "isRequired": false
+          },
+          {
+            "name": "nickname",
+            "type": "String",
+            "isRequired": false,
+            "remark": "昵称"
+          }
+        ]
+      },
+      {
+        "path": "/new/param/fragment",
+        "remark": "参数片段",
+        "type": "Fragment",
+        "pathClass": "com.wyjson.module_user.fragment.ParamFragment",
+        "paramsType": [
+          {
+            "name": "age",
+            "type": "int",
+            "isRequired": false
+          },
+          {
+            "name": "name",
+            "type": "String",
+            "isRequired": false
+          }
+        ]
+      }
+    ],
+    "main": [
+      {
+        "path": "/main/activity",
+        "remark": "主页",
+        "type": "Activity",
+        "pathClass": "com.wyjson.module_main.activity.MainActivity"
+      },
+      {
+        "path": "/main/splash/activity",
+        "remark": "欢迎页",
+        "type": "Activity",
+        "pathClass": "com.wyjson.module_main.activity.SplashActivity"
+      }
+    ],
+    "user": [
+      {
+        "path": "/user/card/fragment",
+        "remark": "卡片片段",
+        "type": "Fragment",
+        "pathClass": "com.wyjson.module_user.fragment.CardFragment"
+      },
+      {
+        "path": "/user/info/activity",
+        "remark": "用户信息页面",
+        "type": "Activity",
+        "pathClass": "com.wyjson.module_user.activity.UserInfoActivity",
+        "tag": 3
+      },
+      {
+        "path": "/user/sign_in/activity",
+        "remark": "登录页面",
+        "type": "Activity",
+        "pathClass": "com.wyjson.module_user.activity.SignInActivity"
+      }
+    ]
+  }
+}

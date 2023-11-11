@@ -11,7 +11,7 @@ public interface IInterceptor {
     void init();
 
     /**
-     * {@link InterceptorCallback#onContinue(Card)} 继续执行
+     * {@link InterceptorCallback#onContinue(Card)} 继续执行,
      * {@link InterceptorCallback#onInterrupt(Card, Throwable)}} 拦截
      *
      * @param card

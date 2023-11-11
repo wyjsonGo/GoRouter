@@ -89,21 +89,6 @@ public class LogisticsCenter {
      * @param cardMeta
      */
     public static void addCardMeta(CardMeta cardMeta) {
-        if (TextUtils.isEmpty(cardMeta.getPath())) {
-            throw new RouterException("path Parameter is invalid!");
-        }
-        // 检查路由是否有重复提交的情况
-        if (GoRouter.isDebug()) {
-            for (Map.Entry<String, CardMeta> cardMetaEntry : Warehouse.routes.entrySet()) {
-                if (TextUtils.equals(cardMetaEntry.getKey(), cardMeta.getPath())) {
-                    GoRouter.logger.error(null, "[addCardMeta] Path duplicate commit!!! path[" + cardMetaEntry.getValue().getPath() + "]");
-                    break;
-                } else if (cardMetaEntry.getValue().getPathClass() == cardMeta.getPathClass()) {
-                    GoRouter.logger.error(null, "[addCardMeta] PathClass duplicate commit!!! pathClass[" + cardMetaEntry.getValue().getPathClass() + "]");
-                    break;
-                }
-            }
-        }
         Warehouse.routes.put(cardMeta.getPath(), cardMeta);
         GoRouter.logger.debug(null, "[addCardMeta] size:" + Warehouse.routes.size() + ", commit:" + cardMeta);
     }
@@ -170,7 +155,7 @@ public class LogisticsCenter {
             String title = isForce ? "[setInterceptor]" : "[addInterceptor]";
             GoRouter.logger.debug(null, title + " size:" + Warehouse.interceptors.size() + ", priority:" + priority + " -> " + interceptor.getSimpleName());
         } catch (Exception e) {
-            throw new RouterException(e);
+            throw new RouterException("[addInterceptor] " + e.getMessage());
         }
     }
 

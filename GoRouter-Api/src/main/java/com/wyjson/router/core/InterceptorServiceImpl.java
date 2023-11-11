@@ -1,13 +1,11 @@
 package com.wyjson.router.core;
 
-import androidx.annotation.NonNull;
-
 import com.wyjson.router.GoRouter;
 import com.wyjson.router.callback.InterceptorCallback;
-import com.wyjson.router.model.Card;
 import com.wyjson.router.core.interfaces.IInterceptorService;
 import com.wyjson.router.exception.RouterException;
 import com.wyjson.router.interfaces.IInterceptor;
+import com.wyjson.router.model.Card;
 import com.wyjson.router.thread.CancelableCountDownLatch;
 import com.wyjson.router.utils.MapUtils;
 
@@ -59,8 +57,8 @@ public class InterceptorServiceImpl implements IInterceptorService {
                 }
 
                 @Override
-                public void onInterrupt(Card card, @NonNull Throwable exception) {
-                    card.setInterceptorException(exception == null ? new RouterException() : exception);
+                public void onInterrupt(Card card, Throwable exception) {
+                    card.setInterceptorException(exception == null ? new RouterException("The jump is blocked!") : exception);
                     GoRouter.logger.warning(null, "[doInterceptions] [onInterrupt] {" + interceptorEntry.getKey() + "->" + interceptorEntry.getValue().getClass().getSimpleName() + "} message:" + card.getInterceptorException().getMessage());
                     counter.cancel();
                 }

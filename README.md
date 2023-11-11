@@ -545,7 +545,7 @@ GoRouter {
 
 ```java
 // 更新 build.gradle, 添加参数 GOROUTER_GENERATE_DOC = enable
-// 生成的文档路径 : build/generated/ap_generated_sources/(debug or release)/out/com/wyjson/router/docs/${moduleName}-gorouter-doc.json
+// 生成的文档路径 : build/generated/ap_generated_sources/(debug or release)/out/com/wyjson/router/docs/${moduleName}-route-doc.json
 android {
     defaultConfig {
         ...
@@ -584,14 +584,14 @@ android {
 
 *   框架已经做了混淆处理，开发者无需关心。需要注意的是，如果不使用`@Param`注解方式，使用java方式注册，不要忘记参数加上java自带`@Keep`注解，否则使用`inject()`方法自动注入会失败。
 
-##### 6.  开启调试,查看日志可以检查路由是否有重复提交的情况
+##### 6.  开启调试,查看日志可以检查使用java方式注册的路由是否有重复提交的情况
 
 ```log
-[addCardMeta] Path duplicate commit!!! path[/xx/xx]
+route path[/xx/xx] duplicate commit!!!
 ```
 
 ```log
-[addCardMeta] PathClass duplicate commit!!! pathClass[class xx.xx]
+route pathClass[class xx.xx] duplicate commit!!!
 ```
 GoRouter日志tag为`GoRouter`，GoRouter-Compiler日志tag为`GoRouter::Compiler`，GoRouter-Gradle-Plugin日志tag为`GoRouter::Gradle-Plugin`。
 

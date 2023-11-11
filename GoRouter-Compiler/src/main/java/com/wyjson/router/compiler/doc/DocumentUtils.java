@@ -1,8 +1,9 @@
 package com.wyjson.router.compiler.doc;
 
 import static com.wyjson.router.compiler.utils.Constants.DOCS_PACKAGE_NAME;
+import static com.wyjson.router.compiler.utils.Constants.DOCUMENT_FILE_NAME;
 
-import com.google.gson.GsonBuilder;
+import com.google.gson.Gson;
 import com.wyjson.router.annotation.Interceptor;
 import com.wyjson.router.annotation.Param;
 import com.wyjson.router.annotation.Route;
@@ -43,7 +44,7 @@ public class DocumentUtils {
             docWriter = mFiler.createResource(
                     StandardLocation.SOURCE_OUTPUT,
                     DOCS_PACKAGE_NAME,
-                    moduleName + "-gorouter-doc.json"
+                    moduleName + "-" + DOCUMENT_FILE_NAME
             ).openWriter();
         } catch (IOException e) {
             logger.error(moduleName + " Failed to create the document because " + e.getMessage());
@@ -54,7 +55,7 @@ public class DocumentUtils {
         if (!isDocEnable)
             return;
         try {
-            docWriter.append(new GsonBuilder().setPrettyPrinting().create().toJson(documentModel));
+            docWriter.append(new Gson().toJson(documentModel));
             docWriter.flush();
             docWriter.close();
         } catch (IOException e) {

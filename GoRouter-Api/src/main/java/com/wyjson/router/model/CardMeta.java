@@ -98,15 +98,18 @@ public class CardMeta {
         return paramsType;
     }
 
-    public void commitActivity(Class<?> cls) {
+    public void commitActivity(@NonNull Class<?> cls) {
         commit(cls, RouteType.ACTIVITY);
     }
 
-    public void commitFragment(Class<?> cls) {
+    public void commitFragment(@NonNull Class<?> cls) {
         commit(cls, RouteType.FRAGMENT);
     }
 
     private void commit(Class<?> cls, RouteType type) {
+        if (cls == null) {
+            throw new RouterException("Cannot commit empty!");
+        }
         LogisticsCenter.addCardMeta(new CardMeta(this.path, type, cls, this.tag, this.paramsType));
     }
 

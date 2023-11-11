@@ -1,10 +1,8 @@
 package com.wyjson.router.compiler.processor;
 
-import static com.wyjson.router.compiler.utils.Constants.KEY_GENERATE_DOC_NAME;
 import static com.wyjson.router.compiler.utils.Constants.KEY_MODULE_NAME;
 import static com.wyjson.router.compiler.utils.Constants.NO_MODULE_NAME_TIPS;
 import static com.wyjson.router.compiler.utils.Constants.PREFIX_OF_LOGGER;
-import static com.wyjson.router.compiler.utils.Constants.VALUE_ENABLE;
 
 import com.wyjson.router.compiler.utils.Logger;
 
@@ -31,7 +29,7 @@ public abstract class BaseProcessor extends AbstractProcessor {
     // Module name, maybe its 'app' or others
     String moduleName = null;
     String generateClassName;
-    boolean isGenerateDoc;
+    boolean isGenerateDoc = true;
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
@@ -46,7 +44,6 @@ public abstract class BaseProcessor extends AbstractProcessor {
         Map<String, String> options = processingEnv.getOptions();
         if (MapUtils.isNotEmpty(options)) {
             moduleName = options.get(KEY_MODULE_NAME);
-            isGenerateDoc = VALUE_ENABLE.equals(options.get(KEY_GENERATE_DOC_NAME));
         }
 
         if (StringUtils.isNotEmpty(moduleName)) {
@@ -92,7 +89,6 @@ public abstract class BaseProcessor extends AbstractProcessor {
     public Set<String> getSupportedOptions() {
         return new HashSet<String>() {{
             this.add(KEY_MODULE_NAME);
-            this.add(KEY_GENERATE_DOC_NAME);
         }};
     }
 }
