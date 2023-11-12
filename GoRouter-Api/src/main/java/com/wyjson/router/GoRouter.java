@@ -130,23 +130,23 @@ public final class GoRouter {
     }
 
     /**
-     * 重复添加相同优先级会catch
+     * 重复添加相同序号会catch
      *
-     * @param priority
+     * @param ordinal
      * @param interceptor
      */
-    public void addInterceptor(int priority, Class<? extends IInterceptor> interceptor) {
-        LogisticsCenter.addInterceptor(priority, interceptor, false);
+    public void addInterceptor(int ordinal, Class<? extends IInterceptor> interceptor) {
+        LogisticsCenter.addInterceptor(ordinal, interceptor, false);
     }
 
     /**
-     * 重复添加相同优先级会覆盖(更新)
+     * 重复添加相同序号会覆盖(更新)
      *
-     * @param priority
+     * @param ordinal
      * @param interceptor
      */
-    public void setInterceptor(int priority, Class<? extends IInterceptor> interceptor) {
-        LogisticsCenter.setInterceptor(priority, interceptor);
+    public void setInterceptor(int ordinal, Class<? extends IInterceptor> interceptor) {
+        LogisticsCenter.setInterceptor(ordinal, interceptor);
     }
 
     /**

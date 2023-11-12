@@ -79,7 +79,7 @@ public class DocumentUtils {
         if (!isDocEnable)
             return;
         try {
-            documentModel.getInterceptors().add(new InterceptorModel(interceptor.priority(), element.toString(), interceptor.remark()));
+            documentModel.getInterceptors().add(new InterceptorModel(interceptor.ordinal(), element.toString(), interceptor.remark()));
         } catch (Exception e) {
             logger.error(moduleName + " Failed to add interceptor [" + element.toString() + "] document, " + e.getMessage());
         }

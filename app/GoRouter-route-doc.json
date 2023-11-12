@@ -18,12 +18,12 @@
   },
   "interceptors": [
     {
-      "priority": 1,
+      "ordinal": 1,
       "remark": "登录拦截器",
       "className": "com.wyjson.module_user.route.interceptor.SignInInterceptor"
     },
     {
-      "priority": 100,
+      "ordinal": 100,
       "remark": "身份验证拦截器",
       "className": "com.wyjson.module_user.route.interceptor.AuthenticationInterceptor"
     }

@@ -16,7 +16,7 @@ import com.wyjson.router.exception.RouterException;
 import com.wyjson.router.callback.InterceptorCallback;
 import com.wyjson.router.interfaces.IInterceptor;
 
-@Interceptor(priority = 1, remark = "登录拦截器")
+@Interceptor(ordinal = 1, remark = "登录拦截器")
 public class SignInInterceptor implements IInterceptor {
 
     @Override

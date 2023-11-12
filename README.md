@@ -245,8 +245,8 @@ public class BaseParamActivity extends Activity {
 
 ```java
 // 比较经典的应用就是在跳转过程中处理登陆事件，这样就不需要在目标页重复做登陆检查
-// 拦截器会在跳转之间执行，多个拦截器会按优先级顺序依次执行
-@Interceptor(priority = 1, remark = "测试拦截器")
+// 拦截器会在跳转之间执行，多个拦截器会按序号从小到大顺序依次执行
+@Interceptor(ordinal = 1, remark = "测试拦截器")
 public class TestInterceptor implements IInterceptor {
     @Override
     public void process(Card card, InterceptorCallback callback) {
@@ -489,10 +489,10 @@ GoRouter.getInstance().isRouteRegisterMode();
 // 动态注册服务(重复添加相同服务会被覆盖(更新))
 GoRouter.getInstance().addService(UserServiceImpl.class);
 
-// 注册拦截器(重复添加相同优先级会catch)
+// 注册拦截器(重复添加相同序号会catch)
 GoRouter.getInstance().addInterceptor(1, TestInterceptor.class);
 
-// 动态注册拦截器(重复添加相同优先级会覆盖(更新))
+// 动态注册拦截器(重复添加相同序号会覆盖(更新))
 GoRouter.getInstance().setInterceptor(1, TestInterceptor.class);
 
 // 动态注册路由分组,按需加载路由(注意：同一批次仅允许相同group的路由信息注册)
@@ -580,8 +580,8 @@ GoRouter {
 
 ##### 4.  使用java方式注册拦截器
 
-*   `addInterceptor(priority,interceptor)`重复添加相同优先级会catch。
-*   `setInterceptor(priority,interceptor)`重复添加相同优先级会覆盖(更新)。
+*   `addInterceptor(ordinal,interceptor)`重复添加相同序号级会catch。
+*   `setInterceptor(ordinal,interceptor)`重复添加相同序号会覆盖(更新)。
 
 ##### 5.  混淆
 

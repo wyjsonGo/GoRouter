@@ -170,7 +170,7 @@ public class GenerateModuleRouteProcessor extends BaseProcessor {
         loadIntoMethod.addCode("// add Interceptor\n");
         for (Element element : elements) {
             Interceptor interceptor = element.getAnnotation(Interceptor.class);
-            loadIntoMethod.addStatement("$T.getInstance().addInterceptor(" + interceptor.priority() + ", $T.class)", mGoRouter, element);
+            loadIntoMethod.addStatement("$T.getInstance().addInterceptor(" + interceptor.ordinal() + ", $T.class)", mGoRouter, element);
             DocumentUtils.addInterceptorDoc(moduleName, logger, element, interceptor);
         }
     }

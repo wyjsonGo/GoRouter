@@ -63,8 +63,6 @@ public class LogisticsCenter {
 
                     // Load route and cache it into memory, then delete from metas.
                     if (Warehouse.routeGroups.containsKey(card.getGroup())) {
-                        // If this group is included, but it has not been loaded
-                        // load this group first, because dynamic route has high priority.
                         Warehouse.routeGroups.get(card.getGroup()).load();
                         Warehouse.routeGroups.remove(card.getGroup());
                     }
@@ -137,42 +135,41 @@ public class LogisticsCenter {
     }
 
     /**
-     * 重复添加相同优先级会catch
+     * 重复添加相同序号会catch
      *
-     * @param priority
+     * @param ordinal
      * @param interceptor
      * @param isForce
      */
-    public static void addInterceptor(int priority, Class<? extends IInterceptor> interceptor, boolean isForce) {
+    public static void addInterceptor(int ordinal, Class<? extends IInterceptor> interceptor, boolean isForce) {
         try {
             if (isForce) {
-                Warehouse.interceptors.remove(priority);
+                Warehouse.interceptors.remove(ordinal);
             }
             IInterceptor instance = interceptor.getConstructor().newInstance();
             instance.init();
-            Warehouse.interceptors.put(priority, instance);
+            Warehouse.interceptors.put(ordinal, instance);
 
             String title = isForce ? "[setInterceptor]" : "[addInterceptor]";
-            GoRouter.logger.debug(null, title + " size:" + Warehouse.interceptors.size() + ", priority:" + priority + " -> " + interceptor.getSimpleName());
+            GoRouter.logger.debug(null, title + " size:" + Warehouse.interceptors.size() + ", ordinal:" + ordinal + " -> " + interceptor.getSimpleName());
         } catch (Exception e) {
             throw new RouterException("[addInterceptor] " + e.getMessage());
         }
     }
 
     /**
-     * 重复添加相同优先级会覆盖(更新)
+     * 重复添加相同序号会覆盖(更新)
      *
-     * @param priority
+     * @param ordinal
      * @param interceptor
      */
-    public static void setInterceptor(int priority, Class<? extends IInterceptor> interceptor) {
-        addInterceptor(priority, interceptor, true);
+    public static void setInterceptor(int ordinal, Class<? extends IInterceptor> interceptor) {
+        addInterceptor(ordinal, interceptor, true);
     }
 
     public static void clearInterceptors() {
         Warehouse.interceptors.clear();
     }
-
 
     /**
      * 解析参数

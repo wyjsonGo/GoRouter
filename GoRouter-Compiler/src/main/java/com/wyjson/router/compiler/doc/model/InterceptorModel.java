@@ -2,25 +2,25 @@ package com.wyjson.router.compiler.doc.model;
 
 public class InterceptorModel {
 
-    private int priority;
+    private int ordinal;
     private String remark;
     private String className;
 
     public InterceptorModel() {
     }
 
-    public InterceptorModel(int priority, String className, String remark) {
-        this.priority = priority;
+    public InterceptorModel(int ordinal, String className, String remark) {
+        this.ordinal = ordinal;
         this.className = className;
         this.remark = remark;
     }
 
-    public int getPriority() {
-        return priority;
+    public int getOrdinal() {
+        return ordinal;
     }
 
-    public void setPriority(int priority) {
-        this.priority = priority;
+    public void setOrdinal(int ordinal) {
+        this.ordinal = ordinal;
     }
 
     public String getRemark() {

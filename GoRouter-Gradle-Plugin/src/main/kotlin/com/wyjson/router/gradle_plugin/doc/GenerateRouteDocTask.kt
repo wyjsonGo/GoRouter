@@ -65,7 +65,7 @@ abstract class GenerateRouteDocTask : DefaultTask() {
                     document!!.interceptors.addAll(documentModel.interceptors)
                     document!!.routes.putAll(documentModel.routes)
                 }
-                document!!.interceptors.sortBy { interceptor -> interceptor.priority }
+                document!!.interceptors.sortBy { interceptor -> interceptor.ordinal }
             } catch (e: Exception) {
                 Logger.e("module[${curProject.name}] route document parsing failed, do not modify the generated route file, use the '${GENERATE_ROUTE_DOC_TASK_NAME}' task to generate a new route document.")
             }

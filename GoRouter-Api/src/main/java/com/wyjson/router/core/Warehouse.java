@@ -20,6 +20,6 @@ class Warehouse {
 
     static final Map<Class<? extends IService>, ServiceMeta> services = new ServiceHashMap();
 
-    static final Map<Integer, IInterceptor> interceptors = new InterceptorTreeMap<>("More than one interceptors use same priority [%s]");
+    static final Map<Integer, IInterceptor> interceptors = new InterceptorTreeMap<>("More than one interceptors use same ordinal [%s]");
 
 }
