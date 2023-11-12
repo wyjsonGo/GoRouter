@@ -16,7 +16,7 @@ object Constants {
     const val MODULE_ROUTE_NAME_SUFFIX = SEPARATOR + "GoRouter"
 
     // 需要扫描注入的类,所在的包名
-    const val SCAN_TARGET_INJECT_PACKAGE_NAME = "$PACKAGE_NAME.module"
+    const val SCAN_TARGET_INJECT_PACKAGE_NAME = "$PACKAGE_NAME.module.route"
 
     // 注入到这个类下
     const val INJECT_CLASS_NAME = "$PACKAGE_NAME.core.RouteModuleLoadCenter"

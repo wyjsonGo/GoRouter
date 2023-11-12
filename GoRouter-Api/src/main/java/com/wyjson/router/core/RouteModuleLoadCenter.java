@@ -107,7 +107,7 @@ public class RouteModuleLoadCenter {
     public static final String GOROUTER_SP_KEY_MAP = "ROUTE_MODULE_MAP";
     public static final String SEPARATOR = "$$";
     // 路由注册生成类所在包名
-    public static final String ROUTE_MODULE_PACKAGE = "com.wyjson.router.module";
+    public static final String ROUTE_MODULE_PACKAGE = "com.wyjson.router.module.route";
     // 路由注册生成类名后缀$$GoRouter
     public static final String MODULE_ROUTE_NAME_SUFFIX = SEPARATOR + "GoRouter";
 

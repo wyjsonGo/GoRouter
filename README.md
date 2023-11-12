@@ -516,7 +516,7 @@ GoRouter.getInstance().build("/user/card/fragment").commitFragment(CardFragment.
 ##### 7.  自定义模块路由加载
 
 如不使用gradle插件[3-6]进行自动注册，也不想走默认扫描dex的方式，可以不调用`GoRouter.autoLoadModuleRoute(this);`方法，但需要自行调用模块生成的路由加载类。
-模块项目里至少使用一条注解`@Route`、`@Service`、`@Interceptor`，就会生成对应路由表的加载类。路由表加载类命名规则会根据`GOROUTER_MODULE_NAME `设置的模块名称转换成大写驼峰命名+`$$GoRouter.java`，所有模块生成的路由表加载类都会放到`com.wyjson.router.module`包下。
+模块项目里至少使用一条注解`@Route`、`@Service`、`@Interceptor`，就会生成对应路由表的加载类。路由表加载类命名规则会根据`GOROUTER_MODULE_NAME `设置的模块名称转换成大写驼峰命名+`$$GoRouter.java`，所有模块生成的路由表加载类都会放到`com.wyjson.router.module.route`包下。
 例如模块名称`module_user`会生成`ModuleUser$$GoRouter.java`
 
 ```java

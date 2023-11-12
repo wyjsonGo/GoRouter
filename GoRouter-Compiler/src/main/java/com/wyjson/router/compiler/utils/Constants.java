@@ -15,7 +15,7 @@ public class Constants {
     public static final String DOCS_PACKAGE_NAME = PACKAGE_NAME + ".docs";
     public static final String GOROUTER_PACKAGE_NAME = PACKAGE_NAME + ".GoRouter";
 
-    public static final String MODULE_PACKAGE_NAME = PACKAGE_NAME + ".module";
+    public static final String MODULE_PACKAGE_NAME = PACKAGE_NAME + ".module.route";
     public static final String I_ROUTE_MODULE_PACKAGE_NAME = PACKAGE_NAME + ".module.interfaces.IRouteModule";
     public static final String METHOD_NAME_LOAD = "load";
     public static final String METHOD_NAME_LOAD_ROUTE_FOR_x_GROUP = "loadRouteFor%sGroup";
