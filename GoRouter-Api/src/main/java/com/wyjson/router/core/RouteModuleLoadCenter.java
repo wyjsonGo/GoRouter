@@ -108,8 +108,8 @@ public class RouteModuleLoadCenter {
     public static final String SEPARATOR = "$$";
     // 路由注册生成类所在包名
     public static final String ROUTE_MODULE_PACKAGE = "com.wyjson.router.module.route";
-    // 路由注册生成类名后缀$$GoRouter
-    public static final String MODULE_ROUTE_NAME_SUFFIX = SEPARATOR + "GoRouter";
+    // 路由注册生成类名后缀$$Route
+    public static final String MODULE_ROUTE_NAME_SUFFIX = SEPARATOR + "Route";
 
     private static void loadModuleRouteByDex(Application context) {
         try {

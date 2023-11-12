@@ -12,8 +12,8 @@ object Constants {
     const val DOCUMENT_FILE_NAME = "route-doc.json"
     const val _CLASS = ".class"
 
-    // 路由注册生成类名后缀$$GoRouter
-    const val MODULE_ROUTE_NAME_SUFFIX = SEPARATOR + "GoRouter"
+    // 路由注册生成类名后缀$$Route
+    const val MODULE_ROUTE_NAME_SUFFIX = SEPARATOR + "Route"
 
     // 需要扫描注入的类,所在的包名
     const val SCAN_TARGET_INJECT_PACKAGE_NAME = "$PACKAGE_NAME.module.route"

@@ -29,8 +29,7 @@ import static com.wyjson.router.compiler.utils.Constants.MODULE_PACKAGE_NAME;
 import static com.wyjson.router.compiler.utils.Constants.PARAM_NAME_ROUTE_GROUPS;
 import static com.wyjson.router.compiler.utils.Constants.PARCELABLE_PACKAGE;
 import static com.wyjson.router.compiler.utils.Constants.PREFIX_OF_LOGGER;
-import static com.wyjson.router.compiler.utils.Constants.PROJECT;
-import static com.wyjson.router.compiler.utils.Constants.SEPARATOR;
+import static com.wyjson.router.compiler.utils.Constants.ROUTE_MODULE_GENERATE_CLASS_NAME_SUFFIX;
 import static com.wyjson.router.compiler.utils.Constants.SERIALIZABLE_PACKAGE;
 import static com.wyjson.router.compiler.utils.Constants.SHORT_PACKAGE;
 import static com.wyjson.router.compiler.utils.Constants.SHORT_PRIMITIVE;
@@ -114,7 +113,7 @@ public class GenerateModuleRouteProcessor extends BaseProcessor {
 
         DocumentUtils.createDoc(mFiler, moduleName, logger, isGenerateDoc);
 
-        String className = generateClassName + SEPARATOR + PROJECT;
+        String className = generateClassName + ROUTE_MODULE_GENERATE_CLASS_NAME_SUFFIX;
 
         MethodSpec.Builder loadIntoMethod = MethodSpec.methodBuilder(METHOD_NAME_LOAD)
                 .addModifiers(PUBLIC)
