@@ -175,10 +175,10 @@ public class ApplicationModuleCenter {
     }
 
     private interface Consumer {
-        void execute(IApplicationModule ma);
+        void call(IApplicationModule ma);
     }
 
-    private static void execute(Consumer consumer) {
+    private static void call(Consumer consumer) {
         if (Warehouse.applicationModules.isEmpty()) {
             return;
         }
@@ -187,13 +187,13 @@ public class ApplicationModuleCenter {
             listComparator = null;
         }
         for (IApplicationModule am : Warehouse.applicationModules) {
-            consumer.execute(am);
+            consumer.call(am);
         }
     }
 
-    public static void executeOnCreate(Application app) {
+    public static void callOnCreate(Application app) {
         load(app);
-        execute(am -> {
+        call(am -> {
             am.onCreate(app);
             new Thread(() -> {
                 // 设置线程的优先级，不与主线程抢资源
@@ -203,19 +203,19 @@ public class ApplicationModuleCenter {
         });
     }
 
-    public static void executeOnTerminate() {
-        execute(IApplicationModule::onTerminate);
+    public static void callOnTerminate() {
+        call(IApplicationModule::onTerminate);
     }
 
-    public static void executeOnConfigurationChanged(@NonNull Configuration newConfig) {
-        execute(ma -> ma.onConfigurationChanged(newConfig));
+    public static void callOnConfigurationChanged(@NonNull Configuration newConfig) {
+        call(ma -> ma.onConfigurationChanged(newConfig));
     }
 
-    public static void executeOnLowMemory() {
-        execute(IApplicationModule::onLowMemory);
+    public static void callOnLowMemory() {
+        call(IApplicationModule::onLowMemory);
     }
 
-    public static void executeOnTrimMemory(int level) {
-        execute(ma -> ma.onTrimMemory(level));
+    public static void callOnTrimMemory(int level) {
+        call(ma -> ma.onTrimMemory(level));
     }
 }

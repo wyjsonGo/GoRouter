@@ -17,7 +17,7 @@ public class MyApplication extends Application {
             GoRouter.openDebug();
         }
         // 这部分是多模块application,如不使用多模块application可以不调用
-        GoRouter.executeAMOnCreate(this);
+        GoRouter.callAMOnCreate(this);
         
         // 自动加载所有路由模块的路由
         GoRouter.autoLoadRouteModule(this);
@@ -27,27 +27,27 @@ public class MyApplication extends Application {
     public void onTerminate() {
         super.onTerminate();
         // 这部分是多模块application,如不使用多模块application可以不调用
-        GoRouter.executeAMOnTerminate();
+        GoRouter.callAMOnTerminate();
     }
 
     @Override
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         // 这部分是多模块application,如不使用多模块application可以不调用
-        GoRouter.executeAMOnConfigurationChanged(newConfig);
+        GoRouter.callAMOnConfigurationChanged(newConfig);
     }
 
     @Override
     public void onLowMemory() {
         super.onLowMemory();
         // 这部分是多模块application,如不使用多模块application可以不调用
-        GoRouter.executeAMOnLowMemory();
+        GoRouter.callAMOnLowMemory();
     }
 
     @Override
     public void onTrimMemory(int level) {
         super.onTrimMemory(level);
         // 这部分是多模块application,如不使用多模块application可以不调用
-        GoRouter.executeAMOnTrimMemory(level);
+        GoRouter.callAMOnTrimMemory(level);
     }
 }

@@ -13,14 +13,14 @@
 | 功能                    | ARouter  | GoRouter  | 描述                                                  |
 | ---------------------- | -------- | --------- | ---------------------------------------------------- |
 | 路由注册方式             | 注解      | 注解、java | GoRouter不仅提供了注解，还能使用java方式注册，参见5-6 |
-| 服务                    | 一对多    | 一对一     | ARouter可以为一个服务接口注册多个实现类(没啥用),本库一个服务接口对应一个实现方法(调用更方便) |
-| 动态注册拦截器            | 不支持    | 支持      | ARouter只能动态注册路由,不能动态注册拦截器 |
+| 服务                    | 一对多    | 一对一     | ARouter可以为一个服务接口注册多个实现类(没啥用)，本库一个服务接口对应一个实现方法(调用更方便) |
+| 动态注册拦截器            | 不支持    | 支持      | ARouter只能动态注册路由，不能动态注册拦截器 |
 | 重写跳转URL服务          | 支持      | 不支持     | 可以在`PretreatmentService`里实现相同功能 |
-| 获取元数据               | 不支持    | 支持       | 有些场景需要判断某个页面当前是否存在等需求,就需要获取页面class等信息，参见5-1 |
+| 获取元数据               | 不支持    | 支持       | 有些场景需要判断某个页面当前是否存在等需求，就需要获取页面class等信息，参见5-1 |
 | withObject()           | 支持      | 不支持     | ARouter实现原理是转JSON后使用`withString()`方法传递 |
 | inject(T)              | 单一      | 更多       | ARouter不能在`onNewIntent()`方法里使用，GoRouter提供了更多使用场景 |
 | 按组分类、按需初始化       | 支持      | 支持       | ARouter不允许多个module中存在相同的分组，GoRouter允许 |
-| 多模块Application生命周期 | 不支持     | 待开发     | 模块化路由都有了，肯定也需要多模块Application生命周期，正好本库Api、注解处理器、自动注册都有，所以开发一下这个功能很方便 |
+| 模块Application生命周期   | 不支持    | 支持       | 主动分发到业务模块，让模块无侵入的获取Application生命周期，参见6-1 |
 
 ***
 
@@ -41,7 +41,7 @@
 13. **支持生成路由文档**
 14. 支持增量编译
 15. 支持动态注册路由、路由组、服务和拦截器
-16. 支持多模块Application生命周期(待开发)
+16. 支持模块Application生命周期
 
 ## 二、典型应用
 
@@ -49,7 +49,7 @@
 2.  跨模块页面跳转，模块间解耦
 3.  拦截跳转过程，处理登陆、埋点等逻辑
 4.  跨模块API调用，通过控制反转来做组件解耦
-5.  多模块Application生命周期(待开发)
+5.  多模块Application生命周期
 
 ## 三、基础功能
 
@@ -561,7 +561,54 @@ GoRouter {
 
 生成的路由文档会保存到项目下的`/app/项目名-route-doc.json`,Demo示例[/app/GoRouter-route-doc.json](https://github.com/wyjsonGo/GoRouter/blob/master/app/GoRouter-route-doc.json)
 
-## 六、其他
+## 六、模块Application生命周期
+
+Application生命周期主动分发到组件，让模块无侵入的获得Application生命周期
+
+##### 1.  在模块中添加`@ApplicationModule`注解，实现`IApplicationModule`接口
+
+```java
+@ApplicationModule
+public class UserApplication implements IApplicationModule {
+
+    @Override
+    public void onCreate(Application app) {
+        // do something.
+    }
+
+    /**
+     * 优化启动速度,一些不着急的初始化可以放在这里做,子线程
+     */
+    @Override
+    public void onLoadAsync(Application app) {
+        // do something.
+    }
+}
+```
+
+Demo示例[CommonApplication.java](https://github.com/wyjsonGo/GoRouter/blob/master/module_common/src/main/java/com/wyjson/module_common/CommonApplication.java)
+
+##### 2.  在主Application添加分发
+
+```java
+public class MyApplication extends Application {
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        // 调用callAMOnCreate()方法，触发模块Application的onCreate()、onLoadAsync()方法。
+        GoRouter.callAMOnCreate(this);
+    }
+```
+
+Demo示例[MyApplication.java](https://github.com/wyjsonGo/GoRouter/blob/master/app/src/main/java/com/wyjson/go_router/MyApplication.java)
+
+##### 3.  进阶用法
+
+*   指定模块Application优先级，可以重写`setPriority()`方法，它将按照从大到小的执行顺序执行。
+*   `IApplicationModule`接口不紧提供了`onCreate`、`onLoadAsync`方法，还提供了`onTerminate`、`onConfigurationChanged`、`onLowMemory`、`onTrimMemory`方法，如需监听记得在主Application中添加他们的分发方法`GoRouter.callAMOnCreate()`、`GoRouter.callAMOnTerminate()`、`GoRouter.callAMOnConfigurationChanged(newConfig)`、`GoRouter.callAMOnLowMemory()`、`GoRouter.callAMOnTrimMemory(level)`。
+
+## 七、其他
 
 ##### 1.  路由中的分组概念
 

@@ -120,24 +120,24 @@ public final class GoRouter {
         return ApplicationModuleCenter.isRegisterByPlugin();
     }
 
-    public static void executeAMOnCreate(Application app) {
-        ApplicationModuleCenter.executeOnCreate(app);
+    public static void callAMOnCreate(Application app) {
+        ApplicationModuleCenter.callOnCreate(app);
     }
 
-    public static void executeAMOnTerminate() {
-        ApplicationModuleCenter.executeOnTerminate();
+    public static void callAMOnTerminate() {
+        ApplicationModuleCenter.callOnTerminate();
     }
 
-    public static void executeAMOnConfigurationChanged(@NonNull Configuration newConfig) {
-        ApplicationModuleCenter.executeOnConfigurationChanged(newConfig);
+    public static void callAMOnConfigurationChanged(@NonNull Configuration newConfig) {
+        ApplicationModuleCenter.callOnConfigurationChanged(newConfig);
     }
 
-    public static void executeAMOnLowMemory() {
-        ApplicationModuleCenter.executeOnLowMemory();
+    public static void callAMOnLowMemory() {
+        ApplicationModuleCenter.callOnLowMemory();
     }
 
-    public static void executeAMOnTrimMemory(int level) {
-        ApplicationModuleCenter.executeOnTrimMemory(level);
+    public static void callAMOnTrimMemory(int level) {
+        ApplicationModuleCenter.callOnTrimMemory(level);
     }
 
     /**

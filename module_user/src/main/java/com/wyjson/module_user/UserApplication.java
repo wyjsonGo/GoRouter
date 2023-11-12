@@ -1,7 +1,10 @@
 package com.wyjson.module_user;
 
 import android.app.Application;
+import android.content.res.Configuration;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
 
 import com.wyjson.router.annotation.ApplicationModule;
 import com.wyjson.router.interfaces.IApplicationModule;
@@ -16,6 +19,7 @@ public class UserApplication implements IApplicationModule {
 
     @Override
     public void onLoadAsync(Application app) {
-        Log.d("UserApplication", "loadAsync()");
+        Log.d("UserApplication", "onLoadAsync()");
     }
+
 }

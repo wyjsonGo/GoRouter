@@ -16,6 +16,7 @@ public class MainApplication implements IApplicationModule {
 
     @Override
     public void onLoadAsync(Application app) {
-        Log.d("MainApplication", "loadAsync()");
+        Log.d("MainApplication", "onLoadAsync()");
     }
+
 }

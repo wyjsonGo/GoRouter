@@ -13,7 +13,7 @@ public interface IApplicationModule {
 
     /**
      * The priority of the module application,
-     * which will execute them in order from largest to smallest execution.
+     * which will be executed in order from largest to smallest.
      */
     default int setPriority() {
         return PRIORITY_NORM;
