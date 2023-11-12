@@ -2,9 +2,9 @@ package com.wyjson.router.compiler.doc.model;
 
 public class ServiceModel {
 
-    public String remark;
-    public String prototype;
-    public String className;
+    private String remark;
+    private String prototype;
+    private String className;
 
     public ServiceModel() {
     }
@@ -15,4 +15,27 @@ public class ServiceModel {
         this.remark = remark;
     }
 
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
+    public String getPrototype() {
+        return prototype;
+    }
+
+    public void setPrototype(String prototype) {
+        this.prototype = prototype;
+    }
+
+    public String getClassName() {
+        return className;
+    }
+
+    public void setClassName(String className) {
+        this.className = className;
+    }
 }

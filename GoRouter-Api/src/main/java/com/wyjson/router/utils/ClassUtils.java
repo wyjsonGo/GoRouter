@@ -6,7 +6,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 
-import com.wyjson.router.core.GoRouter;
+import com.wyjson.router.GoRouter;
 import com.wyjson.router.thread.DefaultPoolExecutor;
 
 import java.io.File;
@@ -48,9 +48,13 @@ public class ClassUtils {
      *
      * @param context
      * @param packageName 包名
+     * @param nameSuffix
      * @return 所有class的集合
+     * @throws PackageManager.NameNotFoundException
+     * @throws IOException
+     * @throws InterruptedException
      */
-    public static Set<String> getFileNameByPackageName(Context context, final String packageName) throws PackageManager.NameNotFoundException, IOException, InterruptedException {
+    public static Set<String> getFileNameByPackageName(Context context, final String packageName, final String nameSuffix) throws PackageManager.NameNotFoundException, IOException, InterruptedException {
         final Set<String> classNames = new HashSet<>();
 
         List<String> paths = getSourcePaths(context);
@@ -73,7 +77,7 @@ public class ClassUtils {
                         Enumeration<String> dexEntries = dexfile.entries();
                         while (dexEntries.hasMoreElements()) {
                             String className = dexEntries.nextElement();
-                            if (className.startsWith(packageName)) {
+                            if (className.startsWith(packageName) && className.endsWith(nameSuffix)) {
                                 classNames.add(className);
                             }
                         }

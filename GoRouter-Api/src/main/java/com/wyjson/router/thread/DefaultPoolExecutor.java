@@ -1,6 +1,6 @@
 package com.wyjson.router.thread;
 
-import com.wyjson.router.core.GoRouter;
+import com.wyjson.router.GoRouter;
 import com.wyjson.router.utils.TextUtils;
 
 import java.util.concurrent.ArrayBlockingQueue;

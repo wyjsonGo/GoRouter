@@ -1,8 +1,9 @@
 package com.wyjson.router.compiler.doc;
 
 import static com.wyjson.router.compiler.utils.Constants.DOCS_PACKAGE_NAME;
+import static com.wyjson.router.compiler.utils.Constants.DOCUMENT_FILE_NAME;
 
-import com.google.gson.GsonBuilder;
+import com.google.gson.Gson;
 import com.wyjson.router.annotation.Interceptor;
 import com.wyjson.router.annotation.Param;
 import com.wyjson.router.annotation.Route;
@@ -43,18 +44,18 @@ public class DocumentUtils {
             docWriter = mFiler.createResource(
                     StandardLocation.SOURCE_OUTPUT,
                     DOCS_PACKAGE_NAME,
-                    moduleName + "-gorouter-doc.json"
+                    moduleName + "-" + DOCUMENT_FILE_NAME
             ).openWriter();
         } catch (IOException e) {
             logger.error(moduleName + " Failed to create the document because " + e.getMessage());
         }
     }
 
-    public static void generate(String moduleName, Logger logger) {
+    public static void generateDoc(String moduleName, Logger logger) {
         if (!isDocEnable)
             return;
         try {
-            docWriter.append(new GsonBuilder().setPrettyPrinting().create().toJson(documentModel));
+            docWriter.append(new Gson().toJson(documentModel));
             docWriter.flush();
             docWriter.close();
         } catch (IOException e) {
@@ -62,7 +63,7 @@ public class DocumentUtils {
         }
     }
 
-    public static void addService(String moduleName, Logger logger, Element element, Service service) {
+    public static void addServiceDoc(String moduleName, Logger logger, Element element, Service service) {
         if (!isDocEnable)
             return;
         try {
@@ -74,17 +75,27 @@ public class DocumentUtils {
         }
     }
 
-    public static void addInterceptor(String moduleName, Logger logger, Element element, Interceptor interceptor) {
+    public static void addInterceptorDoc(String moduleName, Logger logger, Element element, Interceptor interceptor) {
         if (!isDocEnable)
             return;
         try {
-            documentModel.getInterceptors().add(new InterceptorModel(interceptor.priority(), element.toString(), interceptor.remark()));
+            documentModel.getInterceptors().add(new InterceptorModel(interceptor.ordinal(), element.toString(), interceptor.remark()));
         } catch (Exception e) {
             logger.error(moduleName + " Failed to add interceptor [" + element.toString() + "] document, " + e.getMessage());
         }
     }
 
-    public static void addRoute(String moduleName, Logger logger, Element element, Route route, String typeDoc) {
+    public static void addRouteGroupDoc(String moduleName, Logger logger, String group, List<RouteModel> routeModelList) {
+        if (!isDocEnable)
+            return;
+        try {
+            documentModel.getRoutes().put(group, routeModelList);
+        } catch (Exception e) {
+            logger.error(moduleName + " Failed to add route group [" + group + "] document, " + e.getMessage());
+        }
+    }
+
+    public static void addRouteDoc(String moduleName, Logger logger, Element element, List<RouteModel> routeModelList, Route route, String typeDoc) {
         if (!isDocEnable)
             return;
         try {
@@ -96,14 +107,14 @@ public class DocumentUtils {
             if (route.tag() != 0) {
                 routeModel.setTag(route.tag());
             }
-            addParam(moduleName, logger, element, routeModel);
-            documentModel.getRoutes().add(routeModel);
+            addParamCode(moduleName, logger, element, routeModel);
+            routeModelList.add(routeModel);
         } catch (Exception e) {
             logger.error(moduleName + " Failed to add route [" + element.toString() + "] document, " + e.getMessage());
         }
     }
 
-    private static void addParam(String moduleName, Logger logger, Element element, RouteModel routeModel) {
+    private static void addParamCode(String moduleName, Logger logger, Element element, RouteModel routeModel) {
         List<ParamModel> tempParamModels = new ArrayList<>();
         for (Element field : element.getEnclosedElements()) {
             if (field.getKind().isField() && field.getAnnotation(Param.class) != null) {
@@ -148,7 +159,7 @@ public class DocumentUtils {
         if (parent instanceof DeclaredType) {
             Element parentElement = ((DeclaredType) parent).asElement();
             if (parentElement instanceof TypeElement && !((TypeElement) parentElement).getQualifiedName().toString().startsWith("android")) {
-                addParam(moduleName, logger, parentElement, routeModel);
+                addParamCode(moduleName, logger, parentElement, routeModel);
             }
         }
     }

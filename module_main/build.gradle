@@ -12,7 +12,7 @@ android {
 
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments = [GOROUTER_MODULE_NAME: project.getName(), GOROUTER_GENERATE_DOC: "enable"]
+                arguments = [GOROUTER_MODULE_NAME: project.getName()]
             }
         }
     }
@@ -38,6 +38,6 @@ android {
 
 dependencies {
     api project(path: ':module_common')
-//    annotationProcessor project(path: ':GoRouter-Compiler')
-    annotationProcessor "com.github.wyjsonGo.GoRouter:GoRouter-Compiler:${VERSION}"
+    annotationProcessor project(path: ':GoRouter-Compiler')
+//    annotationProcessor "com.github.wyjsonGo.GoRouter:GoRouter-Compiler:${VERSION}"
 }

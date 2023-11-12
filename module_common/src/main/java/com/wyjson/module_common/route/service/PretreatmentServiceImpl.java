@@ -5,11 +5,11 @@ import android.content.Intent;
 
 import com.wyjson.module_common.route.UserRoute;
 import com.wyjson.router.annotation.Service;
-import com.wyjson.router.card.Card;
-import com.wyjson.router.interfaces.PretreatmentService;
+import com.wyjson.router.model.Card;
+import com.wyjson.router.interfaces.IPretreatmentService;
 
 @Service(remark = "预处理服务")
-public class PretreatmentServiceImpl implements PretreatmentService {
+public class PretreatmentServiceImpl implements IPretreatmentService {
 
     @Override
     public void init() {
