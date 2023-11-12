@@ -543,20 +543,23 @@ GoRouter {
 
 ##### 9.  生成路由文档
 
-```java
-// 更新 build.gradle, 添加参数 GOROUTER_GENERATE_DOC = enable
-// 生成的文档路径 : build/generated/ap_generated_sources/(debug or release)/out/com/wyjson/router/docs/${moduleName}-route-doc.json
-android {
-    defaultConfig {
-        ...
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments = [GOROUTER_MODULE_NAME: project.getName(), GOROUTER_GENERATE_DOC: "enable"]
-            }
-        }
-    }
-}
+使用gradle命令一键生成路由文档
+
+```sh
+./gradlew generateRouteDoc
+# 或使用快速生成
+./gradlew quickGenerateRouteDoc
 ```
+当然你也可以使用图形页面执行任务
+
+<img src="https://github.com/wyjsonGo/GoRouter/blob/master/screenshot/gradle_task_generate_router_doc.png" width="40%" />
+
+两条任务的区别是:
+
+*   执行`generateRouteDoc`任务会先自动触发`build`任务生成各个模块子路由文档,在触发生成最终的路由文档。
+*   执行`quickGenerateRouteDoc`任务会直接去获取子模块路由文档生成最终的路由文档(如果你已经运行过项目,可以使用此任务快速得到结果)。
+
+生成的路由文档会保存到项目下的`/app/项目名-route-doc.json`,Demo示例[/app/GoRouter-route-doc.json](https://github.com/wyjsonGo/GoRouter/blob/master/app/GoRouter-route-doc.json)
 
 ## 六、其他
 
