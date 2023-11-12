@@ -117,7 +117,7 @@ public class TestActivity extend Activity {
 if (BuildConfig.DEBUG) {
     GoRouter.openDebug(); // 开启调试，查看路由详细加载和跳转过程日志
 }
-GoRouter.autoLoadModuleRoute(this); // 尽可能早，推荐在Application中初始化
+GoRouter.autoLoadRouteModule(this); // 尽可能早，推荐在Application中初始化
 ```
 
 ##### 5.  发起路由操作
@@ -133,7 +133,7 @@ GoRouter.getInstance().build("/test/fragment")
             .go(this);
 ```
 
-##### 6.  使用Gradle插件实现路由表的自动加载，支持Gradle7.4+ (可选)
+##### 6.  使用Gradle插件实现路由表的自动加载，支持Gradle8.0+ (可选)
 
 ```groovy
 // 项目根目录下的settings.gradle
@@ -164,7 +164,7 @@ plugins {
     id 'com.wyjson.gorouter'
 }
 ```
-*   支持Gradle7.4+，Gradle7.4以下参见5-7。
+*   支持Gradle8.0+，Gradle8.0以下参见5-7。
 *   开发阶段构建加速参见5-8(最好在开发阶段开启,节省build时间)。
 *   可选使用，通过GoRouter提供的注册插件进行路由表的自动加载，默认通过扫描dex的方式进行加载(在运行时注册,节省打包时间)，通过gradle插件进行自动注册可以缩短运行时初始化时间(在打包时注册,节省运行时间)，解决应用加固导致无法直接访问dex文件。
 
@@ -515,7 +515,7 @@ GoRouter.getInstance().build("/user/card/fragment").commitFragment(CardFragment.
 
 ##### 7.  自定义模块路由加载
 
-如不使用gradle插件[3-6]进行自动注册，也不想走默认扫描dex的方式，可以不调用`GoRouter.autoLoadModuleRoute(this);`方法，但需要自行调用模块生成的路由加载类。
+如不使用gradle插件[3-6]进行自动注册，也不想走默认扫描dex的方式，可以不调用`GoRouter.autoLoadRouteModule(this);`方法，但需要自行调用模块生成的路由加载类。
 模块项目里至少使用一条注解`@Route`、`@Service`、`@Interceptor`，就会生成对应路由表的加载类。路由表加载类命名规则会根据`GOROUTER_MODULE_NAME `设置的模块名称转换成大写驼峰命名+`$$Route.java`，所有模块生成的路由表加载类都会放到`com.wyjson.router.module.route`包下。
 例如模块名称`module_user`会生成`ModuleUser$$Route.java`
 

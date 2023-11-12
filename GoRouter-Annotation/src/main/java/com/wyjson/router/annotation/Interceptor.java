@@ -9,9 +9,9 @@ import java.lang.annotation.Target;
 @Target({TYPE})
 @Retention(SOURCE)
 public @interface Interceptor {
+
     /**
-     * The ordinal of interceptor, GoRouter will be execute them follow the ordinal.
-     * Execute from small to large
+     * The order of the interceptors will execute them in order from smallest to largest.
      */
     int ordinal();
 

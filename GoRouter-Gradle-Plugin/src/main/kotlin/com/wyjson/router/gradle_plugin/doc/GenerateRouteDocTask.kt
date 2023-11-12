@@ -14,6 +14,8 @@ import java.io.File
 
 abstract class GenerateRouteDocTask : DefaultTask() {
 
+    private val TAG = "Doc"
+
     init {
         group = Constants.PROJECT
     }
@@ -24,7 +26,7 @@ abstract class GenerateRouteDocTask : DefaultTask() {
 
     @TaskAction
     fun taskAction() {
-        Logger.i("Generate GoRouter document task start.")
+        Logger.i(TAG, "Generate GoRouter document task start.")
         project.dependProject().forEach { curProject ->
             val genFile =
                 curProject.file("${curProject.buildDir}/generated/ap_generated_sources/debug")
@@ -32,26 +34,26 @@ abstract class GenerateRouteDocTask : DefaultTask() {
             val collection =
                 curProject.files(genFile).asFileTree.filter { it.name.endsWith(Constants.DOCUMENT_FILE_NAME) }
             if (collection.isEmpty) {
-                Logger.w("project[${curProject.name}] scan 0 route document.")
+                Logger.w(TAG, "project[${curProject.name}] scan 0 route document.")
             } else {
                 for (file in collection) {
-                    Logger.i("project[${curProject.name}] found the file[${file.name}].")
+                    Logger.i(TAG, "project[${curProject.name}] found the file[${file.name}].")
                     mergeRouteModuleDoc(curProject, file)
                 }
             }
         }
         if (document == null) {
             if (GENERATE_ROUTE_DOC_TASK_NAME == name) {
-                Logger.e("Failed to generate the route document!")
+                Logger.e(TAG, "Failed to generate the route document!")
             } else {
-                Logger.e("Failed to generate the route document! Use the '${GENERATE_ROUTE_DOC_TASK_NAME}' task to generate a new route document.")
+                Logger.e(TAG, "Failed to generate the route document! Use the '${GENERATE_ROUTE_DOC_TASK_NAME}' task to generate a new route document.")
             }
             return
         }
         val json = GsonBuilder().setPrettyPrinting().create().toJson(document)
         File(docOutFilePath).writeText(json, Charsets.UTF_8)
-        Logger.i("Generate GoRouter document task end.")
-        Logger.i("Success! route document name[${documentName}] $docOutFilePath")
+        Logger.i(TAG, "Generate GoRouter document task end.")
+        Logger.i(TAG, "Success! route document name[${documentName}] $docOutFilePath")
     }
 
     private fun mergeRouteModuleDoc(curProject: Project, file: File) {
@@ -67,10 +69,10 @@ abstract class GenerateRouteDocTask : DefaultTask() {
                 }
                 document!!.interceptors.sortBy { interceptor -> interceptor.ordinal }
             } catch (e: Exception) {
-                Logger.e("module[${curProject.name}] route document parsing failed, do not modify the generated route file, use the '${GENERATE_ROUTE_DOC_TASK_NAME}' task to generate a new route document.")
+                Logger.e(TAG, "module[${curProject.name}] route document parsing failed, do not modify the generated route file, use the '${GENERATE_ROUTE_DOC_TASK_NAME}' task to generate a new route document.")
             }
         } else {
-            Logger.e("module[${curProject.name}] route document content is empty and a new route document is generated using the '${GENERATE_ROUTE_DOC_TASK_NAME}' task.")
+            Logger.e(TAG, "module[${curProject.name}] route document content is empty and a new route document is generated using the '${GENERATE_ROUTE_DOC_TASK_NAME}' task.")
         }
     }
 

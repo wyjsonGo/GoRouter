@@ -1,6 +1,7 @@
 package com.wyjson.router.core;
 
 import com.wyjson.router.interfaces.IInterceptor;
+import com.wyjson.router.interfaces.IApplicationModule;
 import com.wyjson.router.interfaces.IService;
 import com.wyjson.router.model.CardMeta;
 import com.wyjson.router.model.ServiceMeta;
@@ -10,9 +11,13 @@ import com.wyjson.router.utils.RouteGroupHashMap;
 import com.wyjson.router.utils.RouteHashMap;
 import com.wyjson.router.utils.ServiceHashMap;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 class Warehouse {
+
+    static final List<IApplicationModule> applicationModules = new ArrayList<>();
 
     static final Map<String, IRouteModuleGroup> routeGroups = new RouteGroupHashMap();
 

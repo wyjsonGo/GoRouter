@@ -4,16 +4,16 @@ import com.wyjson.router.gradle_plugin.utils.Constants.PROJECT
 
 object Logger {
 
-    fun i(info: String) {
-        println("[info] ${PROJECT}::Gradle-Plugin >>> $info")
+    fun i(tag: String, info: String) {
+        println("[info] ${PROJECT}::Gradle-Plugin >>> TAG:$tag $info")
     }
 
-    fun w(info: String) {
-        println("[warning] ${PROJECT}::Gradle-Plugin >>> $info")
+    fun w(tag: String, info: String) {
+        println("[warning] ${PROJECT}::Gradle-Plugin >>> TAG:$tag $info")
     }
 
-    fun e(info: String) {
-        error("[error] ${PROJECT}::Gradle-Plugin >>> $info")
+    fun e(tag: String, info: String) {
+        error("[error] ${PROJECT}::Gradle-Plugin >>> TAG:$tag $info")
     }
 
 }

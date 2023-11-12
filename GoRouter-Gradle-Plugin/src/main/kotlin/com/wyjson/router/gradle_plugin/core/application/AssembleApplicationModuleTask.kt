@@ -1,9 +1,9 @@
-package com.wyjson.router.gradle_plugin.core
+package com.wyjson.router.gradle_plugin.core.application
 
 import com.wyjson.router.gradle_plugin.utils.Constants
-import com.wyjson.router.gradle_plugin.utils.Constants.INJECT_CLASS_NAME
-import com.wyjson.router.gradle_plugin.utils.Constants.MODULE_ROUTE_NAME_SUFFIX
-import com.wyjson.router.gradle_plugin.utils.Constants.SCAN_TARGET_INJECT_PACKAGE_NAME
+import com.wyjson.router.gradle_plugin.utils.Constants.APPLICATION_MODULE_NAME_SUFFIX
+import com.wyjson.router.gradle_plugin.utils.Constants.APPLICATION_MODULE_INJECT_CLASS_NAME
+import com.wyjson.router.gradle_plugin.utils.Constants.APPLICATION_MODULE_SCAN_TARGET_INJECT_PACKAGE_NAME
 import com.wyjson.router.gradle_plugin.utils.Constants._CLASS
 import com.wyjson.router.gradle_plugin.utils.Logger
 import org.gradle.api.DefaultTask
@@ -24,7 +24,9 @@ import java.util.jar.JarOutputStream
 import java.util.zip.ZipException
 import kotlin.system.measureTimeMillis
 
-abstract class AssembleModuleRouteTask : DefaultTask() {
+abstract class AssembleApplicationModuleTask : DefaultTask() {
+
+    private val TAG = "AM"
 
     @get:InputFiles
     abstract val allJars: ListProperty<RegularFile>
@@ -35,7 +37,7 @@ abstract class AssembleModuleRouteTask : DefaultTask() {
     @get:OutputFile
     abstract val output: RegularFileProperty
 
-    private val moduleRouteClassList = ArrayList<String>()
+    private val applicationModuleClassList = ArrayList<String>()
     private var originInject: ByteArray? = null
     private var jarOutput: JarOutputStream? = null
 
@@ -45,16 +47,16 @@ abstract class AssembleModuleRouteTask : DefaultTask() {
         val scanTimeCost = measureTimeMillis {
             scanFile()
         }
-        Logger.i("Scan finish, current cost time ${scanTimeCost}ms")
+        Logger.i(TAG, "Scan finish, current cost time ${scanTimeCost}ms")
 
         if (originInject == null) {
-            Logger.e("Can not find GoRouter inject point, Do you import [GoRouter-Api]???")
+            Logger.e(TAG, "Can not find GoRouter inject point, Do you import [GoRouter-Api]???")
             return
         }
         val injectCodeTimeCost = measureTimeMillis {
             injectCode()
         }
-        Logger.i("Inject code finish, current cost time ${injectCodeTimeCost}ms")
+        Logger.i(TAG, "Inject code finish, current cost time ${injectCodeTimeCost}ms")
     }
 
     private fun scanFile() {
@@ -62,9 +64,9 @@ abstract class AssembleModuleRouteTask : DefaultTask() {
 //            Logger.i("Scan to directory [${directory.asFile.absolutePath}]")
             directory.asFile.walk().forEach { file ->
                 if (file.isFile) {
-                    if (file.name.endsWith(MODULE_ROUTE_NAME_SUFFIX + _CLASS)) {
-                        Logger.i("Scan to class [${file.name}] be from directory [${directory.asFile.absolutePath}]")
-                        moduleRouteClassList.add(file.name)
+                    if (file.name.endsWith(APPLICATION_MODULE_NAME_SUFFIX + _CLASS)) {
+                        Logger.i(TAG, "Scan to class [${file.name}] be from directory [${directory.asFile.absolutePath}]")
+                        applicationModuleClassList.add(file.name)
                     }
                     val relativePath = directory.asFile.toURI().relativize(file.toURI()).path
 //                    Logger.i("Scan the classes in the directory [${relativePath.replace(File.separatorChar, '.')}]")
@@ -90,17 +92,17 @@ abstract class AssembleModuleRouteTask : DefaultTask() {
                     if (jarEntry.isDirectory || jarEntry.name.isEmpty()) {
                         continue
                     }
-                    if (Constants.dotToSlash(INJECT_CLASS_NAME) + _CLASS == entryName) {
-                        Logger.i("Find the inject class [$entryName]")
+                    if (Constants.dotToSlash(APPLICATION_MODULE_INJECT_CLASS_NAME) + _CLASS == entryName) {
+                        Logger.i(TAG, "Find the inject class [$entryName]")
                         jarFile.getInputStream(jarEntry).use { inputs ->
                             originInject = inputs.readAllBytes()
                         }
                     } else {
-                        val startsWith = entryName.startsWith(Constants.dotToSlash(SCAN_TARGET_INJECT_PACKAGE_NAME))
-                        val endsWith = entryName.endsWith(Constants.dotToSlash(MODULE_ROUTE_NAME_SUFFIX) + _CLASS)
+                        val startsWith = entryName.startsWith(Constants.dotToSlash(APPLICATION_MODULE_SCAN_TARGET_INJECT_PACKAGE_NAME))
+                        val endsWith = entryName.endsWith(Constants.dotToSlash(APPLICATION_MODULE_NAME_SUFFIX) + _CLASS)
                         if (startsWith && endsWith) {
                             val className = entryName.substring(entryName.lastIndexOf("/") + 1)
-                            Logger.i("Scan to class [$className] be from jar [${file.asFile.absolutePath}]")
+                            Logger.i(TAG, "Scan to class [$className] be from jar [${file.asFile.absolutePath}]")
                             if (className.isNotEmpty()) {
                                 tempList.add(className)
                             }
@@ -113,18 +115,18 @@ abstract class AssembleModuleRouteTask : DefaultTask() {
                     }
                 } catch (e: Exception) {
                     if (!(e is ZipException && e.message?.startsWith("duplicate entry:") == true)) {
-                        Logger.w("Merge jar error entry:[${jarEntry.name}], error message:$e")
+                        Logger.w(TAG, "Merge jar error entry:[${jarEntry.name}], error message:$e")
                     }
                 }
             }
-            moduleRouteClassList.addAll(tempList)
+            applicationModuleClassList.addAll(tempList)
             jarFile.close()
         }
     }
 
     private fun injectCode() {
-        val resultByteArray = AssembleModuleRouteCodeInjector(moduleRouteClassList).execute(ByteArrayInputStream(originInject))
-        jarOutput!!.putNextEntry(JarEntry(Constants.dotToSlash(INJECT_CLASS_NAME) + _CLASS))
+        val resultByteArray = AssembleApplicationModuleCodeInjector(applicationModuleClassList).execute(ByteArrayInputStream(originInject))
+        jarOutput!!.putNextEntry(JarEntry(Constants.dotToSlash(APPLICATION_MODULE_INJECT_CLASS_NAME) + _CLASS))
         ByteArrayInputStream(resultByteArray).use {
             it.copyTo(jarOutput!!)
         }

@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,12 +19,14 @@ import androidx.fragment.app.Fragment;
 
 import com.wyjson.router.callback.GoCallback;
 import com.wyjson.router.callback.InterceptorCallback;
+import com.wyjson.router.core.ApplicationModuleCenter;
 import com.wyjson.router.core.InterceptorServiceImpl;
 import com.wyjson.router.core.LogisticsCenter;
-import com.wyjson.router.core.RouteModuleLoadCenter;
+import com.wyjson.router.core.RouteModuleCenter;
 import com.wyjson.router.core.interfaces.IInterceptorService;
 import com.wyjson.router.exception.NoFoundRouteException;
 import com.wyjson.router.exception.RouterException;
+import com.wyjson.router.interfaces.IApplicationModule;
 import com.wyjson.router.interfaces.IDegradeService;
 import com.wyjson.router.interfaces.IInterceptor;
 import com.wyjson.router.interfaces.IPretreatmentService;
@@ -65,9 +68,9 @@ public final class GoRouter {
      *
      * @param application
      */
-    public static synchronized void autoLoadModuleRoute(Application application) {
-        logger.info(null, "[GoRouter] autoLoadModuleRoute!");
-        RouteModuleLoadCenter.loadModuleRoute(application);
+    public static synchronized void autoLoadRouteModule(Application application) {
+        logger.info(null, "[GoRouter] autoLoadRouteModule!");
+        RouteModuleCenter.load(application);
     }
 
     /**
@@ -76,7 +79,7 @@ public final class GoRouter {
      * @return true [GoRouter-Gradle-Plugin] ,false [scan dex file]
      */
     public boolean isRouteRegisterMode() {
-        return RouteModuleLoadCenter.isRegisterByPlugin();
+        return RouteModuleCenter.isRegisterByPlugin();
     }
 
     public static synchronized void openDebug() {
@@ -106,6 +109,54 @@ public final class GoRouter {
         if (userLogger != null) {
             logger = userLogger;
         }
+    }
+
+    /**
+     * 自动加载模块application
+     *
+     * @param application
+     */
+    public static synchronized void autoLoadAM(Application application) {
+        logger.info(null, "[GoRouter] autoLoadAM!");
+        ApplicationModuleCenter.load(application);
+    }
+
+    /**
+     * 获取模块application注册模式
+     *
+     * @return true [GoRouter-Gradle-Plugin] ,false [scan dex file]
+     */
+    public boolean isAMRegisterMode() {
+        return ApplicationModuleCenter.isRegisterByPlugin();
+    }
+
+    public static void executeAMOnCreate(Application app) {
+        ApplicationModuleCenter.executeOnCreate(app);
+    }
+
+    public static void executeAMOnTerminate() {
+        ApplicationModuleCenter.executeOnTerminate();
+    }
+
+    public static void executeAMOnConfigurationChanged(@NonNull Configuration newConfig) {
+        ApplicationModuleCenter.executeOnConfigurationChanged(newConfig);
+    }
+
+    public static void executeAMOnLowMemory() {
+        ApplicationModuleCenter.executeOnLowMemory();
+    }
+
+    public static void executeAMOnTrimMemory(int level) {
+        ApplicationModuleCenter.executeOnTrimMemory(level);
+    }
+
+    /**
+     * 动态注册模块application
+     *
+     * @param am
+     */
+    public static void registerAM(Class<? extends IApplicationModule> am) {
+        ApplicationModuleCenter.register(am);
     }
 
     /**

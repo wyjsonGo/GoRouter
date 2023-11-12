@@ -6,6 +6,8 @@
 }
 # 自动注册模块路由加载类不混淆
 -keep class * implements com.wyjson.router.module.interfaces.IRouteModule
+# 自动注册模块Application代理类不混淆
+-keep class * implements com.wyjson.router.interfaces.IApplicationModule
 # #   ########## GoRouter # end ##########
 
 

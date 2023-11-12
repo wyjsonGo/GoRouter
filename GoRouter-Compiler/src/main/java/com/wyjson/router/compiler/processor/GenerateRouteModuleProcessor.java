@@ -12,7 +12,7 @@ import static com.wyjson.router.compiler.utils.Constants.DOUBEL_PRIMITIVE;
 import static com.wyjson.router.compiler.utils.Constants.FLOAT_PACKAGE;
 import static com.wyjson.router.compiler.utils.Constants.FLOAT_PRIMITIVE;
 import static com.wyjson.router.compiler.utils.Constants.FRAGMENT;
-import static com.wyjson.router.compiler.utils.Constants.GOROUTER_PACKAGE_NAME;
+import static com.wyjson.router.compiler.utils.Constants.GOROUTER;
 import static com.wyjson.router.compiler.utils.Constants.INTEGER_PACKAGE;
 import static com.wyjson.router.compiler.utils.Constants.INTEGER_PRIMITIVE;
 import static com.wyjson.router.compiler.utils.Constants.I_ROUTE_MODULE_GROUP_METHOD_NAME_LOAD;
@@ -25,7 +25,7 @@ import static com.wyjson.router.compiler.utils.Constants.LONG_PRIMITIVE;
 import static com.wyjson.router.compiler.utils.Constants.METHOD_NAME_LOAD;
 import static com.wyjson.router.compiler.utils.Constants.METHOD_NAME_LOAD_ROUTE_FOR_x_GROUP;
 import static com.wyjson.router.compiler.utils.Constants.METHOD_NAME_LOAD_ROUTE_GROUP;
-import static com.wyjson.router.compiler.utils.Constants.MODULE_PACKAGE_NAME;
+import static com.wyjson.router.compiler.utils.Constants.ROUTE_MODULE_PACKAGE_NAME;
 import static com.wyjson.router.compiler.utils.Constants.PARAM_NAME_ROUTE_GROUPS;
 import static com.wyjson.router.compiler.utils.Constants.PARCELABLE_PACKAGE;
 import static com.wyjson.router.compiler.utils.Constants.PREFIX_OF_LOGGER;
@@ -75,7 +75,7 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 
 @AutoService(Processor.class)
-public class GenerateModuleRouteProcessor extends BaseProcessor {
+public class GenerateRouteModuleProcessor extends BaseProcessor {
 
     TypeElement mGoRouter;
     TypeElement mIRouteModule;
@@ -101,8 +101,8 @@ public class GenerateModuleRouteProcessor extends BaseProcessor {
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
-        logger.info(moduleName + " >>> GenerateModuleRouteProcessor init. <<<");
-        mGoRouter = elementUtils.getTypeElement(GOROUTER_PACKAGE_NAME);
+        logger.info(moduleName + " >>> GenerateRouteModuleProcessor init. <<<");
+        mGoRouter = elementUtils.getTypeElement(GOROUTER);
         mIRouteModule = elementUtils.getTypeElement(I_ROUTE_MODULE_PACKAGE_NAME);
     }
 
@@ -125,7 +125,7 @@ public class GenerateModuleRouteProcessor extends BaseProcessor {
         LinkedHashSet<MethodSpec> routeGroupMethods = addRouteGroup(roundEnvironment, loadIntoMethod);
 
         try {
-            JavaFile.builder(MODULE_PACKAGE_NAME,
+            JavaFile.builder(ROUTE_MODULE_PACKAGE_NAME,
                             TypeSpec.classBuilder(className)
                                     .addModifiers(PUBLIC)
                                     .addSuperinterface(ClassName.get(mIRouteModule))
@@ -136,7 +136,7 @@ public class GenerateModuleRouteProcessor extends BaseProcessor {
                     .indent("    ")
                     .build()
                     .writeTo(mFiler);
-            logger.info(moduleName + " >>> GenerateModuleRouteProcessor over. <<<");
+            logger.info(moduleName + " >>> GenerateRouteModuleProcessor over. <<<");
         } catch (IOException e) {
             logger.error(moduleName + " Failed to generate [" + className + "] class!");
             logger.error(e);
@@ -273,7 +273,7 @@ public class GenerateModuleRouteProcessor extends BaseProcessor {
         try {
             String group = path.substring(1, path.indexOf("/", 1));
             if (StringUtils.isEmpty(group)) {
-                throw new RuntimeException("Extract the default group failed! There's nothing between 2 '/'!");
+                throw new RuntimeException(PREFIX_OF_LOGGER + moduleName + " Extract the default group failed! There's nothing between 2 '/'!");
             }
             return group;
         } catch (Exception e) {
@@ -377,7 +377,7 @@ public class GenerateModuleRouteProcessor extends BaseProcessor {
                         } else if (types.isSubtype(typeMirror, serializableType)) {
                             paramType = "putSerializable";
                         } else {
-                            throw new RuntimeException("@Param(type='" + typeMirror + "') is marked as an unsupported type");
+                            throw new RuntimeException(PREFIX_OF_LOGGER + moduleName + " @Param(type='" + typeMirror + "') is marked as an unsupported type");
                         }
                 }
 
