@@ -2,18 +2,16 @@ package com.wyjson.router.exception;
 
 import android.os.Build;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
 public class RouterException extends RuntimeException {
 
-    public RouterException() {
-    }
-
-    public RouterException(String message) {
+    public RouterException(@NonNull String message) {
         super(message);
     }
 
-    public RouterException(String message, Throwable cause) {
+    public RouterException(@NonNull String message, Throwable cause) {
         super(message, cause);
     }
 
@@ -22,7 +20,7 @@ public class RouterException extends RuntimeException {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public RouterException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    public RouterException(@NonNull String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 }

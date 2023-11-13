@@ -76,16 +76,7 @@
 # #   ########## WebView # end ##########
 
 
-# #   ########## GoRouter # start ##########
-# 删除GoRouter logger
-# 需要删除-dontoptimize
--assumenosideeffects class com.wyjson.router.logger.DefaultLogger {
-    public *** debug(...);
-    public *** info(...);
-    public *** warning(...);
-    public *** error(...);
-}
-# #   ########## GoRouter # end ##########
+
 
 
 

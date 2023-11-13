@@ -13,7 +13,7 @@ import com.wyjson.module_common.route.UserRoute;
 import com.wyjson.module_user.databinding.UserFragmentParamBinding;
 import com.wyjson.router.annotation.Param;
 import com.wyjson.router.annotation.Route;
-import com.wyjson.router.core.GoRouter;
+import com.wyjson.router.GoRouter;
 
 @Route(path = UserRoute.ParamFragment, remark = "参数片段")
 public class ParamFragment extends Fragment {

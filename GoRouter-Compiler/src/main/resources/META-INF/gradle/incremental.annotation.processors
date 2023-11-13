@@ -1,0 +1,2 @@
+com.wyjson.router.compiler.processor.GenerateRouteModuleProcessor,aggregating
+com.wyjson.router.compiler.processor.GenerateApplicationModuleProcessor,aggregating

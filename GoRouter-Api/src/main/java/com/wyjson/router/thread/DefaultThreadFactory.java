@@ -1,7 +1,7 @@
 package com.wyjson.router.thread;
 
 
-import com.wyjson.router.core.GoRouter;
+import com.wyjson.router.GoRouter;
 
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;

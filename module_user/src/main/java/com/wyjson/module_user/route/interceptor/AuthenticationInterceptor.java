@@ -4,12 +4,12 @@ import static com.wyjson.module_common.route.utils.RouteTagUtils.TagEnum.AUTHENT
 
 import com.wyjson.module_common.route.utils.RouteTagUtils;
 import com.wyjson.router.annotation.Interceptor;
-import com.wyjson.router.card.Card;
+import com.wyjson.router.model.Card;
 import com.wyjson.router.exception.RouterException;
-import com.wyjson.router.interceptor.InterceptorCallback;
+import com.wyjson.router.callback.InterceptorCallback;
 import com.wyjson.router.interfaces.IInterceptor;
 
-@Interceptor(priority = 100, remark = "身份验证拦截器")
+@Interceptor(ordinal = 100, remark = "身份验证拦截器")
 public class AuthenticationInterceptor implements IInterceptor {
 
     @Override

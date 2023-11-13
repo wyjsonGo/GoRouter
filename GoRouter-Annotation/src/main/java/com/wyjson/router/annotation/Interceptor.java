@@ -9,10 +9,11 @@ import java.lang.annotation.Target;
 @Target({TYPE})
 @Retention(SOURCE)
 public @interface Interceptor {
+
     /**
-     * The priority of interceptor, GoRouter will be excute them follow the priority.
+     * The order of the interceptors will execute them in order from smallest to largest.
      */
-    int priority();
+    int ordinal();
 
     /**
      * The remark of interceptor, may be used to generate javadoc.
