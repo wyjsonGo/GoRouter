@@ -25,8 +25,8 @@ android {
 
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    api project(path: ':GoRouter-Annotation')
-//    api "com.github.wyjsonGo.GoRouter:GoRouter-Annotation:${VERSION}"
+//    api project(path: ':GoRouter-Annotation')
+    api "com.github.wyjsonGo.GoRouter:GoRouter-Annotation:${VERSION}"
 }
 
 apply from: rootProject.file('gradle/publish-android.gradle')

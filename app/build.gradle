@@ -1,11 +1,11 @@
 plugins {
     id 'com.android.application'
-//    id 'com.wyjson.gorouter'
+    id 'com.wyjson.gorouter'
 }
-//GoRouter {
-//    // 允许执行自动注册任务的集合，最好不要写debug,以节省开发阶段build时间。
-//    buildTypes "release"
-//}
+GoRouter {
+    // 允许执行自动注册任务的集合，最好不要写debug,以节省开发阶段build时间。
+    buildTypes "release"
+}
 android {
     namespace 'com.wyjson.go_router'
     compileSdk 33
