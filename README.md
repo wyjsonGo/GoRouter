@@ -607,7 +607,7 @@ Demo示例[MyApplication.java](https://github.com/wyjsonGo/GoRouter/blob/master/
 ##### 3.  进阶用法
 
 *   指定模块Application优先级，可以重写`setPriority()`方法，它将按照从大到小的执行顺序执行。
-*   `IApplicationModule`接口不紧提供了`onCreate`、`onLoadAsync`方法，还提供了`onTerminate`、`onConfigurationChanged`、`onLowMemory`、`onTrimMemory`方法，如需监听记得在主Application中添加他们的分发方法`GoRouter.callAMOnCreate()`、`GoRouter.callAMOnTerminate()`、`GoRouter.callAMOnConfigurationChanged(newConfig)`、`GoRouter.callAMOnLowMemory()`、`GoRouter.callAMOnTrimMemory(level)`。
+*   `IApplicationModule`接口不仅提供了`onCreate`、`onLoadAsync`方法，还提供了`onTerminate`、`onConfigurationChanged`、`onLowMemory`、`onTrimMemory`方法，如需监听记得在主Application中添加他们的分发方法`GoRouter.callAMOnCreate()`、`GoRouter.callAMOnTerminate()`、`GoRouter.callAMOnConfigurationChanged(newConfig)`、`GoRouter.callAMOnLowMemory()`、`GoRouter.callAMOnTrimMemory(level)`。
 
 ## 七、其他
 
