@@ -1,6 +1,7 @@
 # [GoRouter](https://github.com/wyjsonGo/GoRouter)
 
-[![License](https://img.shields.io/badge/license-Apache%202-green.svg)](https://www.apache.org/licenses/LICENSE-2.0)
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/wyjsonGo/GoRouter/blob/main/LICENSE)
+[![Release Version](https://jitpack.io/v/wyjsonGo/GoRouter.svg)](https://jitpack.io/#wyjsonGo/GoRouter)
 
 > 一个用于帮助 Android App 进行组件化改造的框架 —— 支持模块间的路由、通信、解耦
 
