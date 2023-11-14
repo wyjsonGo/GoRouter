@@ -217,6 +217,42 @@ public final class GoRouter {
         return new Card(uri);
     }
 
+    /**
+     * 获取原始的URI
+     *
+     * @param activity
+     */
+    public String getRawURI(Activity activity) {
+        return LogisticsCenter.getRawURI(activity);
+    }
+
+    /**
+     * 获取原始的URI
+     *
+     * @param fragment
+     */
+    public String getRawURI(Fragment fragment) {
+        return LogisticsCenter.getRawURI(fragment);
+    }
+
+    /**
+     * 获取当前页面路径
+     *
+     * @param activity
+     */
+    public String getCurrentPath(Activity activity) {
+        return LogisticsCenter.getCurrentPath(activity);
+    }
+
+    /**
+     * 获取当前页面路径
+     *
+     * @param fragment
+     */
+    public String getCurrentPath(Fragment fragment) {
+        return LogisticsCenter.getCurrentPath(fragment);
+    }
+
     public void inject(Activity activity) {
         LogisticsCenter.inject(activity, null, null);
     }
