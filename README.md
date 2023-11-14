@@ -16,7 +16,7 @@
 | 路由注册方式             | 注解      | 注解、java | GoRouter不仅提供了注解，还能使用java方式注册，参见5-6 |
 | 服务                    | 一对多    | 一对一     | ARouter可以为一个服务接口注册多个实现类(没啥用)，本库一个服务接口对应一个实现方法(调用更方便) |
 | 动态注册拦截器            | 不支持    | 支持      | ARouter只能动态注册路由，不能动态注册拦截器 |
-| 重写跳转URL服务          | 支持      | 不支持     | 可以在`PretreatmentService`里实现相同功能 |
+| 重写跳转URL服务          | 支持      | 不支持     | 可以在`IPretreatmentService`里实现相同功能 |
 | 获取元数据               | 不支持    | 支持       | 有些场景需要判断某个页面当前是否存在等需求，就需要获取页面class等信息，参见5-1 |
 | withObject()           | 支持      | 不支持     | ARouter实现原理是转JSON后使用`withString()`方法传递 |
 | inject(T)              | 单一      | 更多       | ARouter不能在`onNewIntent()`方法里使用，GoRouter提供了更多使用场景 |
@@ -210,7 +210,7 @@ AndroidManifest.xml
 // 为每一个参数声明一个字段，并使用 @Param 标注
 // URL中不能传递Parcelable类型数据，通过GoRouter api可以传递Parcelable对象
 // 支持父类字段自动注入
-@Route(path = "/user/param/activity")
+@Route(path = "/param/activity")
 public class ParamActivity extends BaseParamActivity {
 
     @Param
@@ -294,9 +294,9 @@ GoRouter.getInstance().build("/test/activity").go(this, new GoCallback() {
 ##### 5.  自定义全局降级策略
 
 ```java
-// 实现DegradeService接口
+// 实现IDegradeService接口
 @Service(remark = "全局降级策略")
-public class DegradeServiceImpl implements DegradeService {
+public class DegradeServiceImpl implements IDegradeService {
    @Override
    public void onLost(Context context, Card card) {
        // do something.
@@ -359,9 +359,9 @@ if (helloService != null) {
 ```java
 // 比如跳转登录页面，只要简单的调用go就可以了，一些必须的参数和标识可以放到预处理里来做。
 // 或者一些埋点的处理
-// 实现PretreatmentService接口
+// 实现IPretreatmentService接口
 @Service(remark = "预处理服务")
-public class PretreatmentServiceImpl implements PretreatmentService {
+public class PretreatmentServiceImpl implements IPretreatmentService {
 
    @Override
    public void init() {
@@ -398,7 +398,7 @@ if (cardMeta != null) {
 GoRouter.getInstance().build("/main/activity").go(this);
 
 // 构建标准的路由请求，通过Uri直接解析
-Uri uri;
+Uri uri = Uri.parse("/new/param/activity?age=9&name=CoCo&base=123");
 GoRouter.getInstance().build(uri).go(this);
 
 // 构建标准的路由请求，startActivityForResult
@@ -464,13 +464,13 @@ GoRouter.printStackTrace();
 ##### 3.  获取原始的URI
 
 ```java
-String uriStr = getIntent().getStringExtra(GoRouter.ROUTER_RAW_URI);
+String uriStr = GoRouter.getInstance().getRawURI(this);
 ```
 
 ##### 4.  获取当前页面路径
 
 ```java
-String path = getIntent().getString(GoRouter.ROUTER_CURRENT_PATH);
+String path = GoRouter.getInstance().getCurrentPath(this);
 ```
 
 ##### 5.  获取路由注册模式
@@ -507,16 +507,15 @@ GoRouter.getInstance().addRouterGroup("show", new IRouteModuleGroup() {
 
 // 当然,你也可以直接注册Activity、Fragment路由
 // 动态注册Activity
-GoRouter.getInstance().build("/user/info/activity").commitActivity(UserInfoActivity.class);
+GoRouter.getInstance().build("/user/info/activity").putTag(3).commitActivity(UserInfoActivity.class);
 // 动态注册Fragment
-GoRouter.getInstance().build("/user/card/fragment").commitFragment(CardFragment.class);
-
+GoRouter.getInstance().build("/new/param/fragment").putInt("age").putString("name").commitFragment(ParamFragment.class);
 ```
 
 ##### 7.  自定义模块路由加载
 
-如不使用gradle插件[3-6]进行自动注册，也不想走默认扫描dex的方式，可以不调用`GoRouter.autoLoadRouteModule(this);`方法，但需要自行调用模块生成的路由加载类。
-模块项目里至少使用一条注解`@Route`、`@Service`、`@Interceptor`，就会生成对应路由表的加载类。路由表加载类命名规则会根据`GOROUTER_MODULE_NAME `设置的模块名称转换成大写驼峰命名+`$$Route.java`，所有模块生成的路由表加载类都会放到`com.wyjson.router.module.route`包下。
+如不使用gradle插件[3-6]进行自动注册，也不想走默认扫描dex的方式，可以不调用`GoRouter.autoLoadRouteModule(this)`方法，但需要自行调用模块生成的路由加载类。
+模块项目里至少使用一条注解`@Route`、`@Service`、`@Interceptor`，就会生成对应路由表的加载类。路由表加载类命名规则会根据`GOROUTER_MODULE_NAME`设置的模块名称转换成大写驼峰命名+`$$Route.java`，所有模块生成的路由表加载类都会放到`com.wyjson.router.module.route`包下。
 例如模块名称`module_user`会生成`ModuleUser$$Route.java`
 
 ```java
@@ -557,7 +556,7 @@ GoRouter {
 两条任务的区别是:
 
 *   执行`generateRouteDoc`任务会先自动触发`build`任务生成各个模块子路由文档,在触发生成最终的路由文档。
-*   执行`quickGenerateRouteDoc`任务会直接去获取子模块路由文档生成最终的路由文档(如果你已经运行过项目,可以使用此任务快速得到结果)。
+*   执行`quickGenerateRouteDoc`任务会直接去获取子模块路由文档，生成最终的路由文档(如果你已经运行过项目,可以使用此任务快速得到结果)。
 
 生成的路由文档会保存到项目下的`/app/项目名-route-doc.json`,Demo示例[/app/GoRouter-route-doc.json](https://github.com/wyjsonGo/GoRouter/blob/master/app/GoRouter-route-doc.json)
 

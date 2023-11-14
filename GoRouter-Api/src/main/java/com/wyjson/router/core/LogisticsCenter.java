@@ -172,6 +172,38 @@ public class LogisticsCenter {
     }
 
     /**
+     * 获取原始的URI
+     *
+     * @param target
+     * @param <T>
+     */
+    public static <T> String getRawURI(T target) {
+        Bundle bundle;
+        try {
+            bundle = getBundle(target, null, null);
+        } catch (Exception e) {
+            throw new RuntimeException("getRawURI() " + e.getMessage());
+        }
+        return bundle.getString(GoRouter.ROUTER_RAW_URI);
+    }
+
+    /**
+     * 获取当前页面路径
+     *
+     * @param target
+     * @param <T>
+     */
+    public static <T> String getCurrentPath(T target) {
+        Bundle bundle;
+        try {
+            bundle = getBundle(target, null, null);
+        } catch (Exception e) {
+            throw new RuntimeException("getCurrentPath() " + e.getMessage());
+        }
+        return bundle.getString(GoRouter.ROUTER_CURRENT_PATH);
+    }
+
+    /**
      * 解析参数
      *
      * @param target
@@ -182,19 +214,10 @@ public class LogisticsCenter {
     public static <T> void inject(T target, Intent intent, Bundle bundle) {
         GoRouter.logger.debug(null, "[inject] Auto Inject Start!");
 
-        if (bundle == null) {
-            if (intent != null) {
-                bundle = intent.getExtras();
-            } else {
-                if (target instanceof Activity) {
-                    bundle = ((Activity) target).getIntent().getExtras();
-                } else if (target instanceof Fragment) {
-                    bundle = ((Fragment) target).getArguments();
-                }
-            }
-            if (bundle == null) {
-                throw new RouterException("inject() method does not get bundle!");
-            }
+        try {
+            bundle = getBundle(target, intent, bundle);
+        } catch (Exception e) {
+            throw new RuntimeException("inject() " + e.getMessage());
         }
 
         String path = bundle.getString(GoRouter.ROUTER_CURRENT_PATH);
@@ -222,6 +245,25 @@ public class LogisticsCenter {
             }
         }
         GoRouter.logger.debug(null, "[inject] Auto Inject End!");
+    }
+
+    @NonNull
+    private static <T> Bundle getBundle(T target, Intent intent, Bundle bundle) {
+        if (bundle == null) {
+            if (intent != null) {
+                bundle = intent.getExtras();
+            } else {
+                if (target instanceof Activity) {
+                    bundle = ((Activity) target).getIntent().getExtras();
+                } else if (target instanceof Fragment) {
+                    bundle = ((Fragment) target).getArguments();
+                }
+            }
+            if (bundle == null) {
+                throw new RouterException("method does not get bundle!");
+            }
+        }
+        return bundle;
     }
 
     /**
