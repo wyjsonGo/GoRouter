@@ -44,9 +44,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 public final class GoRouter {
 
-    public static final String ROUTER_CURRENT_PATH = "go_router_current_path";
-    public static final String ROUTER_RAW_URI = "go_router_raw_uri";
-
     private final Handler mHandler = new Handler(Looper.getMainLooper());
     private volatile static ThreadPoolExecutor executor = DefaultPoolExecutor.getInstance();
     public static ILogger logger = new DefaultLogger();
@@ -281,10 +278,6 @@ public final class GoRouter {
 
     @Nullable
     public Object go(Context context, Card card, int requestCode, ActivityResultLauncher<Intent> activityResultLauncher, GoCallback callback) {
-        card.setContext(context);
-        card.setInterceptorException(null);
-        card.withString(GoRouter.ROUTER_CURRENT_PATH, card.getPath());
-
         logger.debug(null, "[go] " + card);
         IPretreatmentService pretreatmentService = getService(IPretreatmentService.class);
         if (pretreatmentService != null) {
@@ -296,6 +289,9 @@ public final class GoRouter {
         } else {
             logger.warning(null, "[go] This [PretreatmentService] was not found!");
         }
+
+        card.setContext(context);
+        card.setInterceptorException(null);
 
         try {
             LogisticsCenter.assembleRouteCard(card);

@@ -2,6 +2,9 @@ package com.wyjson.router.core;
 
 class Constants {
 
+    static final String ROUTER_CURRENT_PATH = "go_router_current_path";
+    static final String ROUTER_RAW_URI = "go_router_raw_uri";
+
     static final String GOROUTER_SP_CACHE_KEY = "SP_GOROUTER_CACHE";
     static final String SEPARATOR = "$$";
     static final String PACKAGE_NAME = "com.wyjson.router";

@@ -1,5 +1,8 @@
 package com.wyjson.router.core;
 
+import static com.wyjson.router.core.Constants.ROUTER_CURRENT_PATH;
+import static com.wyjson.router.core.Constants.ROUTER_RAW_URI;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -184,7 +187,7 @@ public class LogisticsCenter {
         } catch (Exception e) {
             throw new RuntimeException("getRawURI() " + e.getMessage());
         }
-        return bundle.getString(GoRouter.ROUTER_RAW_URI);
+        return bundle.getString(ROUTER_RAW_URI);
     }
 
     /**
@@ -200,7 +203,7 @@ public class LogisticsCenter {
         } catch (Exception e) {
             throw new RuntimeException("getCurrentPath() " + e.getMessage());
         }
-        return bundle.getString(GoRouter.ROUTER_CURRENT_PATH);
+        return bundle.getString(ROUTER_CURRENT_PATH);
     }
 
     /**
@@ -220,7 +223,7 @@ public class LogisticsCenter {
             throw new RuntimeException("inject() " + e.getMessage());
         }
 
-        String path = bundle.getString(GoRouter.ROUTER_CURRENT_PATH);
+        String path = bundle.getString(ROUTER_CURRENT_PATH);
         if (TextUtils.isEmpty(path)) {
             GoRouter.logger.error(null, "[inject] path Parameter is invalid!");
             return;
@@ -298,6 +301,7 @@ public class LogisticsCenter {
         CardMeta cardMeta = getCardMeta(card);
         if (cardMeta != null) {
             card.setCardMeta(cardMeta.getType(), cardMeta.getPathClass(), cardMeta.getTag());
+            card.withString(ROUTER_CURRENT_PATH, card.getPath());
 
             Map<String, ParamMeta> paramsType = cardMeta.getParamsType();
             Uri rawUri = card.getUri();
@@ -313,7 +317,7 @@ public class LogisticsCenter {
                     }
                 }
                 // 保存原始uri
-                card.withString(GoRouter.ROUTER_RAW_URI, rawUri.toString());
+                card.withString(ROUTER_RAW_URI, rawUri.toString());
             }
         }
     }
