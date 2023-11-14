@@ -18,8 +18,8 @@ dependencies {
 
     implementation 'com.google.code.gson:gson:2.10.1'
 
-//    implementation project(path: ':GoRouter-Annotation')
-    implementation "com.github.wyjsonGo.GoRouter:GoRouter-Annotation:${VERSION}"
+    implementation project(path: ':GoRouter-Annotation')
+//    implementation "com.github.wyjsonGo.GoRouter:GoRouter-Annotation:${VERSION}"
 
 }
 
