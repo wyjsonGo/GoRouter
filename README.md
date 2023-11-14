@@ -445,7 +445,7 @@ ActivityOptionsCompat compat = ActivityOptionsCompat.
 
 GoRouter.getInstance()
     .build("/test/activity")
-    .withOptionsCompat(compat)
+    .withActivityOptionsCompat(compat)
     .go(this);
 
 // 使用绿色通道(跳过所有的拦截器)

@@ -12,9 +12,11 @@ import android.os.Handler;
 import android.os.Looper;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.ActivityOptionsCompat;
 import androidx.fragment.app.Fragment;
 
 import com.wyjson.router.callback.GoCallback;
@@ -278,7 +280,7 @@ public final class GoRouter {
     }
 
     @Nullable
-    public Object go(Context context, Card card, int requestCode, GoCallback callback) {
+    public Object go(Context context, Card card, int requestCode, ActivityResultLauncher<Intent> activityResultLauncher, GoCallback callback) {
         card.setContext(context);
         card.setInterceptorException(null);
         card.withString(GoRouter.ROUTER_CURRENT_PATH, card.getPath());
@@ -324,7 +326,7 @@ public final class GoRouter {
                     interceptorService.doInterceptions(card, new InterceptorCallback() {
                         @Override
                         public void onContinue(Card card) {
-                            goActivity(context, card, requestCode, callback);
+                            goActivity(context, card, requestCode, activityResultLauncher, callback);
                         }
 
                         @Override
@@ -337,7 +339,7 @@ public final class GoRouter {
                         }
                     });
                 } else {
-                    goActivity(context, card, requestCode, callback);
+                    goActivity(context, card, requestCode, activityResultLauncher, callback);
                 }
                 break;
             case FRAGMENT:
@@ -363,7 +365,7 @@ public final class GoRouter {
     }
 
     @SuppressLint("WrongConstant")
-    private void goActivity(Context context, Card card, int requestCode, GoCallback callback) {
+    private void goActivity(Context context, Card card, int requestCode, ActivityResultLauncher<Intent> activityResultLauncher, GoCallback callback) {
         Intent intent = new Intent(context, card.getPathClass());
 
         intent.putExtras(card.getExtras());
@@ -383,14 +385,17 @@ public final class GoRouter {
         }
 
         runInMainThread(() -> {
+            ActivityOptionsCompat compat = card.getActivityOptionsCompat();
             if (requestCode >= 0) {
                 if (context instanceof Activity) {
-                    ActivityCompat.startActivityForResult((Activity) context, intent, requestCode, card.getOptionsBundle());
+                    ActivityCompat.startActivityForResult((Activity) context, intent, requestCode, compat != null ? compat.toBundle() : null);
                 } else {
                     throw new RouterException("Must use [go(activity, ...)] to support [startActivityForResult]!");
                 }
+            } else if (activityResultLauncher != null) {
+                activityResultLauncher.launch(intent, compat);
             } else {
-                ActivityCompat.startActivity(context, intent, card.getOptionsBundle());
+                ActivityCompat.startActivity(context, intent, compat != null ? compat.toBundle() : null);
             }
 
             if ((-1 != card.getEnterAnim() && -1 != card.getExitAnim()) && context instanceof Activity) {
