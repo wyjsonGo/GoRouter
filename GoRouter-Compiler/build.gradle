@@ -19,8 +19,6 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.10.1'
 
     implementation project(path: ':GoRouter-Annotation')
-//    implementation "com.github.wyjsonGo.GoRouter:GoRouter-Annotation:${VERSION}"
-
 }
 
 apply from: rootProject.file('gradle/publish-java.gradle')
