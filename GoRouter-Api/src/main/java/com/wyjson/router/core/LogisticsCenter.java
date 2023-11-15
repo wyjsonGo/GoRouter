@@ -198,10 +198,14 @@ public class LogisticsCenter {
      */
     public static <T> String getCurrentPath(T target) {
         Bundle bundle;
-        try {
-            bundle = getBundle(target, null, null);
-        } catch (Exception e) {
-            throw new RuntimeException("getCurrentPath() " + e.getMessage());
+        if (target instanceof Bundle) {
+            bundle = (Bundle) target;
+        } else {
+            try {
+                bundle = getBundle(target, null, null);
+            } catch (Exception e) {
+                throw new RuntimeException("getCurrentPath() " + e.getMessage());
+            }
         }
         return bundle.getString(ROUTER_CURRENT_PATH);
     }
@@ -223,9 +227,9 @@ public class LogisticsCenter {
             throw new RuntimeException("inject() " + e.getMessage());
         }
 
-        String path = bundle.getString(ROUTER_CURRENT_PATH);
+        String path = getCurrentPath(bundle);
         if (TextUtils.isEmpty(path)) {
-            GoRouter.logger.error(null, "[inject] path Parameter is invalid!");
+            GoRouter.logger.error(null, "[inject] The " + ROUTER_CURRENT_PATH + " parameter was not found in the intent");
             return;
         }
 
