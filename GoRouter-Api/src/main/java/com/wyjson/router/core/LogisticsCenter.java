@@ -7,13 +7,17 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Looper;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.Observer;
 
 import com.wyjson.router.GoRouter;
 import com.wyjson.router.enums.ParamType;
+import com.wyjson.router.event.SingleLiveEvent;
 import com.wyjson.router.exception.NoFoundRouteException;
 import com.wyjson.router.exception.RouterException;
 import com.wyjson.router.interfaces.IInterceptor;
@@ -369,5 +373,65 @@ public class LogisticsCenter {
             throw new RouterException("setValue() failed! " + e.getMessage());
         }
     }
+
+    public static <T> void registerEvent(FragmentActivity activity, @NonNull Class<T> type, @NonNull Observer<T> observer) {
+        _registerEvent(activity, null, type, observer);
+    }
+
+    public static <T> void registerEvent(Fragment fragment, @NonNull Class<T> type, @NonNull Observer<T> observer) {
+        _registerEvent(null, fragment, type, observer);
+    }
+
+    private static <T> void _registerEvent(FragmentActivity activity, Fragment fragment, @NonNull Class<T> type, @NonNull Observer<T> observer) {
+        if (type == null) {
+            throw new RouterException("type cannot be empty!");
+        }
+
+        String path = getCurrentPath(activity != null ? activity : fragment);
+        if (TextUtils.isEmpty(path)) {
+            GoRouter.logger.error(null, "[registerEvent] The " + ROUTER_CURRENT_PATH + " parameter was not found in the intent");
+            return;
+        }
+
+        String key = path + "$" + type.getCanonicalName();
+        SingleLiveEvent<T> liveData;
+        if (Warehouse.events.containsKey(key)) {
+            liveData = Warehouse.events.get(key);
+            liveData.removeObservers(activity != null ? activity : fragment);
+        } else {
+            liveData = new SingleLiveEvent<>();
+            Warehouse.events.put(key, liveData);
+        }
+        if (liveData != null) {
+            liveData.observe(activity != null ? activity : fragment, observer);
+        } else {
+            GoRouter.logger.error(null, "[registerEvent] LiveData is empty??");
+        }
+    }
+
+    public static <T> void postEvent(@NonNull String path, @NonNull T value) {
+        if (TextUtils.isEmpty(path)) {
+            throw new RouterException("path Parameter is invalid!");
+        }
+        if (value == null) {
+            throw new RouterException("value cannot be empty!");
+        }
+        String key = path + "$" + value.getClass().getCanonicalName();
+        if (Warehouse.events.containsKey(key)) {
+            SingleLiveEvent<T> liveData = Warehouse.events.get(key);
+            if (liveData != null) {
+                if (Looper.getMainLooper().getThread() == Thread.currentThread()) {
+                    liveData.setValue(value);
+                } else {
+                    liveData.postValue(value);
+                }
+            } else {
+                GoRouter.logger.error(null, "[postEvent] LiveData is empty??");
+            }
+        } else {
+            GoRouter.logger.warning(null, "[postEvent] No observer was found for this event");
+        }
+    }
+
 
 }

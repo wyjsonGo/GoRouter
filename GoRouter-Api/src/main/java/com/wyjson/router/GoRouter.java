@@ -18,6 +18,8 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.Observer;
 
 import com.wyjson.router.callback.GoCallback;
 import com.wyjson.router.callback.InterceptorCallback;
@@ -424,5 +426,18 @@ public final class GoRouter {
             throw new RouterException("fragment constructor new instance failed!");
         }
     }
+
+    public <T> void registerEvent(FragmentActivity activity, @NonNull Class<T> type, @NonNull Observer<T> observer) {
+        LogisticsCenter.registerEvent(activity, type, observer);
+    }
+
+    public <T> void registerEvent(Fragment fragment, @NonNull Class<T> type, @NonNull Observer<T> observer) {
+        LogisticsCenter.registerEvent(fragment, type, observer);
+    }
+
+    public <T> void postEvent(@NonNull String path, @NonNull T value) {
+        LogisticsCenter.postEvent(path, value);
+    }
+
 
 }

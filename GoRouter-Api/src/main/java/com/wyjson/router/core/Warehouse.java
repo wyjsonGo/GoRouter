@@ -1,7 +1,8 @@
 package com.wyjson.router.core;
 
-import com.wyjson.router.interfaces.IInterceptor;
+import com.wyjson.router.event.SingleLiveEvent;
 import com.wyjson.router.interfaces.IApplicationModule;
+import com.wyjson.router.interfaces.IInterceptor;
 import com.wyjson.router.interfaces.IService;
 import com.wyjson.router.model.CardMeta;
 import com.wyjson.router.model.ServiceMeta;
@@ -12,6 +13,7 @@ import com.wyjson.router.utils.RouteHashMap;
 import com.wyjson.router.utils.ServiceHashMap;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,5 +28,7 @@ class Warehouse {
     static final Map<Class<? extends IService>, ServiceMeta> services = new ServiceHashMap();
 
     static final Map<Integer, IInterceptor> interceptors = new InterceptorTreeMap<>("More than one interceptors use same ordinal [%s]");
+
+    static final Map<String, SingleLiveEvent> events = new HashMap<>();
 
 }
