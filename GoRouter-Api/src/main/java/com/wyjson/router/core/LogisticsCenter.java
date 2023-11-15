@@ -198,10 +198,14 @@ public class LogisticsCenter {
      */
     public static <T> String getCurrentPath(T target) {
         Bundle bundle;
-        try {
-            bundle = getBundle(target, null, null);
-        } catch (Exception e) {
-            throw new RuntimeException("getCurrentPath() " + e.getMessage());
+        if (target instanceof Bundle) {
+            bundle = (Bundle) target;
+        } else {
+            try {
+                bundle = getBundle(target, null, null);
+            } catch (Exception e) {
+                throw new RuntimeException("getCurrentPath() " + e.getMessage());
+            }
         }
         return bundle.getString(ROUTER_CURRENT_PATH);
     }
