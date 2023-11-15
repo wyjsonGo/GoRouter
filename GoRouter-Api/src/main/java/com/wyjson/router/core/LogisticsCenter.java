@@ -223,9 +223,9 @@ public class LogisticsCenter {
             throw new RuntimeException("inject() " + e.getMessage());
         }
 
-        String path = bundle.getString(ROUTER_CURRENT_PATH);
+        String path = getCurrentPath(bundle);
         if (TextUtils.isEmpty(path)) {
-            GoRouter.logger.error(null, "[inject] path Parameter is invalid!");
+            GoRouter.logger.error(null, "[inject] The " + ROUTER_CURRENT_PATH + " parameter was not found in the intent");
             return;
         }
 
