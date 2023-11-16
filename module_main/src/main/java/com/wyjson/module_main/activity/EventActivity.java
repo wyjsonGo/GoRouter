@@ -51,7 +51,7 @@ public class EventActivity extends FragmentActivity {
 
     public void onClickCustomEvent(View view) {
         // 向EventFragment发送自定义类型
-        GoRouter.getInstance().postEvent(MainRoute.EventFragment, new CustomEvent(89, "Wyjson!"));
+        GoRouter.getInstance().postEvent(MainRoute.EventFragment, new CustomEvent(89, "Wyjson"));
     }
 
     public void onClickIntEvent(View view) {

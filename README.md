@@ -403,8 +403,9 @@ GoRouter.getInstance().build("/main/activity").go(this);
 Uri uri = Uri.parse("/new/param/activity?age=9&name=jack&base=123");
 GoRouter.getInstance().build(uri).go(this);
 
-// 构建标准的路由请求，startActivityForResult
+// 构建标准的路由请求，startActivityForResult()
 // go的第一个参数必须是Activity，第二个参数则是RequestCode
+// 当然也支持registerForActivityResult()方法
 GoRouter.getInstance().build("/main/activity").go(this, 5);
 
 // 直接传递Bundle
@@ -601,7 +602,7 @@ GoRouter.getInstance().registerEvent(this, CustomEvent.class, new Observer<Custo
 });
 
 // 向UserFragment发送CustomEvent类型数据
-GoRouter.getInstance().postEvent("/user/fragment", new CustomEvent(89, "Wyjson!"));
+GoRouter.getInstance().postEvent("/user/fragment", new CustomEvent(89, "Wyjson"));
 
 // 手动解除String类型全部订阅
 GoRouter.getInstance().unRegisterEvent(this, String.class);

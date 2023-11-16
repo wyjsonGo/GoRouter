@@ -52,7 +52,7 @@ public class EventFragment extends Fragment {
 
         vb.tvSendCustom.setOnClickListener(v -> {
             // 向EventActivity发送自定义类型
-            GoRouter.getInstance().postEvent(MainRoute.EventActivity, new CustomEvent(123, "jack!"));
+            GoRouter.getInstance().postEvent(MainRoute.EventActivity, new CustomEvent(123, "jack"));
         });
     }
 }
