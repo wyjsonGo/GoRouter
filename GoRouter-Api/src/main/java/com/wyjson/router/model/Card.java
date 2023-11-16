@@ -1,12 +1,13 @@
 package com.wyjson.router.model;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.SparseArray;
-import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -34,7 +35,7 @@ public final class Card extends CardMeta {
 
     private int enterAnim = -1;// 转场动画
     private int exitAnim = -1;
-    private Bundle optionsCompat;// 转场动画(API16+)
+    private ActivityOptionsCompat activityOptionsCompat;// 转场动画(API16+)
 
     private Throwable interceptorException;// 拦截执行中断异常信息
     private int timeout = 300;// go() timeout, TimeUnit.Second
@@ -51,8 +52,8 @@ public final class Card extends CardMeta {
         return uri;
     }
 
-    public Bundle getOptionsBundle() {
-        return optionsCompat;
+    public ActivityOptionsCompat getActivityOptionsCompat() {
+        return activityOptionsCompat;
     }
 
     public int getEnterAnim() {
@@ -75,27 +76,37 @@ public final class Card extends CardMeta {
 
     @Nullable
     public Object go(Context context) {
-        return go(context, this, -1, null);
+        return go(context, this, -1, null, null);
     }
 
     @Nullable
     public Object go(Context context, GoCallback callback) {
-        return go(context, this, -1, callback);
+        return go(context, this, -1, null, callback);
     }
 
     @Nullable
     public Object go(Context context, int requestCode) {
-        return go(context, this, requestCode, null);
+        return go(context, this, requestCode, null, null);
     }
 
     @Nullable
     public Object go(Context context, int requestCode, GoCallback callback) {
-        return go(context, this, requestCode, callback);
+        return go(context, this, requestCode, null, callback);
     }
 
     @Nullable
-    private Object go(Context context, Card card, int requestCode, GoCallback callback) {
-        return GoRouter.getInstance().go(context, card, requestCode, callback);
+    public Object go(Context context, ActivityResultLauncher<Intent> activityResultLauncher) {
+        return go(context, this, -1, activityResultLauncher, null);
+    }
+
+    @Nullable
+    public Object go(Context context, ActivityResultLauncher<Intent> activityResultLauncher, GoCallback callback) {
+        return go(context, this, -1, activityResultLauncher, callback);
+    }
+
+    @Nullable
+    private Object go(Context context, Card card, int requestCode, ActivityResultLauncher<Intent> activityResultLauncher, GoCallback callback) {
+        return GoRouter.getInstance().go(context, card, requestCode, activityResultLauncher, callback);
     }
 
     @Nullable
@@ -266,10 +277,8 @@ public final class Card extends CardMeta {
     }
 
     @RequiresApi(16)
-    public Card withOptionsCompat(ActivityOptionsCompat compat) {
-        if (null != compat) {
-            this.optionsCompat = compat.toBundle();
-        }
+    public Card withActivityOptionsCompat(ActivityOptionsCompat compat) {
+        this.activityOptionsCompat = compat;
         return this;
     }
 
@@ -333,7 +342,7 @@ public final class Card extends CardMeta {
                 ", greenChannel=" + greenChannel +
                 ", action='" + action + '\'' +
                 ", context=" + (context != null ? context.getClass().getSimpleName() : null) +
-                ", optionsCompat=" + optionsCompat +
+                ", optionsCompat=" + activityOptionsCompat +
                 ", enterAnim=" + enterAnim +
                 ", exitAnim=" + exitAnim +
                 ", interceptorException=" + interceptorException +

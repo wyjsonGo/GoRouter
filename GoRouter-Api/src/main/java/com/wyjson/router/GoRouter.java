@@ -12,10 +12,14 @@ import android.os.Handler;
 import android.os.Looper;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.ActivityOptionsCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.Observer;
 
 import com.wyjson.router.callback.GoCallback;
 import com.wyjson.router.callback.InterceptorCallback;
@@ -41,9 +45,6 @@ import com.wyjson.router.utils.TextUtils;
 import java.util.concurrent.ThreadPoolExecutor;
 
 public final class GoRouter {
-
-    public static final String ROUTER_CURRENT_PATH = "go_router_current_path";
-    public static final String ROUTER_RAW_URI = "go_router_raw_uri";
 
     private final Handler mHandler = new Handler(Looper.getMainLooper());
     private volatile static ThreadPoolExecutor executor = DefaultPoolExecutor.getInstance();
@@ -278,22 +279,21 @@ public final class GoRouter {
     }
 
     @Nullable
-    public Object go(Context context, Card card, int requestCode, GoCallback callback) {
-        card.setContext(context);
-        card.setInterceptorException(null);
-        card.withString(GoRouter.ROUTER_CURRENT_PATH, card.getPath());
-
+    public Object go(Context context, Card card, int requestCode, ActivityResultLauncher<Intent> activityResultLauncher, GoCallback callback) {
         logger.debug(null, "[go] " + card);
         IPretreatmentService pretreatmentService = getService(IPretreatmentService.class);
         if (pretreatmentService != null) {
             if (!pretreatmentService.onPretreatment(context, card)) {
                 // 预处理失败，导航取消
-                logger.debug(null, "[go] PretreatmentService Failure!");
+                logger.debug(null, "[go] IPretreatmentService Failure!");
                 return null;
             }
         } else {
-            logger.warning(null, "[go] This [PretreatmentService] was not found!");
+            logger.warning(null, "[go] This [IPretreatmentService] was not found!");
         }
+
+        card.setContext(context);
+        card.setInterceptorException(null);
 
         try {
             LogisticsCenter.assembleRouteCard(card);
@@ -324,7 +324,7 @@ public final class GoRouter {
                     interceptorService.doInterceptions(card, new InterceptorCallback() {
                         @Override
                         public void onContinue(Card card) {
-                            goActivity(context, card, requestCode, callback);
+                            goActivity(context, card, requestCode, activityResultLauncher, callback);
                         }
 
                         @Override
@@ -337,7 +337,7 @@ public final class GoRouter {
                         }
                     });
                 } else {
-                    goActivity(context, card, requestCode, callback);
+                    goActivity(context, card, requestCode, activityResultLauncher, callback);
                 }
                 break;
             case FRAGMENT:
@@ -356,14 +356,14 @@ public final class GoRouter {
                 if (degradeService != null) {
                     degradeService.onLost(context, card);
                 } else {
-                    logger.warning(null, "[onLost] This [DegradeService] was not found!");
+                    logger.warning(null, "[onLost] This [IDegradeService] was not found!");
                 }
             }
         });
     }
 
     @SuppressLint("WrongConstant")
-    private void goActivity(Context context, Card card, int requestCode, GoCallback callback) {
+    private void goActivity(Context context, Card card, int requestCode, ActivityResultLauncher<Intent> activityResultLauncher, GoCallback callback) {
         Intent intent = new Intent(context, card.getPathClass());
 
         intent.putExtras(card.getExtras());
@@ -383,14 +383,17 @@ public final class GoRouter {
         }
 
         runInMainThread(() -> {
+            ActivityOptionsCompat compat = card.getActivityOptionsCompat();
             if (requestCode >= 0) {
                 if (context instanceof Activity) {
-                    ActivityCompat.startActivityForResult((Activity) context, intent, requestCode, card.getOptionsBundle());
+                    ActivityCompat.startActivityForResult((Activity) context, intent, requestCode, compat != null ? compat.toBundle() : null);
                 } else {
                     throw new RouterException("Must use [go(activity, ...)] to support [startActivityForResult]!");
                 }
+            } else if (activityResultLauncher != null) {
+                activityResultLauncher.launch(intent, compat);
             } else {
-                ActivityCompat.startActivity(context, intent, card.getOptionsBundle());
+                ActivityCompat.startActivity(context, intent, compat != null ? compat.toBundle() : null);
             }
 
             if ((-1 != card.getEnterAnim() && -1 != card.getExitAnim()) && context instanceof Activity) {
@@ -423,5 +426,42 @@ public final class GoRouter {
             throw new RouterException("fragment constructor new instance failed!");
         }
     }
+
+    public <T> void registerEvent(FragmentActivity activity, @NonNull Class<T> type, @NonNull Observer<T> observer) {
+        LogisticsCenter.registerEvent(activity, type, false, observer);
+    }
+
+    public <T> void registerEvent(Fragment fragment, @NonNull Class<T> type, @NonNull Observer<T> observer) {
+        LogisticsCenter.registerEvent(fragment, type, false, observer);
+    }
+
+    public <T> void registerEventForever(FragmentActivity activity, @NonNull Class<T> type, @NonNull Observer<T> observer) {
+        LogisticsCenter.registerEvent(activity, type, true, observer);
+    }
+
+    public <T> void registerEventForever(Fragment fragment, @NonNull Class<T> type, @NonNull Observer<T> observer) {
+        LogisticsCenter.registerEvent(fragment, type, true, observer);
+    }
+
+    public <T> void unRegisterEvent(FragmentActivity activity, @NonNull Class<T> type) {
+        LogisticsCenter.unRegisterEvent(activity, type, null);
+    }
+
+    public <T> void unRegisterEvent(Fragment fragment, @NonNull Class<T> type) {
+        LogisticsCenter.unRegisterEvent(fragment, type, null);
+    }
+
+    public <T> void unRegisterEvent(FragmentActivity activity, @NonNull Class<T> type, Observer<T> observer) {
+        LogisticsCenter.unRegisterEvent(activity, type, observer);
+    }
+
+    public <T> void unRegisterEvent(Fragment fragment, @NonNull Class<T> type, Observer<T> observer) {
+        LogisticsCenter.unRegisterEvent(fragment, type, observer);
+    }
+
+    public <T> void postEvent(@NonNull String path, @NonNull T value) {
+        LogisticsCenter.postEvent(path, value);
+    }
+
 
 }

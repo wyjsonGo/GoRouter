@@ -1,5 +1,7 @@
 package com.wyjson.router.compiler.doc.model;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class ParamModel {
 
     private String name;
@@ -14,7 +16,9 @@ public class ParamModel {
         this.name = name;
         this.type = type;
         this.required = required;
-        this.remark = remark;
+        if (!StringUtils.isEmpty(remark)) {
+            this.remark = remark;
+        }
     }
 
     public String getName() {

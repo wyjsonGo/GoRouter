@@ -47,7 +47,7 @@
             android:background="#ffaa00"
             android:onClick="onClickCardFragment"
             android:padding="10dp"
-            android:text="go UserFragment"
+            android:text="go CardFragment"
             android:textSize="16sp"
             android:textStyle="bold" />
 
@@ -88,6 +88,23 @@
             android:onClick="onClickUserService"
             android:padding="10dp"
             android:text="获取UserService接口"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#ffaa00"
+            android:onClick="onClickEventActivity"
+            android:padding="10dp"
+            android:text="go EventActivity"
             android:textSize="16sp"
             android:textStyle="bold" />
     </LinearLayout>

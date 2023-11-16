@@ -9,4 +9,7 @@ public interface MainRoute extends BaseRoute {
 
     String MainActivity = PREFIX + ACTIVITY_ROUTE_SUFFIX;
 
+    String EventActivity = PREFIX + "/event" + ACTIVITY_ROUTE_SUFFIX;
+    String EventFragment = PREFIX + "/event" + FRAGMENT_ROUTE_SUFFIX;
+
 }
