@@ -1,5 +1,7 @@
 package com.wyjson.router.compiler.doc.model;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class ServiceModel {
 
     private String remark;
@@ -12,7 +14,9 @@ public class ServiceModel {
     public ServiceModel(String prototype, String className, String remark) {
         this.prototype = prototype;
         this.className = className;
-        this.remark = remark;
+        if (!StringUtils.isEmpty(remark)) {
+            this.remark = remark;
+        }
     }
 
     public String getRemark() {

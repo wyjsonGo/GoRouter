@@ -1,5 +1,7 @@
 package com.wyjson.router.compiler.doc.model;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +23,9 @@ public class RouteModel {
         this.pathClass = pathClass;
         this.tag = tag;
         this.paramsType = paramsType;
-        this.remark = remark;
+        if (!StringUtils.isEmpty(remark)) {
+            this.remark = remark;
+        }
     }
 
     public String getPath() {
