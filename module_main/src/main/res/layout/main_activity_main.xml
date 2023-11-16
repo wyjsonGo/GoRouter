@@ -47,7 +47,7 @@
             android:background="#ffaa00"
             android:onClick="onClickCardFragment"
             android:padding="10dp"
-            android:text="go UserFragment"
+            android:text="go CardFragment"
             android:textSize="16sp"
             android:textStyle="bold" />
 

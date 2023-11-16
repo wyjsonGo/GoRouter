@@ -428,11 +428,35 @@ public final class GoRouter {
     }
 
     public <T> void registerEvent(FragmentActivity activity, @NonNull Class<T> type, @NonNull Observer<T> observer) {
-        LogisticsCenter.registerEvent(activity, type, observer);
+        LogisticsCenter.registerEvent(activity, type, false, observer);
     }
 
     public <T> void registerEvent(Fragment fragment, @NonNull Class<T> type, @NonNull Observer<T> observer) {
-        LogisticsCenter.registerEvent(fragment, type, observer);
+        LogisticsCenter.registerEvent(fragment, type, false, observer);
+    }
+
+    public <T> void registerEventForever(FragmentActivity activity, @NonNull Class<T> type, @NonNull Observer<T> observer) {
+        LogisticsCenter.registerEvent(activity, type, true, observer);
+    }
+
+    public <T> void registerEventForever(Fragment fragment, @NonNull Class<T> type, @NonNull Observer<T> observer) {
+        LogisticsCenter.registerEvent(fragment, type, true, observer);
+    }
+
+    public <T> void unRegisterEvent(FragmentActivity activity, @NonNull Class<T> type) {
+        LogisticsCenter.unRegisterEvent(activity, type, null);
+    }
+
+    public <T> void unRegisterEvent(Fragment fragment, @NonNull Class<T> type) {
+        LogisticsCenter.unRegisterEvent(fragment, type, null);
+    }
+
+    public <T> void unRegisterEvent(FragmentActivity activity, @NonNull Class<T> type, Observer<T> observer) {
+        LogisticsCenter.unRegisterEvent(activity, type, observer);
+    }
+
+    public <T> void unRegisterEvent(Fragment fragment, @NonNull Class<T> type, Observer<T> observer) {
+        LogisticsCenter.unRegisterEvent(fragment, type, observer);
     }
 
     public <T> void postEvent(@NonNull String path, @NonNull T value) {

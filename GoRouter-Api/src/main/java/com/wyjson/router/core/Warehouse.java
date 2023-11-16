@@ -1,6 +1,7 @@
 package com.wyjson.router.core;
 
-import com.wyjson.router.event.SingleLiveEvent;
+import androidx.lifecycle.MutableLiveData;
+
 import com.wyjson.router.interfaces.IApplicationModule;
 import com.wyjson.router.interfaces.IInterceptor;
 import com.wyjson.router.interfaces.IService;
@@ -29,6 +30,6 @@ class Warehouse {
 
     static final Map<Integer, IInterceptor> interceptors = new InterceptorTreeMap<>("More than one interceptors use same ordinal [%s]");
 
-    static final Map<String, SingleLiveEvent> events = new HashMap<>();
+    static final Map<String, MutableLiveData> events = new HashMap<>();
 
 }
