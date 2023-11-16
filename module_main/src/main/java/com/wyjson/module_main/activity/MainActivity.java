@@ -102,6 +102,10 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
+    public void onClickEventActivity(View view) {
+        GoRouter.getInstance().build(MainRoute.EventActivity).go(this);
+    }
+
     private void showRouteLoadMode() {
         if (GoRouter.getInstance().isRouteRegisterMode()) {
             vb.tvLoadMode.setText("路由注册模式:GoRouter-Gradle-Plugin(在打包时注册,节省运行时间)");
