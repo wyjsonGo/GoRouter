@@ -285,11 +285,11 @@ public final class GoRouter {
         if (pretreatmentService != null) {
             if (!pretreatmentService.onPretreatment(context, card)) {
                 // 预处理失败，导航取消
-                logger.debug(null, "[go] PretreatmentService Failure!");
+                logger.debug(null, "[go] IPretreatmentService Failure!");
                 return null;
             }
         } else {
-            logger.warning(null, "[go] This [PretreatmentService] was not found!");
+            logger.warning(null, "[go] This [IPretreatmentService] was not found!");
         }
 
         card.setContext(context);
@@ -356,7 +356,7 @@ public final class GoRouter {
                 if (degradeService != null) {
                     degradeService.onLost(context, card);
                 } else {
-                    logger.warning(null, "[onLost] This [DegradeService] was not found!");
+                    logger.warning(null, "[onLost] This [IDegradeService] was not found!");
                 }
             }
         });
