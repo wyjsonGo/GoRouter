@@ -31,16 +31,16 @@ public class EventFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // 监听一下事件
-        // 监听String类型事件,页面处于活跃状态下才会收到
+        // 订阅一下事件
+        // 订阅String类型事件(页面处于活跃状态下才会收到)
         GoRouter.getInstance().registerEvent(this, String.class, data -> {
             vb.tvShow.setText("EventFragment->String data:" + data);
         });
-        // 监听String类型事件,页面无乱处于任何状态下都会收到
+        // 订阅String类型事件(页面无乱处于何种状态下都会收到)
         GoRouter.getInstance().registerEventForever(this, String.class, data -> {
             // 做一些处理...
         });
-        // 监听自定义类型事件
+        // 订阅自定义类型事件
         GoRouter.getInstance().registerEvent(this, CustomEvent.class, data -> {
             vb.tvShow.setText("EventFragment->CustomEvent data:" + data.toString());
         });

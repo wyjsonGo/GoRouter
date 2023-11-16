@@ -30,6 +30,17 @@
         android:textStyle="bold" />
 
     <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="#ffaa00"
+        android:onClick="onClickIntEvent"
+        android:padding="10dp"
+        android:text="向Main发送int类型(回到Main页面才会收到)"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+    <TextView
         android:id="@+id/tv_show"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

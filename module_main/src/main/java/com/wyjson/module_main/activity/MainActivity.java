@@ -32,6 +32,7 @@ public class MainActivity extends FragmentActivity {
         vb = MainActivityMainBinding.inflate(getLayoutInflater());
         setContentView(vb.getRoot());
         showRouteLoadMode();
+        registerEvent();
     }
 
     public void onClickSignInActivity(View view) {
@@ -114,6 +115,14 @@ public class MainActivity extends FragmentActivity {
             vb.tvLoadMode.setText("路由注册模式:scan dex file(在运行时注册,节省打包时间)");
             vb.tvLoadMode.setTextColor(Color.parseColor("#ff0000"));
         }
+    }
+
+    private void registerEvent() {
+        // 订阅一下事件
+        // 订阅int类型事件(页面处于活跃状态下才会收到)
+        GoRouter.getInstance().registerEvent(this, Integer.class, data -> {
+            Toast.makeText(this, "MainActivity->String data:" + data, Toast.LENGTH_SHORT).show();
+        });
     }
 
 }

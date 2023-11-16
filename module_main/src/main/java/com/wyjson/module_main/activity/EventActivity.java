@@ -2,7 +2,6 @@ package com.wyjson.module_main.activity;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -30,16 +29,16 @@ public class EventActivity extends FragmentActivity {
         setContentView(vb.getRoot());
         addFragment();
 
-        // 监听一下事件
-        // 监听String类型事件,页面处于活跃状态下才会收到
+        // 订阅一下事件
+        // 订阅String类型事件(页面处于活跃状态下才会收到)
         GoRouter.getInstance().registerEvent(this, String.class, data -> {
             vb.tvShow.setText("EventActivity->String data:" + data);
         });
-        // 监听String类型事件,页面无乱处于任何状态下都会收到
+        // 订阅String类型事件(无论页面处于何种状态下都会收到)
         GoRouter.getInstance().registerEventForever(this, String.class, data -> {
             // 做一些处理...
         });
-        // 监听自定义类型事件
+        // 订阅自定义类型事件
         GoRouter.getInstance().registerEvent(this, CustomEvent.class, data -> {
             vb.tvShow.setText("EventActivity->CustomEvent data:" + data.toString());
         });
@@ -53,6 +52,11 @@ public class EventActivity extends FragmentActivity {
     public void onClickCustomEvent(View view) {
         // 向EventFragment发送自定义类型
         GoRouter.getInstance().postEvent(MainRoute.EventFragment, new CustomEvent(89, "Wyjson!"));
+    }
+
+    public void onClickIntEvent(View view) {
+        // 向MainActivity发送int类型
+        GoRouter.getInstance().postEvent(MainRoute.MainActivity, 123);
     }
 
     // 显示EventFragment
