@@ -568,6 +568,12 @@ GoRouter {
 这一套流程下来步骤很多，会出现很多event类，而且这些类只有一个页面在订阅，还要去module_common模块里定义，发布基础数据类型，到导致所有订阅者都会收到，也无法检测页面生命周期状态。
 显然EventBus适合任意处发布多处订阅的场景，而我们需要任意处发布一处订阅的场景，这样就可以订阅基础数据类型了。
 
+典型场景
+
+1.  消息Fragment通知主页Activity的tab刷新未读消息数。
+2.  代替startActivityForResult()，获取返回来的数据。
+3.  Activity显示其他模块Dialog，实时显示Dialog里选择的数据。
+
 使用
 
 ```java
