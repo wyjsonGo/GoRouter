@@ -103,7 +103,9 @@ public class DocumentUtils {
             routeModel.setPath(route.path());
             routeModel.setType(typeDoc);
             routeModel.setPathClass(element.toString());
-            routeModel.setRemark(route.remark());
+            if (!StringUtils.isEmpty(route.remark())) {
+                routeModel.setRemark(route.remark());
+            }
             if (route.tag() != 0) {
                 routeModel.setTag(route.tag());
             }

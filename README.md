@@ -22,6 +22,7 @@
 | inject(T)              | 单一      | 更多       | ARouter不能在`onNewIntent()`方法里使用，GoRouter提供了更多使用场景 |
 | 按组分类、按需初始化       | 支持      | 支持       | ARouter不允许多个module中存在相同的分组，GoRouter允许 |
 | 模块Application生命周期   | 不支持    | 支持       | 主动分发到业务模块，让模块无侵入的获取Application生命周期，参见6-1 |
+| 路由页面Event            | 不支持    | 支持       | 页面事件解耦,提供更多、更方便的API，参见5-10 |
 
 ***
 
@@ -43,6 +44,7 @@
 14. 支持增量编译
 15. 支持动态注册路由、路由组、服务和拦截器
 16. 支持模块Application生命周期
+16. 支持路由页面Event
 
 ## 二、典型应用
 
@@ -384,7 +386,7 @@ public class PretreatmentServiceImpl implements IPretreatmentService {
 ##### 1.  根据路径获取元数据
 
 ```java
-// 有些场景需要判断某个页面当前是否存在,就需要获取页面class等信息，可以使用此方法getCardMete()
+// 有些场景需要判断某个页面当前是否存在等需求,就需要获取页面class等信息，可以使用此方法getCardMete()
 CardMeta cardMeta = GoRouter.getInstance().build("/user/info/activity").getCardMeta();
 if (cardMeta != null) {
     cardMeta.getPathClass();
@@ -394,11 +396,11 @@ if (cardMeta != null) {
 ##### 2.  详细的API说明
 
 ```java
-// 构建标准的路由请求
+// 标准的路由请求
 GoRouter.getInstance().build("/main/activity").go(this);
 
-// 构建标准的路由请求，通过Uri直接解析
-Uri uri = Uri.parse("/new/param/activity?age=9&name=CoCo&base=123");
+// 通过Uri直接解析(外部、h5等调用native页面携带参数可以使用此方式)
+Uri uri = Uri.parse("/new/param/activity?age=9&name=jack&base=123");
 GoRouter.getInstance().build(uri).go(this);
 
 // 构建标准的路由请求，startActivityForResult
@@ -559,6 +561,56 @@ GoRouter {
 *   执行`quickGenerateRouteDoc`任务会直接去获取子模块路由文档，生成最终的路由文档(如果你已经运行过项目,可以使用此任务快速得到结果)。
 
 生成的路由文档会保存到项目下的`/app/项目名-route-doc.json`,Demo示例[/app/GoRouter-route-doc.json](https://github.com/wyjsonGo/GoRouter/blob/master/app/GoRouter-route-doc.json)
+
+##### 10.  路由页面Event
+
+在之前跨模块页面事件通知的流程是，使用EventBus库，在module_common模块里定义event类，页面注册订阅者接收事件，实现事件处理并注解标识，页面销毁解除注册。
+这一套流程下来步骤很多，会出现很多event类，而且这些类只有一个页面在订阅，还要去module_common模块里定义，发布基础数据类型，到导致所有订阅者都会收到，也无法检测页面生命周期状态。
+显然EventBus适合任意处发布多处订阅的场景，而我们需要任意处发布一处订阅的场景，这样就可以订阅基础数据类型了。
+
+使用
+
+```java
+// 在Activity/Fragment上订阅String类型事件
+GoRouter.getInstance().registerEvent(this, String.class, new Observer<String>() {
+    @Override
+    public void onChanged(String value) {
+        // do something.
+    }
+});
+
+// 在任意地方向MainActivity发送String类型数据
+GoRouter.getInstance().postEvent("/main/activity", "Go!");
+```
+
+更多用法
+
+```java
+// 订阅自定义类型事件
+GoRouter.getInstance().registerEvent(this, CustomEvent.class, new Observer<CustomEvent>() {
+    @Override
+    public void onChanged(CustomEvent data) {
+        // do something.
+    }
+});
+
+// 向UserFragment发送CustomEvent类型数据
+GoRouter.getInstance().postEvent("/user/fragment", new CustomEvent(89, "Wyjson!"));
+
+// 手动解除String类型全部订阅
+GoRouter.getInstance().unRegisterEvent(this, String.class);
+// 手动解除String类型指定observer订阅
+GoRouter.getInstance().unRegisterEvent(this, String.class, observer);
+```
+
+*   `registerEvent()`和`registerEventForever()`支持在Activity、Fragment上使用。
+*   `registerEvent()`方法页面处于活跃状态下才会收到，`registerEventForever()`方法无论页面处于何种状态下都会收到。
+*   `postEvent()`方法支持主线程和子线程调用。多次调用的情况下，在页面生命周期处于`onPause`下，`registerEvent()`方法只会收到最后一次数据，`registerEventForever()`会全部收到。在页面生命周期处于`onResume`下，两个方法会收到全部数据。
+*   `unRegisterEvent()`方法无需主动调用，框架会在页面销毁时自动解除订阅，除非你想立刻取消订阅。
+*   页面可以订阅多个相同类型的事件和多个不同类型的事件。
+*   路由页面Event功能内部使用`LiveData`。
+
+Demo示例[EventActivity.java](https://github.com/wyjsonGo/GoRouter/blob/master/module_main/src/main/java/com/wyjson/module_main/activity/EventActivity.java)
 
 ## 六、模块Application生命周期
 

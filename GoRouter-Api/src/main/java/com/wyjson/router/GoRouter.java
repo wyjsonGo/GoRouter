@@ -18,6 +18,8 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.Observer;
 
 import com.wyjson.router.callback.GoCallback;
 import com.wyjson.router.callback.InterceptorCallback;
@@ -283,11 +285,11 @@ public final class GoRouter {
         if (pretreatmentService != null) {
             if (!pretreatmentService.onPretreatment(context, card)) {
                 // 预处理失败，导航取消
-                logger.debug(null, "[go] PretreatmentService Failure!");
+                logger.debug(null, "[go] IPretreatmentService Failure!");
                 return null;
             }
         } else {
-            logger.warning(null, "[go] This [PretreatmentService] was not found!");
+            logger.warning(null, "[go] This [IPretreatmentService] was not found!");
         }
 
         card.setContext(context);
@@ -354,7 +356,7 @@ public final class GoRouter {
                 if (degradeService != null) {
                     degradeService.onLost(context, card);
                 } else {
-                    logger.warning(null, "[onLost] This [DegradeService] was not found!");
+                    logger.warning(null, "[onLost] This [IDegradeService] was not found!");
                 }
             }
         });
@@ -424,5 +426,42 @@ public final class GoRouter {
             throw new RouterException("fragment constructor new instance failed!");
         }
     }
+
+    public <T> void registerEvent(FragmentActivity activity, @NonNull Class<T> type, @NonNull Observer<T> observer) {
+        LogisticsCenter.registerEvent(activity, type, false, observer);
+    }
+
+    public <T> void registerEvent(Fragment fragment, @NonNull Class<T> type, @NonNull Observer<T> observer) {
+        LogisticsCenter.registerEvent(fragment, type, false, observer);
+    }
+
+    public <T> void registerEventForever(FragmentActivity activity, @NonNull Class<T> type, @NonNull Observer<T> observer) {
+        LogisticsCenter.registerEvent(activity, type, true, observer);
+    }
+
+    public <T> void registerEventForever(Fragment fragment, @NonNull Class<T> type, @NonNull Observer<T> observer) {
+        LogisticsCenter.registerEvent(fragment, type, true, observer);
+    }
+
+    public <T> void unRegisterEvent(FragmentActivity activity, @NonNull Class<T> type) {
+        LogisticsCenter.unRegisterEvent(activity, type, null);
+    }
+
+    public <T> void unRegisterEvent(Fragment fragment, @NonNull Class<T> type) {
+        LogisticsCenter.unRegisterEvent(fragment, type, null);
+    }
+
+    public <T> void unRegisterEvent(FragmentActivity activity, @NonNull Class<T> type, Observer<T> observer) {
+        LogisticsCenter.unRegisterEvent(activity, type, observer);
+    }
+
+    public <T> void unRegisterEvent(Fragment fragment, @NonNull Class<T> type, Observer<T> observer) {
+        LogisticsCenter.unRegisterEvent(fragment, type, observer);
+    }
+
+    public <T> void postEvent(@NonNull String path, @NonNull T value) {
+        LogisticsCenter.postEvent(path, value);
+    }
+
 
 }

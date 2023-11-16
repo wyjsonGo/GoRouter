@@ -20,6 +20,8 @@
             android:alwaysRetainTaskState="true"
             android:launchMode="singleTask" />
 
+        <activity android:name=".activity.EventActivity" />
+
     </application>
 
 </manifest>

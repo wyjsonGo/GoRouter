@@ -27,12 +27,9 @@ abstract class GenerateRouteDocTask : DefaultTask() {
     @TaskAction
     fun taskAction() {
         Logger.i(TAG, "Generate GoRouter document task start.")
-        project.dependProject().forEach { curProject ->
-            val genFile =
-                curProject.file("${curProject.buildDir}/generated/ap_generated_sources/debug")
-                    .listFiles()
-            val collection =
-                curProject.files(genFile).asFileTree.filter { it.name.endsWith(Constants.DOCUMENT_FILE_NAME) }
+        project.dependProject().plus(project).forEach { curProject ->
+            val genFile = curProject.file("${curProject.buildDir}/generated/ap_generated_sources/debug").listFiles()
+            val collection = curProject.files(genFile).asFileTree.filter { it.name.endsWith(Constants.DOCUMENT_FILE_NAME) }
             if (collection.isEmpty) {
                 Logger.w(TAG, "project[${curProject.name}] scan 0 route document.")
             } else {
@@ -83,16 +80,15 @@ abstract class GenerateRouteDocTask : DefaultTask() {
         val projects = ArrayList<Project>()
         arrayOf("api", "implementation").forEach { name ->
             val dependencyProjects = configurations.getByName(name).dependencies
-                .filterIsInstance<DefaultProjectDependency>()
-                .filter { it.dependencyProject.isAndroid() }
-                .map { it.dependencyProject }
+                    .filterIsInstance<DefaultProjectDependency>()
+                    .filter { it.dependencyProject.isAndroid() }
+                    .map { it.dependencyProject }
             projects.addAll(dependencyProjects)
             dependencyProjects.forEach { projects.addAll(it.dependProject()) }
         }
         return projects.distinct()
     }
 
-    private fun Project.isAndroid() =
-        plugins.hasPlugin("com.android.application") || plugins.hasPlugin("com.android.library")
+    private fun Project.isAndroid() = plugins.hasPlugin("com.android.application") || plugins.hasPlugin("com.android.library")
 
 }

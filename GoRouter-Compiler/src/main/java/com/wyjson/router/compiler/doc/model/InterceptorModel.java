@@ -1,5 +1,7 @@
 package com.wyjson.router.compiler.doc.model;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class InterceptorModel {
 
     private int ordinal;
@@ -12,7 +14,9 @@ public class InterceptorModel {
     public InterceptorModel(int ordinal, String className, String remark) {
         this.ordinal = ordinal;
         this.className = className;
-        this.remark = remark;
+        if (!StringUtils.isEmpty(remark)) {
+            this.remark = remark;
+        }
     }
 
     public int getOrdinal() {
