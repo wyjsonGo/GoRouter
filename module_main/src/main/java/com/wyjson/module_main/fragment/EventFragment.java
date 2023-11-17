@@ -9,9 +9,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.wyjson.module_common.entity.UserEntity;
 import com.wyjson.module_common.route.MainRoute;
 import com.wyjson.module_main.databinding.MainFragmentEventBinding;
-import com.wyjson.module_main.event.CustomEvent;
 import com.wyjson.router.GoRouter;
 import com.wyjson.router.annotation.Route;
 
@@ -41,8 +41,8 @@ public class EventFragment extends Fragment {
             // 做一些处理...
         });
         // 订阅自定义类型事件
-        GoRouter.getInstance().registerEvent(this, CustomEvent.class, data -> {
-            vb.tvShow.setText("EventFragment->CustomEvent data:" + data.toString());
+        GoRouter.getInstance().registerEvent(this, UserEntity.class, data -> {
+            vb.tvShow.setText("EventFragment->UserEntity data:" + data.toString());
         });
 
         vb.tvSendString.setOnClickListener(v -> {
@@ -52,7 +52,7 @@ public class EventFragment extends Fragment {
 
         vb.tvSendCustom.setOnClickListener(v -> {
             // 向EventActivity发送自定义类型
-            GoRouter.getInstance().postEvent(MainRoute.EventActivity, new CustomEvent(123, "jack"));
+            GoRouter.getInstance().postEvent(MainRoute.EventActivity, new UserEntity(123, "jack"));
         });
     }
 }

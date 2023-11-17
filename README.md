@@ -566,8 +566,8 @@ GoRouter {
 ##### 10.  路由页面Event
 
 在之前跨模块页面事件通知的流程是，使用EventBus库，在module_common模块里定义event类，页面注册订阅者接收事件，实现事件处理并注解标识，页面销毁解除注册。
-这一套流程下来步骤很多，会出现很多event类，而且这些类只有一个页面在订阅，还要去module_common模块里定义，发布基础数据类型，到导致所有订阅者都会收到，也无法检测页面生命周期状态。
-显然EventBus适合任意处发布多处订阅的场景，而我们需要任意处发布一处订阅的场景，这样就可以订阅基础数据类型了。
+这一套流程下来步骤很多，会出现很多event类，而且这些类只有一个页面在订阅，还要去module_common模块里定义，发布基础数据类型，会导致所有订阅者都会收到，也无法检测页面生命周期状态。
+显然EventBus适合任意处发布多处订阅的场景，而我们需要任意处发布一处订阅的场景，这样就可以订阅基础数据类型了，自定义类型也不需要再包裹一层新的Event类发布出去。
 
 典型场景
 
@@ -594,15 +594,15 @@ GoRouter.getInstance().postEvent("/main/activity", "Go!");
 
 ```java
 // 订阅自定义类型事件
-GoRouter.getInstance().registerEvent(this, CustomEvent.class, new Observer<CustomEvent>() {
+GoRouter.getInstance().registerEvent(this, UserEntity.class, new Observer<UserEntity>() {
     @Override
-    public void onChanged(CustomEvent data) {
+    public void onChanged(UserEntity data) {
         // do something.
     }
 });
 
-// 向UserFragment发送CustomEvent类型数据
-GoRouter.getInstance().postEvent("/user/fragment", new CustomEvent(89, "Wyjson"));
+// 向UserFragment发送自定义类型数据
+GoRouter.getInstance().postEvent("/user/fragment", new UserEntity(89, "Wyjson"));
 
 // 手动解除String类型全部订阅
 GoRouter.getInstance().unRegisterEvent(this, String.class);
