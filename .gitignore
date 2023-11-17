@@ -8,5 +8,4 @@
 .externalNativeBuild
 .cxx
 local.properties
-*.apk
-/repo
+#*.apk
