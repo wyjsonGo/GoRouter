@@ -82,6 +82,18 @@
         "pathClass": "com.wyjson.module_main.activity.MainActivity"
       },
       {
+        "path": "/main/event/activity",
+        "remark": "事件页面",
+        "type": "Activity",
+        "pathClass": "com.wyjson.module_main.activity.EventActivity"
+      },
+      {
+        "path": "/main/event/fragment",
+        "remark": "事件片段",
+        "type": "Fragment",
+        "pathClass": "com.wyjson.module_main.fragment.EventFragment"
+      },
+      {
         "path": "/main/splash/activity",
         "remark": "欢迎页",
         "type": "Activity",
