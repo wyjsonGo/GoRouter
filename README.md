@@ -403,8 +403,9 @@ GoRouter.getInstance().build("/main/activity").go(this);
 Uri uri = Uri.parse("/new/param/activity?age=9&name=jack&base=123");
 GoRouter.getInstance().build(uri).go(this);
 
-// 构建标准的路由请求，startActivityForResult
+// 构建标准的路由请求，startActivityForResult()
 // go的第一个参数必须是Activity，第二个参数则是RequestCode
+// 当然也支持registerForActivityResult()方法
 GoRouter.getInstance().build("/main/activity").go(this, 5);
 
 // 直接传递Bundle
