@@ -611,7 +611,7 @@ GoRouter.getInstance().unRegisterEvent(this, String.class, observer);
 ```
 
 *   `registerEvent()`和`registerEventForever()`支持在Activity、Fragment上使用。
-*   `registerEvent()`方法页面处于活跃状态下才会收到，`registerEventForever()`方法无论页面处于何种状态下都会收到。
+*   `registerEvent()`方法只有页面处于活跃状态下才会收到，`registerEventForever()`方法无论页面处于何种状态下都会收到。
 *   `postEvent()`方法支持主线程和子线程调用。多次调用的情况下，在页面生命周期处于`onPause`下，`registerEvent()`方法只会收到最后一次数据，`registerEventForever()`会全部收到。在页面生命周期处于`onResume`下，两个方法会收到全部数据。
 *   `unRegisterEvent()`方法无需主动调用，框架会在页面销毁时自动解除订阅，除非你想立刻取消订阅。
 *   页面可以订阅多个相同类型的事件和多个不同类型的事件。
