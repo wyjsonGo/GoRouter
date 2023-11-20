@@ -8,6 +8,9 @@
 -keep class * implements com.wyjson.router.module.interfaces.IRouteModule
 # 自动注册模块Application代理类不混淆
 -keep class * implements com.wyjson.router.interfaces.IApplicationModule
+# 如果开启了代码优化,需要加入这两句,已保证实现了接口的类正常
+-keep class * implements com.wyjson.router.interfaces.IInterceptor
+-keep class * implements com.wyjson.router.interfaces.IService
 # #   ########## GoRouter # end ##########
 
 
