@@ -153,6 +153,7 @@ public class LogisticsCenter {
      * @param isForce
      */
     public static void addInterceptor(int ordinal, Class<? extends IInterceptor> interceptor, boolean isForce) {
+        String title = isForce ? "[setInterceptor]" : "[addInterceptor]";
         try {
             if (isForce) {
                 Warehouse.interceptors.remove(ordinal);
@@ -160,11 +161,9 @@ public class LogisticsCenter {
             IInterceptor instance = interceptor.getConstructor().newInstance();
             instance.init();
             Warehouse.interceptors.put(ordinal, instance);
-
-            String title = isForce ? "[setInterceptor]" : "[addInterceptor]";
             GoRouter.logger.debug(null, title + " size:" + Warehouse.interceptors.size() + ", ordinal:" + ordinal + " -> " + interceptor.getSimpleName());
         } catch (Exception e) {
-            throw new RouterException("[addInterceptor] " + e.getMessage());
+            throw new RouterException(title + " " + e.getMessage());
         }
     }
 

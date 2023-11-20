@@ -14,10 +14,6 @@
 -verbose
 # 忽略警告
 -ignorewarnings
-# 代码优化
--dontshrink
-# 不优化输入的类文件
-#-dontoptimize
 # 保留注解不混淆
 -keepattributes *Annotation*,InnerClasses
 # 避免混淆泛型
@@ -28,15 +24,6 @@
 -renamesourcefileattribute SourceFile
 # 混淆采用的算法
 -optimizations !code/simplification/cast,!field/*,!class/merging/*
-
-# dump.txt文件列出apk包内所有class的内部结构
-#-dump class_files.txt
-# seeds.txt文件列出未混淆的类和成员
--printseeds seeds.txt
-# usage.txt文件列出从apk中删除的代码
--printusage unused.txt
-# mapping.txt文件列出混淆前后的映射
--printmapping mapping.txt
 # #   ########## 基本指令 # end ##########
 
 
@@ -69,11 +56,6 @@
 # #   ########## android support # end ##########
 
 
-# #   ########## WebView # start ##########
--keepclassmembers class fqcn.of.javascript.interface.for.webview {
-   public *;
-}
-# #   ########## WebView # end ##########
 
 
 
