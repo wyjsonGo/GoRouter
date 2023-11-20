@@ -4,7 +4,7 @@ plugins {
 }
 GoRouter {
     // 允许执行自动注册任务的集合，最好不要写debug,以节省开发阶段build时间。
-    buildTypes "release"
+    runBuildTypes "release"
 }
 android {
     namespace 'com.wyjson.go_router'

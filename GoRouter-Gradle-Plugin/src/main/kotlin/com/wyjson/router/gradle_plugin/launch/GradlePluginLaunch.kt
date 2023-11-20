@@ -36,9 +36,9 @@ class GradlePluginLaunch : Plugin<Project> {
             // 处理允许执行自动注册任务的集合,未设置表示全部任务都可执行
             val goRouterConfig = project.extensions.getByType(GoRouterConfig::class.java)
             var isRunTask = false;
-            if (goRouterConfig.buildTypes.isNotEmpty()) {
-                for (buildType in goRouterConfig.buildTypes) {
-                    if (buildType.equals(variant.name, true)) {
+            if (goRouterConfig.runBuildTypes.isNotEmpty()) {
+                for (buildType in goRouterConfig.runBuildTypes) {
+                    if (buildType.equals(variant.buildType, true)) {
                         isRunTask = true;
                         break
                     }
