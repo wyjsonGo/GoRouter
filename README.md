@@ -539,7 +539,7 @@ plugins {
 // 不写下面的配置，默认android.buildTypes任务全部执行自动注册。
 GoRouter {
     // 允许执行自动注册任务的集合
-    buildTypes "release", "sandbox", "more"
+    runBuildTypes "release", "sandbox", "more"
 }
 ```
 
