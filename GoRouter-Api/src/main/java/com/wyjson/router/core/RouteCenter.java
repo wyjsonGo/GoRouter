@@ -14,7 +14,9 @@ import androidx.fragment.app.Fragment;
 import com.wyjson.router.GoRouter;
 import com.wyjson.router.enums.ParamType;
 import com.wyjson.router.exception.NoFoundRouteException;
+import com.wyjson.router.exception.ParamException;
 import com.wyjson.router.exception.RouterException;
+import com.wyjson.router.interfaces.IJsonService;
 import com.wyjson.router.model.Card;
 import com.wyjson.router.model.CardMeta;
 import com.wyjson.router.model.ParamMeta;
@@ -26,6 +28,8 @@ import java.lang.reflect.Field;
 import java.util.Map;
 
 public class RouteCenter {
+
+    private static IJsonService jsonService;
 
     public static Map<String, IRouteModuleGroup> getRouteGroups() {
         return Warehouse.routeGroups;
@@ -132,9 +136,11 @@ public class RouteCenter {
      * @param target
      * @param intent
      * @param bundle
+     * @param isCheck 是否检查 isRequired
      * @param <T>
+     * @throws ParamException
      */
-    public static <T> void inject(T target, Intent intent, Bundle bundle) {
+    public static <T> void inject(T target, Intent intent, Bundle bundle, boolean isCheck) throws ParamException {
         GoRouter.logger.debug(null, "[inject] Auto Inject Start!");
 
         try {
@@ -152,14 +158,27 @@ public class RouteCenter {
         CardMeta cardMeta = GoRouter.getInstance().build(path).getCardMeta();
         if (cardMeta != null) {
             Map<String, ParamMeta> paramsType = cardMeta.getParamsType();
-            for (Map.Entry<String, ParamMeta> params : paramsType.entrySet()) {
-                String paramName = params.getValue().getName();
+            for (Map.Entry<String, ParamMeta> entry : paramsType.entrySet()) {
+                String paramName = entry.getValue().getName();
                 Object value = bundle.get(paramName);
-                if (value == null)
+                if (value == null) {
+                    if (isCheck && entry.getValue().isRequired()) {
+                        throw new ParamException(paramName);
+                    }
                     continue;
+                }
                 GoRouter.logger.debug(null, "[inject] " + paramName + ":" + value);
                 try {
-                    Field injectField = getDeclaredField(target.getClass(), params.getKey());
+                    Field injectField = getDeclaredField(target.getClass(), entry.getKey());
+                    if (ParamType.Object == entry.getValue().getType()) {
+                        if (jsonService == null) {
+                            jsonService = GoRouter.getInstance().getService(IJsonService.class);
+                        }
+                        if (jsonService == null) {
+                            throw new RouterException("To use withObject() method, you need to implement IJsonService");
+                        }
+                        value = jsonService.parseObject((String) value, injectField.getType());
+                    }
                     injectField.setAccessible(true);
                     injectField.set(target, value);
                 } catch (Exception e) {

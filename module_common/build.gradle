@@ -35,6 +35,7 @@ android {
 
 dependencies {
     api 'androidx.appcompat:appcompat:1.6.1'
+    api 'com.google.code.gson:gson:2.10.1'
 
 //    api project(path: ':GoRouter-Api')
 //    annotationProcessor project(path: ':GoRouter-Compiler')

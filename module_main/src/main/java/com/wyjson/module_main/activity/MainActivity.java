@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
+import com.wyjson.module_common.model.TestModel;
 import com.wyjson.module_common.route.MainRoute;
 import com.wyjson.module_common.route.UserRoute;
 import com.wyjson.module_common.route.service.user.UserService;
@@ -44,6 +45,11 @@ public class MainActivity extends FragmentActivity {
                 .withInt("age", 78)
                 .withString("nickname", "Wyjson")
                 .withInt("base", 7758)// 父类里定义的参数
+                /**
+                 * 使用此方式传递自定义参数需要实现Json服务
+                 * Demo示例 {@link com.wyjson.module_common.route.service.JsonServiceImpl}
+                 */
+                .withObject("test", new TestModel(123, "Jack"))
                 .go(this);
     }
 

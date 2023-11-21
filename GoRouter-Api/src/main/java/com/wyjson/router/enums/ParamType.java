@@ -11,5 +11,6 @@ public enum ParamType {
     Double,
     String,
     Serializable,
-    Parcelable;
+    Parcelable,
+    Object;
 }

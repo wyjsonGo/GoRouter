@@ -19,6 +19,7 @@ import com.wyjson.router.core.RouteCenter;
 import com.wyjson.router.enums.RouteType;
 import com.wyjson.router.exception.NoFoundRouteException;
 import com.wyjson.router.exception.RouterException;
+import com.wyjson.router.interfaces.IJsonService;
 import com.wyjson.router.utils.TextUtils;
 
 import java.io.Serializable;
@@ -32,6 +33,7 @@ public final class Card extends CardMeta {
     private boolean greenChannel;// 绿色通道(跳过所有的拦截器)
     private String action;
     private Context context;
+    private IJsonService jsonService;
 
     private int enterAnim = -1;// 转场动画
     private int exitAnim = -1;
@@ -148,6 +150,24 @@ public final class Card extends CardMeta {
 
     public int getFlags() {
         return flags;
+    }
+
+    /**
+     * 使用 withObject 传递 List 和 Map 的实现了 Serializable 接口的实现类(ArrayList/HashMap)的时候，
+     * 接收该对象的地方不能标注具体的实现类类型应仅标注为 List 或 Map，
+     * 否则会影响序列化中类型的判断, 其他类似情况需要同样处理
+     *
+     * @param key
+     * @param value
+     * @return
+     */
+    public Card withObject(@Nullable String key, @Nullable Object value) {
+        jsonService = GoRouter.getInstance().getService(IJsonService.class);
+        if (jsonService == null) {
+            throw new RouterException("To use withObject() method, you need to implement IJsonService");
+        }
+        mBundle.putString(key, jsonService.toJson(value));
+        return this;
     }
 
     public Card withString(@Nullable String key, @Nullable String value) {
