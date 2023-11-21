@@ -377,7 +377,7 @@ public class LogisticsCenter {
         }
     }
 
-    public static <T> void registerEvent(LifecycleOwner owner, @NonNull Class<T> type, boolean isForever, @NonNull Observer<T> observer) {
+    public static <T> void registerEvent(LifecycleOwner owner, Class<T> type, boolean isForever, @NonNull Observer<T> observer) {
         if (!(owner instanceof Activity) && !(owner instanceof Fragment)) {
             /**
              * 正常通过api调用是不会走到这里,除非直接调用了此方法才有可能出现这种情况
@@ -415,7 +415,7 @@ public class LogisticsCenter {
         }
     }
 
-    public static <T> void unRegisterEvent(LifecycleOwner owner, @NonNull Class<T> type, Observer<T> observer) {
+    public static <T> void unRegisterEvent(LifecycleOwner owner, Class<T> type, Observer<T> observer) {
         if (type == null) {
             throw new RouterException("type cannot be empty!");
         }
@@ -481,7 +481,7 @@ public class LogisticsCenter {
         }
     }
 
-    public static <T> void postEvent(@NonNull String path, @NonNull T value) {
+    public static <T> void postEvent(String path, T value) {
         if (TextUtils.isEmpty(path)) {
             throw new RouterException("path Parameter is invalid!");
         }
