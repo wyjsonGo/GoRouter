@@ -18,8 +18,7 @@
 | 动态注册拦截器            | 不支持    | 支持      | ARouter只能动态注册路由，不能动态注册拦截器 |
 | 重写跳转URL服务          | 支持      | 不支持     | 可以在`IPretreatmentService`里实现相同功能 |
 | 获取元数据               | 不支持    | 支持       | 有些场景需要判断某个页面当前是否存在等需求，就需要获取页面class等信息，参见5-1 |
-| withObject()           | 支持      | 不支持     | ARouter实现原理是转JSON后使用`withString()`方法传递 |
-| inject(T)              | 单一      | 更多       | ARouter不能在`onNewIntent()`方法里使用，GoRouter提供了更多使用场景 |
+| inject(T)              | 单一      | 更多       | ARouter不能在`onNewIntent()`方法里使用，也不能检查`required`，GoRouter提供了更多使用场景，参见4-2 |
 | 按组分类、按需初始化       | 支持      | 支持       | ARouter不允许多个module中存在相同的分组，GoRouter允许 |
 | 模块Application生命周期   | 不支持    | 支持       | 主动分发到业务模块，让模块无侵入的获取Application生命周期，参见6-1 |
 | 路由页面Event            | 不支持    | 支持       | 页面事件解耦,提供更多、更方便的API，参见5-10 |
@@ -132,6 +131,7 @@ GoRouter.getInstance().build("/test/activity").go(this);
 GoRouter.getInstance().build("/test/fragment")
             .withInt("age", 35)
             .withString("name", "Wyjson")
+            .withObject("test", new TestModel(123, "Jack"))
             .go(this);
 ```
 
@@ -211,7 +211,6 @@ AndroidManifest.xml
 ```java
 // 为每一个参数声明一个字段，并使用 @Param 标注
 // URL中不能传递Parcelable类型数据，通过GoRouter api可以传递Parcelable对象
-// 支持父类字段自动注入
 @Route(path = "/param/activity")
 public class ParamActivity extends BaseParamActivity {
 
@@ -222,24 +221,76 @@ public class ParamActivity extends BaseParamActivity {
     @Param(name = "nickname", remark = "昵称", required = true)
     private String name;
 
+    /**
+     * 使用 withObject 传递 List 和 Map 的实现了 Serializable 接口的实现类(ArrayList/HashMap)的时候，
+     * 接收该对象的地方不能标注具体的实现类类型应仅标注为 List 或 Map，
+     * 否则会影响序列化中类型的判断, 其他类似情况需要同样处理
+     */
+    @Param(name = "test", remark = "自定义类型", required = true)
+    private TestModel testModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
        super.onCreate(savedInstanceState);
+
+       // inject()方法会自动对字段进行赋值，无需主动获取
        GoRouter.getInstance().inject(this);
-       // GoRouter会自动对字段进行赋值，无需主动获取
+
+       // 或使用
+
+       // injectCheck()方法会自动对字段进行赋值，
+       // 并检查标记@Param(required = true)的字段，
+       // 检查不通过会抛出ParamException()类型的异常,
+       // 可用过e.getParamName()获取参数名自行处理。
+       try {
+           GoRouter.getInstance().injectCheck(this);
+       } catch (ParamException e) {
+           String paramName = e.getParamName();
+           Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+           finish();
+           return;
+       }
+
        Log.d("param", "base:" + base + "age:" + age + ",name:" + name);
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        // inject()方法参数支持intent、bundle
         GoRouter.getInstance().inject(this, intent);
     }
 }
 
+// 支持父类字段自动注入
 public class BaseParamActivity extends Activity {
     @Param(remark = "我是一个父类字段")
     protected int base;
+}
+```
+
+如果使用`withObject()`方法，需要实现JSON服务
+
+```java
+// 实现IJsonService接口
+@Service(remark = "json服务")
+public class JsonServiceImpl implements IJsonService {
+
+    @Override
+    public void init() {
+
+    }
+
+    @Override
+    public String toJson(Object instance) {
+        // 这里演示使用了gson,也可以使用其他json转换工具
+        return new Gson().toJson(instance);
+    }
+
+    @Override
+    public <T> T parseObject(String input, Type clazz) {
+        return new Gson().fromJson(input, clazz);
+    }
 }
 ```
 
@@ -427,6 +478,11 @@ Fragment fragment = (Fragment) GoRouter.getInstance().build("/test/fragment").go
 // 序列化对象传递
 GoRouter.getInstance().build("/main/activity")
     .withSerializable("user",new User())
+    .go(this);
+
+// 自定义对象传递
+GoRouter.getInstance().build("/main/activity")
+    .withObject("test", new TestModel(123, "Jack"))
     .go(this);
 
 // 觉得接口不够多，可以直接拿出Bundle赋值

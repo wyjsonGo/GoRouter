@@ -33,6 +33,7 @@ public class ParamActivity extends BaseParamActivity {
         super.onCreate(savedInstanceState);
         vb = UserActivityParamBinding.inflate(getLayoutInflater());
         setContentView(vb.getRoot());
+
         try {
             GoRouter.getInstance().injectCheck(this);
         } catch (ParamException e) {
@@ -41,6 +42,7 @@ public class ParamActivity extends BaseParamActivity {
             finish();
             return;
         }
+
         vb.tvTitle.setText("base:" + base + ",age:" + age + ",name:" + name + "\ntest:" + testModel.toString());
     }
 
