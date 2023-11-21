@@ -466,5 +466,4 @@ public final class GoRouter {
         EventCenter.postEvent(path, value);
     }
 
-
 }
