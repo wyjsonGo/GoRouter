@@ -377,7 +377,8 @@ public class GenerateRouteModuleProcessor extends BaseProcessor {
                         } else if (types.isSubtype(typeMirror, serializableType)) {
                             paramType = "putSerializable";
                         } else {
-                            throw new RuntimeException(PREFIX_OF_LOGGER + moduleName + " @Param(type='" + typeMirror + "') is marked as an unsupported type");
+                            paramType = "putObject";
+//                            throw new RuntimeException(PREFIX_OF_LOGGER + moduleName + " @Param(type='" + typeMirror + "') is marked as an unsupported type");
                         }
                 }
 

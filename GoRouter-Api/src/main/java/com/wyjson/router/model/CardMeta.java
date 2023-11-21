@@ -118,6 +118,14 @@ public class CardMeta {
         return this;
     }
 
+    public CardMeta putObject(String key) {
+        return put(key, null, ParamType.Object, false);
+    }
+
+    public CardMeta putObject(String key, String name, boolean required) {
+        return put(key, name, ParamType.Object, required);
+    }
+
     public CardMeta putString(String key) {
         return put(key, null, ParamType.String, false);
     }
