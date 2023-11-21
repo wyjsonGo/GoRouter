@@ -32,6 +32,7 @@ import com.wyjson.router.core.RouteModuleCenter;
 import com.wyjson.router.core.ServiceCenter;
 import com.wyjson.router.core.interfaces.IInterceptorService;
 import com.wyjson.router.exception.NoFoundRouteException;
+import com.wyjson.router.exception.ParamException;
 import com.wyjson.router.exception.RouterException;
 import com.wyjson.router.interfaces.IApplicationModule;
 import com.wyjson.router.interfaces.IDegradeService;
@@ -258,27 +259,55 @@ public final class GoRouter {
     }
 
     public void inject(Activity activity) {
-        RouteCenter.inject(activity, null, null);
+        inject(activity, null, null, false);
     }
 
     public void inject(Activity activity, Intent intent) {
-        RouteCenter.inject(activity, intent, null);
+        inject(activity, intent, null, false);
     }
 
     public void inject(Activity activity, Bundle bundle) {
-        RouteCenter.inject(activity, null, bundle);
+        inject(activity, null, bundle, false);
     }
 
     public void inject(Fragment fragment) {
-        RouteCenter.inject(fragment, null, null);
+        inject(fragment, null, null, false);
     }
 
     public void inject(Fragment fragment, Intent intent) {
-        RouteCenter.inject(fragment, intent, null);
+        inject(fragment, intent, null, false);
     }
 
     public void inject(Fragment fragment, Bundle bundle) {
-        RouteCenter.inject(fragment, null, bundle);
+        inject(fragment, null, bundle, false);
+    }
+
+    public void injectCheck(Activity activity) throws ParamException {
+        inject(activity, null, null, true);
+    }
+
+    public void injectCheck(Activity activity, Intent intent) throws ParamException {
+        inject(activity, intent, null, true);
+    }
+
+    public void injectCheck(Activity activity, Bundle bundle) throws ParamException {
+        inject(activity, null, bundle, true);
+    }
+
+    public void injectCheck(Fragment fragment) throws ParamException {
+        inject(fragment, null, null, true);
+    }
+
+    public void injectCheck(Fragment fragment, Intent intent) throws ParamException {
+        inject(fragment, intent, null, true);
+    }
+
+    public void injectCheck(Fragment fragment, Bundle bundle) throws ParamException {
+        inject(fragment, null, bundle, true);
+    }
+
+    private <T> void inject(T target, Intent intent, Bundle bundle, boolean isCheck) throws ParamException {
+        RouteCenter.inject(target, intent, bundle, isCheck);
     }
 
     @Nullable
