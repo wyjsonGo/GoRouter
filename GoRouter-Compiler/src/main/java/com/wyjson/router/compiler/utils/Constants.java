@@ -31,8 +31,8 @@ public class Constants {
     public static final String I_ROUTE_MODULE_GROUP_PACKAGE_NAME = PACKAGE_NAME + ".module.interfaces.IRouteModuleGroup";
     public static final String I_ROUTE_MODULE_GROUP_METHOD_NAME_LOAD = "load";
 
-    public static final String LOGISTICS_CENTER_PACKAGE_NAME = PACKAGE_NAME + ".core.LogisticsCenter";
-    public static final String LOGISTICS_CENTER_METHOD_NAME_GET_ROUTE_GROUPS = "getRouteGroups";
+    public static final String ROUTE_CENTER_PACKAGE_NAME = PACKAGE_NAME + ".core.RouteCenter";
+    public static final String ROUTE_CENTER_METHOD_NAME_GET_ROUTE_GROUPS = "getRouteGroups";
 
     // Log
     public static final String PREFIX_OF_LOGGER = PROJECT + "::Compiler ";

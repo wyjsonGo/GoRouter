@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.wyjson.router.GoRouter;
-import com.wyjson.router.core.LogisticsCenter;
+import com.wyjson.router.core.RouteCenter;
 import com.wyjson.router.enums.ParamType;
 import com.wyjson.router.enums.RouteType;
 import com.wyjson.router.exception.RouterException;
@@ -110,7 +110,7 @@ public class CardMeta {
         if (cls == null) {
             throw new RouterException("Cannot commit empty!");
         }
-        LogisticsCenter.addCardMeta(new CardMeta(this.path, type, cls, this.tag, this.paramsType));
+        RouteCenter.addCardMeta(new CardMeta(this.path, type, cls, this.tag, this.paramsType));
     }
 
     public CardMeta putTag(int tag) {

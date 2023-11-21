@@ -15,7 +15,7 @@ import androidx.core.app.ActivityOptionsCompat;
 
 import com.wyjson.router.GoRouter;
 import com.wyjson.router.callback.GoCallback;
-import com.wyjson.router.core.LogisticsCenter;
+import com.wyjson.router.core.RouteCenter;
 import com.wyjson.router.enums.RouteType;
 import com.wyjson.router.exception.NoFoundRouteException;
 import com.wyjson.router.exception.RouterException;
@@ -112,7 +112,7 @@ public final class Card extends CardMeta {
     @Nullable
     public CardMeta getCardMeta() {
         try {
-            return LogisticsCenter.getCardMeta(this);
+            return RouteCenter.getCardMeta(this);
         } catch (NoFoundRouteException e) {
             GoRouter.logger.warning(null, e.getMessage());
         }

@@ -7,29 +7,17 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.LifecycleEventObserver;
-import androidx.lifecycle.LifecycleObserver;
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 
 import com.wyjson.router.GoRouter;
 import com.wyjson.router.enums.ParamType;
 import com.wyjson.router.exception.NoFoundRouteException;
 import com.wyjson.router.exception.RouterException;
-import com.wyjson.router.interfaces.IInterceptor;
-import com.wyjson.router.interfaces.IService;
 import com.wyjson.router.model.Card;
 import com.wyjson.router.model.CardMeta;
 import com.wyjson.router.model.ParamMeta;
-import com.wyjson.router.model.ServiceMeta;
 import com.wyjson.router.module.interfaces.IRouteModuleGroup;
 import com.wyjson.router.utils.MapUtils;
 import com.wyjson.router.utils.TextUtils;
@@ -37,7 +25,7 @@ import com.wyjson.router.utils.TextUtils;
 import java.lang.reflect.Field;
 import java.util.Map;
 
-public class LogisticsCenter {
+public class RouteCenter {
 
     public static Map<String, IRouteModuleGroup> getRouteGroups() {
         return Warehouse.routeGroups;
@@ -100,85 +88,6 @@ public class LogisticsCenter {
     public static void addCardMeta(CardMeta cardMeta) {
         Warehouse.routes.put(cardMeta.getPath(), cardMeta);
         GoRouter.logger.debug(null, "[addCardMeta] size:" + Warehouse.routes.size() + ", commit:" + cardMeta);
-    }
-
-
-    /**
-     * 实现相同接口的service会被覆盖(更新)
-     *
-     * @param serviceClass 实现类.class
-     */
-    public static void addService(Class<? extends IService> serviceClass) {
-        Class<? extends IService> serviceInterfaceClass = (Class<? extends IService>) serviceClass.getInterfaces()[0];
-        Warehouse.services.put(serviceInterfaceClass, new ServiceMeta(serviceClass));
-        GoRouter.logger.debug(null, "[addService] size:" + Warehouse.services.size() + ", " + serviceInterfaceClass.getSimpleName() + " -> " + serviceClass.getSimpleName());
-    }
-
-    /**
-     * 获取service接口的实现
-     *
-     * @param serviceClass 接口.class
-     * @param <T>
-     * @return
-     */
-    @Nullable
-    public static <T> T getService(Class<? extends T> serviceClass) {
-        ServiceMeta meta = Warehouse.services.get(serviceClass);
-        if (meta != null) {
-            if (serviceClass.isAssignableFrom(meta.getServiceClass())) {
-                IService instance = meta.getService();
-                if (instance == null) {
-                    try {
-                        instance = meta.getServiceClass().getConstructor().newInstance();
-                        instance.init();
-                        meta.setService(instance);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        throw new RouterException("serviceClass constructor new instance failed!");
-                    }
-                }
-                GoRouter.logger.info(null, "[getService] " + serviceClass.getSimpleName() + " -> " + meta.getServiceClass().getSimpleName());
-                return (T) instance;
-            }
-        }
-        GoRouter.logger.warning(null, "[getService] " + serviceClass.getSimpleName() + ", No registered service found!");
-        return null;
-    }
-
-    /**
-     * 重复添加相同序号会catch
-     *
-     * @param ordinal
-     * @param interceptor
-     * @param isForce
-     */
-    public static void addInterceptor(int ordinal, Class<? extends IInterceptor> interceptor, boolean isForce) {
-        String title = isForce ? "[setInterceptor]" : "[addInterceptor]";
-        try {
-            if (isForce) {
-                Warehouse.interceptors.remove(ordinal);
-            }
-            IInterceptor instance = interceptor.getConstructor().newInstance();
-            instance.init();
-            Warehouse.interceptors.put(ordinal, instance);
-            GoRouter.logger.debug(null, title + " size:" + Warehouse.interceptors.size() + ", ordinal:" + ordinal + " -> " + interceptor.getSimpleName());
-        } catch (Exception e) {
-            throw new RouterException(title + " " + e.getMessage());
-        }
-    }
-
-    /**
-     * 重复添加相同序号会覆盖(更新)
-     *
-     * @param ordinal
-     * @param interceptor
-     */
-    public static void setInterceptor(int ordinal, Class<? extends IInterceptor> interceptor) {
-        addInterceptor(ordinal, interceptor, true);
-    }
-
-    public static void clearInterceptors() {
-        Warehouse.interceptors.clear();
     }
 
     /**
@@ -376,134 +285,5 @@ public class LogisticsCenter {
             throw new RouterException("setValue() failed! " + e.getMessage());
         }
     }
-
-    public static <T> void registerEvent(LifecycleOwner owner, Class<T> type, boolean isForever, @NonNull Observer<T> observer) {
-        if (!(owner instanceof Activity) && !(owner instanceof Fragment)) {
-            /**
-             * 正常通过api调用是不会走到这里,除非直接调用了此方法才有可能出现这种情况
-             * 可能是FragmentViewLifecycleOwner类型,需要导包才能直接判断,为了少导入包,就这么写判断吧.
-             */
-            throw new RouterException("The owner can only be an Activity or Fragment");
-        }
-        if (type == null) {
-            throw new RouterException("type cannot be empty!");
-        }
-
-        String path = getCurrentPath(owner);
-        if (TextUtils.isEmpty(path)) {
-            GoRouter.logger.error(null, "[registerEvent] The " + ROUTER_CURRENT_PATH + " parameter was not found in the intent");
-            return;
-        }
-
-        String key = path + "$" + type.getCanonicalName();
-        MutableLiveData<T> liveData;
-        if (Warehouse.events.containsKey(key)) {
-            liveData = Warehouse.events.get(key);
-        } else {
-            liveData = new MutableLiveData<>();
-            Warehouse.events.put(key, liveData);
-            addLifecycleObserver(owner, getLifecycleObserver(key));
-        }
-        if (liveData != null) {
-            if (isForever) {
-                liveData.observeForever(observer);
-            } else {
-                liveData.observe(owner, observer);
-            }
-        } else {
-            GoRouter.logger.error(null, "[registerEvent] LiveData is empty??");
-        }
-    }
-
-    public static <T> void unRegisterEvent(LifecycleOwner owner, Class<T> type, Observer<T> observer) {
-        if (type == null) {
-            throw new RouterException("type cannot be empty!");
-        }
-
-        String path = getCurrentPath(owner);
-        if (TextUtils.isEmpty(path)) {
-            GoRouter.logger.error(null, "[registerEvent] The " + ROUTER_CURRENT_PATH + " parameter was not found in the intent");
-            return;
-        }
-
-        String key = path + "$" + type.getCanonicalName();
-        if (Warehouse.events.containsKey(key)) {
-            MutableLiveData<T> liveData = Warehouse.events.get(key);
-            if (liveData != null) {
-                if (observer != null) {
-                    liveData.removeObserver(observer);
-                } else {
-                    liveData.removeObservers(owner);
-                }
-                if (!liveData.hasObservers()) {
-                    Warehouse.events.remove(key);
-                }
-            }
-        } else {
-            GoRouter.logger.warning(null, "[unRegisterEvent] No observer was found for this event");
-        }
-    }
-
-    /**
-     * 页面销毁时删除当前页面注册的事件
-     *
-     * @param key
-     * @param <T>
-     * @return
-     */
-    @NonNull
-    private static <T> LifecycleEventObserver getLifecycleObserver(String key) {
-        return new LifecycleEventObserver() {
-            @Override
-            public void onStateChanged(@NonNull LifecycleOwner owner, @NonNull Lifecycle.Event event) {
-                if (event == Lifecycle.Event.ON_DESTROY) {
-                    owner.getLifecycle().removeObserver(this);
-                    if (Warehouse.events.containsKey(key)) {
-                        MutableLiveData<T> liveData = Warehouse.events.get(key);
-                        if (liveData != null && liveData.hasObservers()) {
-                            liveData.removeObservers(owner);
-                        }
-                        Warehouse.events.remove(key);
-                    }
-                }
-            }
-        };
-    }
-
-    private static void addLifecycleObserver(final LifecycleOwner lifecycleOwner, @NonNull LifecycleObserver lifecycleObserver) {
-        if (lifecycleOwner == null)
-            return;
-        Runnable runnable = () -> lifecycleOwner.getLifecycle().addObserver(lifecycleObserver);
-        if (Looper.myLooper() == Looper.getMainLooper()) {
-            runnable.run();
-        } else {
-            new Handler(Looper.getMainLooper()).post(runnable);
-        }
-    }
-
-    public static <T> void postEvent(String path, T value) {
-        if (TextUtils.isEmpty(path)) {
-            throw new RouterException("path Parameter is invalid!");
-        }
-        if (value == null) {
-            throw new RouterException("value cannot be empty!");
-        }
-        String key = path + "$" + value.getClass().getCanonicalName();
-        if (Warehouse.events.containsKey(key)) {
-            MutableLiveData<T> liveData = Warehouse.events.get(key);
-            if (liveData != null) {
-                if (Looper.myLooper() == Looper.getMainLooper()) {
-                    liveData.setValue(value);
-                } else {
-                    liveData.postValue(value);
-                }
-            } else {
-                GoRouter.logger.error(null, "[postEvent] LiveData is empty??");
-            }
-        } else {
-            GoRouter.logger.warning(null, "[postEvent] No observer was found for this event");
-        }
-    }
-
 
 }

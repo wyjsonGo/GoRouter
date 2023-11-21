@@ -24,9 +24,12 @@ import androidx.lifecycle.Observer;
 import com.wyjson.router.callback.GoCallback;
 import com.wyjson.router.callback.InterceptorCallback;
 import com.wyjson.router.core.ApplicationModuleCenter;
+import com.wyjson.router.core.EventCenter;
+import com.wyjson.router.core.InterceptorCenter;
 import com.wyjson.router.core.InterceptorServiceImpl;
-import com.wyjson.router.core.LogisticsCenter;
+import com.wyjson.router.core.RouteCenter;
 import com.wyjson.router.core.RouteModuleCenter;
+import com.wyjson.router.core.ServiceCenter;
 import com.wyjson.router.core.interfaces.IInterceptorService;
 import com.wyjson.router.exception.NoFoundRouteException;
 import com.wyjson.router.exception.RouterException;
@@ -52,8 +55,8 @@ public final class GoRouter {
     private volatile static boolean isDebug = false;
 
     private GoRouter() {
-        LogisticsCenter.clearInterceptors();
-        LogisticsCenter.addService(InterceptorServiceImpl.class);
+        InterceptorCenter.clearInterceptors();
+        ServiceCenter.addService(InterceptorServiceImpl.class);
     }
 
     private static class InstanceHolder {
@@ -156,7 +159,7 @@ public final class GoRouter {
      * @param service 实现类.class
      */
     public void addService(Class<? extends IService> service) {
-        LogisticsCenter.addService(service);
+        ServiceCenter.addService(service);
     }
 
     /**
@@ -168,7 +171,7 @@ public final class GoRouter {
      */
     @Nullable
     public <T> T getService(Class<? extends T> service) {
-        return LogisticsCenter.getService(service);
+        return ServiceCenter.getService(service);
     }
 
     /**
@@ -178,7 +181,7 @@ public final class GoRouter {
      * @param interceptor
      */
     public void addInterceptor(int ordinal, Class<? extends IInterceptor> interceptor) {
-        LogisticsCenter.addInterceptor(ordinal, interceptor, false);
+        InterceptorCenter.addInterceptor(ordinal, interceptor, false);
     }
 
     /**
@@ -188,14 +191,14 @@ public final class GoRouter {
      * @param interceptor
      */
     public void setInterceptor(int ordinal, Class<? extends IInterceptor> interceptor) {
-        LogisticsCenter.setInterceptor(ordinal, interceptor);
+        InterceptorCenter.setInterceptor(ordinal, interceptor);
     }
 
     /**
      * 动态添加路由分组,按需加载路由
      */
     public void addRouterGroup(String group, IRouteModuleGroup routeModuleGroup) {
-        LogisticsCenter.addRouterGroup(group, routeModuleGroup);
+        RouteCenter.addRouterGroup(group, routeModuleGroup);
     }
 
     private void runInMainThread(Runnable runnable) {
@@ -224,7 +227,7 @@ public final class GoRouter {
      * @param activity
      */
     public String getRawURI(Activity activity) {
-        return LogisticsCenter.getRawURI(activity);
+        return RouteCenter.getRawURI(activity);
     }
 
     /**
@@ -233,7 +236,7 @@ public final class GoRouter {
      * @param fragment
      */
     public String getRawURI(Fragment fragment) {
-        return LogisticsCenter.getRawURI(fragment);
+        return RouteCenter.getRawURI(fragment);
     }
 
     /**
@@ -242,7 +245,7 @@ public final class GoRouter {
      * @param activity
      */
     public String getCurrentPath(Activity activity) {
-        return LogisticsCenter.getCurrentPath(activity);
+        return RouteCenter.getCurrentPath(activity);
     }
 
     /**
@@ -251,31 +254,31 @@ public final class GoRouter {
      * @param fragment
      */
     public String getCurrentPath(Fragment fragment) {
-        return LogisticsCenter.getCurrentPath(fragment);
+        return RouteCenter.getCurrentPath(fragment);
     }
 
     public void inject(Activity activity) {
-        LogisticsCenter.inject(activity, null, null);
+        RouteCenter.inject(activity, null, null);
     }
 
     public void inject(Activity activity, Intent intent) {
-        LogisticsCenter.inject(activity, intent, null);
+        RouteCenter.inject(activity, intent, null);
     }
 
     public void inject(Activity activity, Bundle bundle) {
-        LogisticsCenter.inject(activity, null, bundle);
+        RouteCenter.inject(activity, null, bundle);
     }
 
     public void inject(Fragment fragment) {
-        LogisticsCenter.inject(fragment, null, null);
+        RouteCenter.inject(fragment, null, null);
     }
 
     public void inject(Fragment fragment, Intent intent) {
-        LogisticsCenter.inject(fragment, intent, null);
+        RouteCenter.inject(fragment, intent, null);
     }
 
     public void inject(Fragment fragment, Bundle bundle) {
-        LogisticsCenter.inject(fragment, null, bundle);
+        RouteCenter.inject(fragment, null, bundle);
     }
 
     @Nullable
@@ -296,7 +299,7 @@ public final class GoRouter {
         card.setInterceptorException(null);
 
         try {
-            LogisticsCenter.assembleRouteCard(card);
+            RouteCenter.assembleRouteCard(card);
         } catch (NoFoundRouteException e) {
             logger.warning(null, e.getMessage());
 
@@ -428,39 +431,39 @@ public final class GoRouter {
     }
 
     public <T> void registerEvent(FragmentActivity activity, @NonNull Class<T> type, @NonNull Observer<T> observer) {
-        LogisticsCenter.registerEvent(activity, type, false, observer);
+        EventCenter.registerEvent(activity, type, false, observer);
     }
 
     public <T> void registerEvent(Fragment fragment, @NonNull Class<T> type, @NonNull Observer<T> observer) {
-        LogisticsCenter.registerEvent(fragment, type, false, observer);
+        EventCenter.registerEvent(fragment, type, false, observer);
     }
 
     public <T> void registerEventForever(FragmentActivity activity, @NonNull Class<T> type, @NonNull Observer<T> observer) {
-        LogisticsCenter.registerEvent(activity, type, true, observer);
+        EventCenter.registerEvent(activity, type, true, observer);
     }
 
     public <T> void registerEventForever(Fragment fragment, @NonNull Class<T> type, @NonNull Observer<T> observer) {
-        LogisticsCenter.registerEvent(fragment, type, true, observer);
+        EventCenter.registerEvent(fragment, type, true, observer);
     }
 
     public <T> void unRegisterEvent(FragmentActivity activity, @NonNull Class<T> type) {
-        LogisticsCenter.unRegisterEvent(activity, type, null);
+        EventCenter.unRegisterEvent(activity, type, null);
     }
 
     public <T> void unRegisterEvent(Fragment fragment, @NonNull Class<T> type) {
-        LogisticsCenter.unRegisterEvent(fragment, type, null);
+        EventCenter.unRegisterEvent(fragment, type, null);
     }
 
     public <T> void unRegisterEvent(FragmentActivity activity, @NonNull Class<T> type, Observer<T> observer) {
-        LogisticsCenter.unRegisterEvent(activity, type, observer);
+        EventCenter.unRegisterEvent(activity, type, observer);
     }
 
     public <T> void unRegisterEvent(Fragment fragment, @NonNull Class<T> type, Observer<T> observer) {
-        LogisticsCenter.unRegisterEvent(fragment, type, observer);
+        EventCenter.unRegisterEvent(fragment, type, observer);
     }
 
     public <T> void postEvent(@NonNull String path, @NonNull T value) {
-        LogisticsCenter.postEvent(path, value);
+        EventCenter.postEvent(path, value);
     }
 
 

@@ -18,8 +18,8 @@ import static com.wyjson.router.compiler.utils.Constants.INTEGER_PRIMITIVE;
 import static com.wyjson.router.compiler.utils.Constants.I_ROUTE_MODULE_GROUP_METHOD_NAME_LOAD;
 import static com.wyjson.router.compiler.utils.Constants.I_ROUTE_MODULE_GROUP_PACKAGE_NAME;
 import static com.wyjson.router.compiler.utils.Constants.I_ROUTE_MODULE_PACKAGE_NAME;
-import static com.wyjson.router.compiler.utils.Constants.LOGISTICS_CENTER_METHOD_NAME_GET_ROUTE_GROUPS;
-import static com.wyjson.router.compiler.utils.Constants.LOGISTICS_CENTER_PACKAGE_NAME;
+import static com.wyjson.router.compiler.utils.Constants.ROUTE_CENTER_METHOD_NAME_GET_ROUTE_GROUPS;
+import static com.wyjson.router.compiler.utils.Constants.ROUTE_CENTER_PACKAGE_NAME;
 import static com.wyjson.router.compiler.utils.Constants.LONG_PACKAGE;
 import static com.wyjson.router.compiler.utils.Constants.LONG_PRIMITIVE;
 import static com.wyjson.router.compiler.utils.Constants.METHOD_NAME_LOAD;
@@ -80,7 +80,7 @@ public class GenerateRouteModuleProcessor extends BaseProcessor {
     TypeElement mGoRouter;
     TypeElement mIRouteModule;
 
-    TypeElement mLogisticsCenter;
+    TypeElement mRouteCenter;
     TypeElement mIRouteModuleGroup;
     TypeMirror serializableType;
     TypeMirror parcelableType;
@@ -182,7 +182,7 @@ public class GenerateRouteModuleProcessor extends BaseProcessor {
             return routeGroupMethods;
         logger.info(moduleName + " >>> Found Route, size is " + elements.size() + " <<<");
 
-        mLogisticsCenter = elementUtils.getTypeElement(LOGISTICS_CENTER_PACKAGE_NAME);
+        mRouteCenter = elementUtils.getTypeElement(ROUTE_CENTER_PACKAGE_NAME);
         mIRouteModuleGroup = elementUtils.getTypeElement(I_ROUTE_MODULE_GROUP_PACKAGE_NAME);
         serializableType = elementUtils.getTypeElement(SERIALIZABLE_PACKAGE).asType();
         parcelableType = elementUtils.getTypeElement(PARCELABLE_PACKAGE).asType();
@@ -238,7 +238,7 @@ public class GenerateRouteModuleProcessor extends BaseProcessor {
 
         loadIntoMethod.addCode("// call load route group\n");
 
-        loadIntoMethod.addStatement("$N($T.$N())", loadRouteGroupMethod.build(), mLogisticsCenter, LOGISTICS_CENTER_METHOD_NAME_GET_ROUTE_GROUPS);
+        loadIntoMethod.addStatement("$N($T.$N())", loadRouteGroupMethod.build(), mRouteCenter, ROUTE_CENTER_METHOD_NAME_GET_ROUTE_GROUPS);
         routeGroupMethods.add(loadRouteGroupMethod.build());
         return routeGroupMethods;
     }
