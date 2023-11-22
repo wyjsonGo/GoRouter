@@ -4,7 +4,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,7 +13,9 @@ import androidx.fragment.app.FragmentActivity;
 import com.wyjson.module_common.model.TestModel;
 import com.wyjson.module_common.route.MainRoute;
 import com.wyjson.module_common.route.UserRoute;
+import com.wyjson.module_common.route.service.user.PayService;
 import com.wyjson.module_common.route.service.user.UserService;
+import com.wyjson.module_common.utils.ToastUtils;
 import com.wyjson.module_main.R;
 import com.wyjson.module_main.databinding.MainActivityMainBinding;
 import com.wyjson.router.GoRouter;
@@ -96,7 +97,7 @@ public class MainActivity extends FragmentActivity {
             @Override
             public void onInterrupt(Card card, @NonNull Throwable exception) {
                 if (!TextUtils.isEmpty(exception.getMessage())) {
-                    Toast.makeText(MainActivity.this, "onInterrupt:" + exception.getMessage(), Toast.LENGTH_SHORT).show();
+                    ToastUtils.makeText(MainActivity.this, "onInterrupt:" + exception.getMessage());
                 }
             }
         });
@@ -105,7 +106,21 @@ public class MainActivity extends FragmentActivity {
     public void onClickUserService(View view) {
         UserService userService = GoRouter.getInstance().getService(UserService.class);
         if (userService != null) {
-            Toast.makeText(this, "userId:" + userService.getUserId(), Toast.LENGTH_SHORT).show();
+            ToastUtils.makeText(MainActivity.this, "userId:" + userService.getUserId());
+        }
+    }
+
+    public void onClickPayService1(View view) {
+        PayService alipayService = GoRouter.getInstance().getService(PayService.class, "Alipay");
+        if (alipayService != null) {
+            ToastUtils.makeText(MainActivity.this, "payType:" + alipayService.getPayType());
+        }
+    }
+
+    public void onClickPayService2(View view) {
+        PayService wechatPayService = GoRouter.getInstance().getService(PayService.class, "WechatPay");
+        if (wechatPayService != null) {
+            ToastUtils.makeText(MainActivity.this, "payType:" + wechatPayService.getPayType());
         }
     }
 
@@ -127,7 +142,7 @@ public class MainActivity extends FragmentActivity {
         // 订阅一下事件
         // 订阅int类型事件(页面处于活跃状态下才会收到)
         GoRouter.getInstance().registerEvent(this, Integer.class, data -> {
-            Toast.makeText(this, "MainActivity->String data:" + data, Toast.LENGTH_SHORT).show();
+            ToastUtils.makeText(MainActivity.this, "MainActivity->String data:" + data);
         });
     }
 

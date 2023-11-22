@@ -4,7 +4,6 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.wyjson.router.interfaces.IApplicationModule;
 import com.wyjson.router.interfaces.IInterceptor;
-import com.wyjson.router.interfaces.IService;
 import com.wyjson.router.model.CardMeta;
 import com.wyjson.router.model.ServiceMeta;
 import com.wyjson.router.module.interfaces.IRouteModuleGroup;
@@ -26,7 +25,7 @@ class Warehouse {
 
     static final Map<String, CardMeta> routes = new RouteHashMap();
 
-    static final Map<Class<? extends IService>, ServiceMeta> services = new ServiceHashMap();
+    static final Map<String, ServiceMeta> services = new ServiceHashMap();
 
     static final Map<Integer, IInterceptor> interceptors = new InterceptorTreeMap<>("More than one interceptors use same ordinal [%s]");
 

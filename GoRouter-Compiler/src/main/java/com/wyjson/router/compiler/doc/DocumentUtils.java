@@ -68,8 +68,11 @@ public class DocumentUtils {
             return;
         try {
             String className = ((TypeElement) element).getInterfaces().get(0).toString();
-            String serviceName = className.substring(className.lastIndexOf(".") + 1);
-            documentModel.getServices().put(serviceName, new ServiceModel(className, element.toString(), service.remark()));
+            String key = className.substring(className.lastIndexOf(".") + 1);
+            if (!StringUtils.isEmpty(service.alias())) {
+                key += "$" + service.alias();
+            }
+            documentModel.getServices().put(key, new ServiceModel(service.alias(), className, element.toString(), service.remark()));
         } catch (Exception e) {
             logger.error(moduleName + " Failed to add service [" + element.toString() + "] document, " + e.getMessage());
         }
