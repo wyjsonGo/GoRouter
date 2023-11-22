@@ -14,6 +14,11 @@
       "remark": "预处理服务",
       "prototype": "com.wyjson.router.interfaces.IPretreatmentService",
       "className": "com.wyjson.module_common.route.service.PretreatmentServiceImpl"
+    },
+    "IJsonService": {
+      "remark": "json服务",
+      "prototype": "com.wyjson.router.interfaces.IJsonService",
+      "className": "com.wyjson.module_common.route.service.JsonServiceImpl"
     }
   },
   "interceptors": [
@@ -52,6 +57,12 @@
             "type": "String",
             "isRequired": false,
             "remark": "昵称"
+          },
+          {
+            "name": "test",
+            "type": "TestModel",
+            "isRequired": false,
+            "remark": "自定义类型"
           }
         ]
       },
