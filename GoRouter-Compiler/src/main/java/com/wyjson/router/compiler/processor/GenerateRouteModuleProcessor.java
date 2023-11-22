@@ -18,18 +18,18 @@ import static com.wyjson.router.compiler.utils.Constants.INTEGER_PRIMITIVE;
 import static com.wyjson.router.compiler.utils.Constants.I_ROUTE_MODULE_GROUP_METHOD_NAME_LOAD;
 import static com.wyjson.router.compiler.utils.Constants.I_ROUTE_MODULE_GROUP_PACKAGE_NAME;
 import static com.wyjson.router.compiler.utils.Constants.I_ROUTE_MODULE_PACKAGE_NAME;
-import static com.wyjson.router.compiler.utils.Constants.ROUTE_CENTER_METHOD_NAME_GET_ROUTE_GROUPS;
-import static com.wyjson.router.compiler.utils.Constants.ROUTE_CENTER_PACKAGE_NAME;
 import static com.wyjson.router.compiler.utils.Constants.LONG_PACKAGE;
 import static com.wyjson.router.compiler.utils.Constants.LONG_PRIMITIVE;
 import static com.wyjson.router.compiler.utils.Constants.METHOD_NAME_LOAD;
 import static com.wyjson.router.compiler.utils.Constants.METHOD_NAME_LOAD_ROUTE_FOR_x_GROUP;
 import static com.wyjson.router.compiler.utils.Constants.METHOD_NAME_LOAD_ROUTE_GROUP;
-import static com.wyjson.router.compiler.utils.Constants.ROUTE_MODULE_PACKAGE_NAME;
 import static com.wyjson.router.compiler.utils.Constants.PARAM_NAME_ROUTE_GROUPS;
 import static com.wyjson.router.compiler.utils.Constants.PARCELABLE_PACKAGE;
 import static com.wyjson.router.compiler.utils.Constants.PREFIX_OF_LOGGER;
+import static com.wyjson.router.compiler.utils.Constants.ROUTE_CENTER_METHOD_NAME_GET_ROUTE_GROUPS;
+import static com.wyjson.router.compiler.utils.Constants.ROUTE_CENTER_PACKAGE_NAME;
 import static com.wyjson.router.compiler.utils.Constants.ROUTE_MODULE_GENERATE_CLASS_NAME_SUFFIX;
+import static com.wyjson.router.compiler.utils.Constants.ROUTE_MODULE_PACKAGE_NAME;
 import static com.wyjson.router.compiler.utils.Constants.SERIALIZABLE_PACKAGE;
 import static com.wyjson.router.compiler.utils.Constants.SHORT_PACKAGE;
 import static com.wyjson.router.compiler.utils.Constants.SHORT_PRIMITIVE;
@@ -155,7 +155,11 @@ public class GenerateRouteModuleProcessor extends BaseProcessor {
         loadIntoMethod.addCode("// add Service\n");
         for (Element element : elements) {
             Service service = element.getAnnotation(Service.class);
-            loadIntoMethod.addStatement("$T.getInstance().addService($T.class)", mGoRouter, element);
+            if (StringUtils.isEmpty(service.alias())) {
+                loadIntoMethod.addStatement("$T.getInstance().addService($T.class)", mGoRouter, element);
+            } else {
+                loadIntoMethod.addStatement("$T.getInstance().addService($T.class, $S)", mGoRouter, element, service.alias());
+            }
             DocumentUtils.addServiceDoc(moduleName, logger, element, service);
         }
     }

@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 
 public class ServiceModel {
 
+    private String alias;
     private String remark;
     private String prototype;
     private String className;
@@ -11,12 +12,23 @@ public class ServiceModel {
     public ServiceModel() {
     }
 
-    public ServiceModel(String prototype, String className, String remark) {
+    public ServiceModel(String alias, String prototype, String className, String remark) {
+        if (!StringUtils.isEmpty(alias)) {
+            this.alias = alias;
+        }
         this.prototype = prototype;
         this.className = className;
         if (!StringUtils.isEmpty(remark)) {
             this.remark = remark;
         }
+    }
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
     }
 
     public String getRemark() {

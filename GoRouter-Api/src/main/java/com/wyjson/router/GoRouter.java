@@ -164,6 +164,16 @@ public final class GoRouter {
     }
 
     /**
+     * 实现相同接口的service会被覆盖(更新)
+     *
+     * @param service 实现类.class
+     * @param alias   别名
+     */
+    public void addService(Class<? extends IService> service, String alias) {
+        ServiceCenter.addService(service, alias);
+    }
+
+    /**
      * 获取service接口的实现
      *
      * @param service 接口.class
@@ -173,6 +183,19 @@ public final class GoRouter {
     @Nullable
     public <T> T getService(Class<? extends T> service) {
         return ServiceCenter.getService(service);
+    }
+
+    /**
+     * 获取service接口的实现
+     *
+     * @param service
+     * @param alias   别名
+     * @param <T>
+     * @return
+     */
+    @Nullable
+    public <T> T getService(Class<? extends T> service, String alias) {
+        return ServiceCenter.getService(service, alias);
     }
 
     /**

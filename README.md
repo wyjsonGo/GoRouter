@@ -14,7 +14,6 @@
 | 功能                    | ARouter  | GoRouter  | 描述                                                  |
 | ---------------------- | -------- | --------- | ---------------------------------------------------- |
 | 路由注册方式             | 注解      | 注解、java | GoRouter不仅提供了注解，还能使用java方式注册，参见5-6 |
-| 服务                    | 一对多    | 一对一     | ARouter可以为一个服务接口注册多个实现类，本库一个服务接口对应一个实现方法 |
 | 动态注册拦截器            | 不支持    | 支持      | ARouter只能动态注册路由，不能动态注册拦截器 |
 | 重写跳转URL服务          | 支持      | 不支持     | 可以在`IPretreatmentService`里实现相同功能 |
 | 获取元数据               | 不支持    | 支持       | 有些场景需要判断某个页面当前是否存在等需求，就需要获取页面class等信息，参见5-1 |
@@ -374,10 +373,11 @@ public class DegradeServiceImpl implements IDegradeService {
 tag使用示例[UserInfoActivity.java](https://github.com/wyjsonGo/GoRouter/blob/master/module_user/src/main/java/com/wyjson/module_user/activity/UserInfoActivity.java)，
 tag处理示例[SignInInterceptor.java](https://github.com/wyjsonGo/GoRouter/blob/master/module_user/src/main/java/com/wyjson/module_user/route/interceptor/SignInInterceptor.java)
 
-##### 7.  通过依赖注入解耦:服务管理(一) 暴露服务
+##### 7.  通过依赖注入解耦:服务管理
 
 ```java
-// 声明接口,其他组件通过接口来调用服务
+// 暴露服务
+// 声明接口并继承IService接口,其他组件通过接口来调用服务
 public interface HelloService extends IService {
     String sayHello(String name);
 }
@@ -387,27 +387,72 @@ public interface HelloService extends IService {
 public class HelloServiceImpl implements HelloService {
 
     @Override
-    public String sayHello(String name) {
-       return "hello, " + name;
-    }
-
-    @Override
     public void init() {
 
     }
+
+    @Override
+    public String sayHello(String name) {
+       return "hello, " + name;
+    }
 }
-```
 
-##### 8.  通过依赖注入解耦:服务管理(二) 发现服务
-
-```java
+// 发现服务
 HelloService helloService = GoRouter.getInstance().getService(HelloService.class);
 if (helloService != null) {
     helloService.sayHello("Wyjson");
 }
 ```
 
-##### 9.  跳转前预处理
+进阶用法，如需多个实现服务可指定`@Service(alias = "xxx")`
+
+```java
+// 暴露支付服务
+public interface PayService extends IService {
+    String getPayType();
+}
+
+// 实现阿里支付接口
+@Service(alias = "Alipay", remark = "AliPay服务")
+public class AliPayServiceImpl implements PayService {
+    @Override
+    public void init() {
+
+    }
+
+    @Override
+    public String getPayType() {
+        return "AliPay";
+    }
+}
+
+// 实现微信支付接口
+@Service(alias = "WechatPay", remark = "微信Pay服务")
+public class WechatPayServiceImpl implements PayService {
+    @Override
+    public void init() {
+
+    }
+
+    @Override
+    public String getPayType() {
+        return "WechatPay";
+    }
+}
+
+// 发现阿里支付服务
+PayService alipayService = GoRouter.getInstance().getService(PayService.class, "Alipay");
+if (alipayService != null) {
+    alipayService.getPayType();
+}
+// 发现微信支付服务
+PayService wechatPayService = GoRouter.getInstance().getService(PayService.class, "WechatPay");
+if (wechatPayService != null) {
+    wechatPayService.getPayType();
+}
+```
+
+##### 8.  跳转前预处理
 
 ```java
 // 比如跳转登录页面，只要简单的调用go就可以了，一些必须的参数和标识可以放到预处理里来做。
@@ -545,8 +590,11 @@ GoRouter.getInstance().isRouteRegisterMode();
 适用于插件化架构的App以及需要动态注册路由、路由组、服务和拦截器的场景。目标页面、服务和拦截器可以不标注`@Route`、`@Service`、`@Interceptor`注解。
 
 ```java
-// 动态注册服务(重复添加相同服务会被覆盖(更新))
+// 动态注册服务
 GoRouter.getInstance().addService(UserServiceImpl.class);
+// 动态注册服务多个实现
+GoRouter.getInstance().addService(WechatPayServiceImpl.class, "WechatPay");
+GoRouter.getInstance().addService(AliPayServiceImpl.class, "Alipay");
 
 // 注册拦截器(重复添加相同序号会catch)
 GoRouter.getInstance().addInterceptor(1, TestInterceptor.class);
@@ -737,12 +785,13 @@ Demo示例[MyApplication.java](https://github.com/wyjsonGo/GoRouter/blob/master/
 
 ##### 3.  使用java方式注册服务
 
-*   实现相同服务（HelloService）的实现类（HelloServiceImpl）调用`addService()`方法会被覆盖(更新)，全局唯一。
+*   实现相同服务（HelloService）的实现类（HelloServiceImpl）多次调用`addService()`方法会被覆盖(更新)，全局唯一，使用`getService(service)`方法获取。
+*   实现相同服务（PayService）的多个实现类（AliPayServiceImpl、WechatPayServiceImpl）调用`addService(service, alias)`方法注册，使用`getService(service, alias)`方法获取。
 
 ##### 4.  使用java方式注册拦截器
 
-*   `addInterceptor(ordinal,interceptor)`重复添加相同序号级会catch。
-*   `setInterceptor(ordinal,interceptor)`重复添加相同序号会覆盖(更新)。
+*   `addInterceptor(ordinal, interceptor)`重复添加相同序号级会catch。
+*   `setInterceptor(ordinal, interceptor)`重复添加相同序号会覆盖(更新)。
 
 ##### 5.  混淆
 

@@ -2,12 +2,12 @@ package com.wyjson.module_user.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
 import com.wyjson.module_common.model.TestModel;
 import com.wyjson.module_common.route.UserRoute;
+import com.wyjson.module_common.utils.ToastUtils;
 import com.wyjson.module_user.databinding.UserActivityParamBinding;
 import com.wyjson.router.GoRouter;
 import com.wyjson.router.annotation.Param;
@@ -38,7 +38,7 @@ public class ParamActivity extends BaseParamActivity {
             GoRouter.getInstance().injectCheck(this);
         } catch (ParamException e) {
             String paramName = e.getParamName();
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            ToastUtils.makeText(this, e.getMessage());
             finish();
             return;
         }
