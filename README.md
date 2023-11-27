@@ -7,7 +7,7 @@
 
 ## 简介
 
-之前一直在用阿里开源的[ARouter](https://github.com/alibaba/ARouter)项目，因为ARouter多年未更新，ARouter开始有些不太适合了，所以重新开发了这款Android路由框架，同样的API，更多的功能，迁移请参见文末6-7。
+之前一直在用阿里开源的[ARouter](https://github.com/alibaba/ARouter)项目，因为ARouter多年未更新，ARouter开始有些不太适合了，所以重新开发了这款Android路由框架，同样的API，更多的功能，迁移请参见文末7-8。
 
 ## GoRouter和ARouter功能差异对比
 
@@ -797,7 +797,19 @@ Demo示例[MyApplication.java](https://github.com/wyjsonGo/GoRouter/blob/master/
 
 *   框架已经做了混淆处理，开发者无需关心。需要注意的是，如果不使用`@Param`注解方式，使用java方式注册，不要忘记参数加上java自带`@Keep`注解，否则使用`inject()`方法自动注入会失败。
 
-##### 6.  开启调试,查看日志可以检查使用java方式注册的路由是否有重复提交的情况
+##### 6.  `inject()`工作原理
+
+`inject()`方法会先通过`this`参数拿到`bundle`对象，再去获取当前页面的`path`，通过`path`拿到`CardMeta`数据，利用java反射进行数据的绑定。
+
+下方表格是测试Android原生方式和`inject()`方法分别在不同数量值的情况耗时，每条数据都是多次运行后算计的平均值，单位毫秒，如对性能有要求，请使用Android原生方式来获取参数。
+
+| 数量   | 原生方式 | `inject()` | 相差(%) |
+| :---: | :-----: | :--------: | :----: |
+| 1个值  | 0.018ms | 0.083ms    | 361%   |
+| 4个值  | 0.327ms | 0.477ms    | 45.8%  |
+| 10个值 | 0.572ms | 0.761ms    | 33%    |
+
+##### 7.  开启调试,查看日志可以检查使用java方式注册的路由是否有重复提交的情况
 
 ```log
 route path[/xx/xx] duplicate commit!!!
@@ -808,7 +820,7 @@ route pathClass[class xx.xx] duplicate commit!!!
 ```
 GoRouter日志tag为`GoRouter`，GoRouter-Compiler日志tag为`GoRouter::Compiler`，GoRouter-Gradle-Plugin日志tag为`GoRouter::Gradle-Plugin`。
 
-##### 7.  ARouter迁移指南
+##### 8.  ARouter迁移指南
 
 | ARouter              | GoRouter             |
 | -------------------- | -------------------- |
