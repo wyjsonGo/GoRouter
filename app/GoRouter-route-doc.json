@@ -66,13 +66,13 @@
           },
           {
             "name": "nickname",
-            "type": "String",
+            "type": "java.lang.String",
             "isRequired": false,
             "remark": "昵称"
           },
           {
             "name": "test",
-            "type": "TestModel",
+            "type": "com.wyjson.module_common.model.TestModel",
             "isRequired": false,
             "remark": "自定义类型"
           }
@@ -91,7 +91,7 @@
           },
           {
             "name": "name",
-            "type": "String",
+            "type": "java.lang.String",
             "isRequired": false
           }
         ]
