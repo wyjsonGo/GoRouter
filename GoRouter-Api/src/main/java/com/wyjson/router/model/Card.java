@@ -275,6 +275,31 @@ public final class Card extends CardMeta {
         return this;
     }
 
+    public Card withLongArray(@Nullable String key, @Nullable long[] value) {
+        mBundle.putLongArray(key, value);
+        return this;
+    }
+
+    public Card withIntArray(@Nullable String key, @Nullable int[] value) {
+        mBundle.putIntArray(key, value);
+        return this;
+    }
+
+    public Card withDoubleArray(@Nullable String key, @Nullable double[] value) {
+        mBundle.putDoubleArray(key, value);
+        return this;
+    }
+
+    public Card withBooleanArray(@Nullable String key, @Nullable boolean[] value) {
+        mBundle.putBooleanArray(key, value);
+        return this;
+    }
+
+    public Card withStringArray(@Nullable String key, @Nullable String[] value) {
+        mBundle.putStringArray(key, value);
+        return this;
+    }
+
     public Card withFloatArray(@Nullable String key, @Nullable float[] value) {
         mBundle.putFloatArray(key, value);
         return this;
