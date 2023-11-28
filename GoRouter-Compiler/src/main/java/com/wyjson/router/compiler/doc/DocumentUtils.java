@@ -133,13 +133,7 @@ public class DocumentUtils {
                     paramModel.setRemark(param.remark());
                 }
                 paramModel.setRequired(param.required());
-
-                if (typeStr.contains(".")) {
-                    paramModel.setType(typeStr.substring(typeStr.lastIndexOf(".") + 1));
-                } else {
-                    paramModel.setType(typeStr);
-                }
-
+                paramModel.setType(typeStr);
                 if (StringUtils.isEmpty(param.name()) && !param.required()) {
                     paramModel.setName(paramName);
                 } else {

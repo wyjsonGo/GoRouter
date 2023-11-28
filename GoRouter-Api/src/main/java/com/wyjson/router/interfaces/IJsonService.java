@@ -15,9 +15,10 @@ public interface IJsonService extends IService {
     /**
      * Parse json to object
      *
-     * @param input json string
-     * @param clazz object type
+     * @param input   json string
+     * @param typeOfT The specific genericized type of src
+     * @param <T>
      * @return instance of object
      */
-    <T> T parseObject(String input, Type clazz);
+    <T> T parseObject(String input, Type typeOfT);
 }
