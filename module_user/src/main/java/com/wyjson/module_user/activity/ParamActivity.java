@@ -14,19 +14,27 @@ import com.wyjson.router.annotation.Param;
 import com.wyjson.router.annotation.Route;
 import com.wyjson.router.exception.ParamException;
 
+import java.util.ArrayList;
+
 @Route(path = UserRoute.ParamActivity, remark = "参数页面")
 public class ParamActivity extends BaseParamActivity {
 
     UserActivityParamBinding vb;
 
     @Param
-    private int age = 18;
+    int age = 18;
 
     @Param(name = "nickname", remark = "昵称", required = true)
-    private String name;
+    String name;
 
     @Param(name = "test", remark = "自定义类型", required = true)
-    private TestModel testModel;
+    TestModel testModel;
+
+    @Param(name = "value1")
+    int[] value1;
+
+    @Param(name = "value2")
+    ArrayList<Integer> value2;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -35,7 +43,8 @@ public class ParamActivity extends BaseParamActivity {
         setContentView(vb.getRoot());
 
         try {
-            GoRouter.getInstance().injectCheck(this);
+            ParamActivityInject.injectCheck(this);
+//            GoRouter.getInstance().injectCheck(this);
         } catch (ParamException e) {
             String paramName = e.getParamName();
             ToastUtils.makeText(this, e.getMessage());
