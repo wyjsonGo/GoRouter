@@ -287,8 +287,8 @@ public class JsonServiceImpl implements IJsonService {
     }
 
     @Override
-    public <T> T parseObject(String input, Type clazz) {
-        return new Gson().fromJson(input, clazz);
+    public <T> T parseObject(String input, Type typeOfT) {
+        return new Gson().fromJson(input, typeOfT);
     }
 }
 ```

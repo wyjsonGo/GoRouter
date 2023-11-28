@@ -170,14 +170,14 @@ public class RouteCenter {
                 GoRouter.logger.debug(null, "[inject] " + paramName + ":" + value);
                 try {
                     Field injectField = getDeclaredField(target.getClass(), entry.getKey());
-                    if (ParamType.Object == entry.getValue().getType()) {
+                    if (ParamType.Object == entry.getValue().getType() && value instanceof String) {
                         if (jsonService == null) {
                             jsonService = GoRouter.getInstance().getService(IJsonService.class);
                         }
                         if (jsonService == null) {
                             throw new RouterException("To use withObject() method, you need to implement IJsonService");
                         }
-                        value = jsonService.parseObject((String) value, injectField.getType());
+                        value = jsonService.parseObject((String) value, injectField.getGenericType());
                     }
                     injectField.setAccessible(true);
                     injectField.set(target, value);

@@ -38,24 +38,6 @@
 # #   ########## 不需混淆的Android类 # end ##########
 
 
-# #   ########## androidx # start ##########
--dontwarn androidx.**
--keep class androidx.** {*;}
--keep interface androidx.** {*;}
--keep public class * extends androidx.**
--keep class com.google.android.material.** {*;}
--dontwarn com.google.android.material.**
--dontnote com.google.android.material.**
-# #   ########## androidx # end ##########
-
-
-# #   ########## android support # start ##########
--keep class android.support.** {*;}
--dontwarn android.support.**
--keep interface android.support.** { *; }
-# #   ########## android support # end ##########
-
-
 # #   ########## Gson # start ##########
 # Gson uses generic type information stored in a class file when working with fields. Proguard
 # removes such information by default, so configure it to keep all of it.
