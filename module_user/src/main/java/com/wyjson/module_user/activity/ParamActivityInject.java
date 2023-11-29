@@ -44,7 +44,8 @@ public class ParamActivityInject {
 
         if (bundle.containsKey("test")) {
             if (jsonService != null) {
-                activity.testModel = jsonService.parseObject(bundle.getString("test"), TestModel.class);
+                activity.testModel = jsonService.parseObject(bundle.getString("test"), new TypeWrapper<TestModel>() {
+                }.getType());
             } else {
                 throw new RouterException("To use withObject() method, you need to implement IJsonService");
             }
