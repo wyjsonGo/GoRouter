@@ -14,7 +14,6 @@ import androidx.fragment.app.Fragment;
 import com.wyjson.router.GoRouter;
 import com.wyjson.router.enums.ParamType;
 import com.wyjson.router.exception.NoFoundRouteException;
-import com.wyjson.router.exception.ParamException;
 import com.wyjson.router.exception.RouterException;
 import com.wyjson.router.interfaces.IJsonService;
 import com.wyjson.router.model.Card;
@@ -24,7 +23,6 @@ import com.wyjson.router.module.interfaces.IRouteModuleGroup;
 import com.wyjson.router.utils.MapUtils;
 import com.wyjson.router.utils.TextUtils;
 
-import java.lang.reflect.Field;
 import java.util.Map;
 
 public class RouteCenter {
@@ -130,67 +128,6 @@ public class RouteCenter {
         return bundle.getString(ROUTER_CURRENT_PATH);
     }
 
-    /**
-     * 解析参数
-     *
-     * @param target
-     * @param intent
-     * @param bundle
-     * @param isCheck 是否检查 isRequired
-     * @param <T>
-     * @throws ParamException
-     * @Deprecated Higher performance methods have been available since version 2.3.2
-     */
-    @Deprecated(since = "2.3.2")
-    public static <T> void inject(T target, Intent intent, Bundle bundle, boolean isCheck) throws ParamException {
-        GoRouter.logger.debug(null, "[inject] Auto Inject Start!");
-
-        try {
-            bundle = getBundle(target, intent, bundle);
-        } catch (Exception e) {
-            throw new RuntimeException("inject() " + e.getMessage());
-        }
-
-        String path = getCurrentPath(bundle);
-        if (TextUtils.isEmpty(path)) {
-            GoRouter.logger.error(null, "[inject] The " + ROUTER_CURRENT_PATH + " parameter was not found in the intent");
-            return;
-        }
-
-        CardMeta cardMeta = GoRouter.getInstance().build(path).getCardMeta();
-        if (cardMeta != null) {
-            Map<String, ParamMeta> paramsType = cardMeta.getParamsType();
-            for (Map.Entry<String, ParamMeta> entry : paramsType.entrySet()) {
-                String paramName = entry.getValue().getName();
-                Object value = bundle.get(paramName);
-                if (value == null) {
-                    if (isCheck && entry.getValue().isRequired()) {
-                        throw new ParamException(paramName);
-                    }
-                    continue;
-                }
-                GoRouter.logger.debug(null, "[inject] " + paramName + ":" + value);
-                try {
-                    Field injectField = getDeclaredField(target.getClass(), entry.getKey());
-                    if (ParamType.Object == entry.getValue().getType() && value instanceof String) {
-                        if (jsonService == null) {
-                            jsonService = GoRouter.getInstance().getService(IJsonService.class);
-                        }
-                        if (jsonService == null) {
-                            throw new RouterException("To use withObject() method, you need to implement IJsonService");
-                        }
-                        value = jsonService.parseObject((String) value, injectField.getGenericType());
-                    }
-                    injectField.setAccessible(true);
-                    injectField.set(target, value);
-                } catch (Exception e) {
-                    throw new RouterException("Inject values for activity/fragment error! [" + e.getMessage() + "]");
-                }
-            }
-        }
-        GoRouter.logger.debug(null, "[inject] Auto Inject End!");
-    }
-
     @NonNull
     private static <T> Bundle getBundle(T target, Intent intent, Bundle bundle) {
         if (bundle == null) {
@@ -208,28 +145,6 @@ public class RouteCenter {
             }
         }
         return bundle;
-    }
-
-    /**
-     * 本类找不到就去父类里找,到Android类停止查找
-     *
-     * @param cls
-     * @param key
-     * @return
-     * @throws NoSuchFieldException
-     */
-    @NonNull
-    private static Field getDeclaredField(Class<?> cls, String key) throws NoSuchFieldException {
-        try {
-            return cls.getDeclaredField(key);
-        } catch (NoSuchFieldException e) {
-            Class<?> superclass = cls.getSuperclass();
-            if (superclass != null && !superclass.getName().startsWith("android")) {
-                return getDeclaredField(superclass, key);
-            } else {
-                throw new NoSuchFieldException(e.getMessage());
-            }
-        }
     }
 
     /**
