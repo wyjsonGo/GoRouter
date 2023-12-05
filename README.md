@@ -207,7 +207,7 @@ AndroidManifest.xml
 
 ##### 2.  解析参数
 
-Activity和Fragment页面标记`@Route`和`@Param`注解，会自动生成`类名+$$Inject.java`注入类，可调用`inject()`和`injectCheck()`方法自动注入参数。
+在带有`@Route`注解的Activity、Fragment页面使用`@Param`注解，会自动生成`类名+$$Inject.java`注入类，可调用`inject()`和`injectCheck()`方法自动注入参数。
 
 ```java
 // 为每一个参数声明一个字段(不能是private)，并使用 @Param 标注
@@ -220,7 +220,7 @@ public class ParamActivity extends BaseParamActivity {
 
     // 可以自定义参数name
     @Param(name = "nickname", remark = "昵称", required = true)
-    private String name;
+    String name;
 
     /**
      * 使用 withObject 传递 List 和 Map 的实现了 Serializable 接口的实现类(ArrayList/HashMap)的时候，
@@ -228,7 +228,7 @@ public class ParamActivity extends BaseParamActivity {
      * 否则会影响序列化中类型的判断, 其他类似情况需要同样处理
      */
     @Param(name = "test", remark = "自定义类型", required = true)
-    private TestModel testModel;
+    TestModel testModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
