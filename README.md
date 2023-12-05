@@ -207,8 +207,10 @@ AndroidManifest.xml
 
 ##### 2.  解析参数
 
+Activity和Fragment页面标记`@Route`和`@Param`注解，会自动生成`类名+$$Inject.java`注入类，可调用`inject()`和`injectCheck()`方法自动注入参数。
+
 ```java
-// 为每一个参数声明一个字段，并使用 @Param 标注
+// 为每一个参数声明一个字段(不能是private)，并使用 @Param 标注
 // URL中不能传递Parcelable类型数据，通过GoRouter api可以传递Parcelable对象
 @Route(path = "/param/activity")
 public class ParamActivity extends BaseParamActivity {
@@ -233,7 +235,7 @@ public class ParamActivity extends BaseParamActivity {
        super.onCreate(savedInstanceState);
 
        // inject()方法会自动对字段进行赋值，无需主动获取
-       GoRouter.getInstance().inject(this);
+       ParamActivity$$Inject.inject(this);
 
        // 或使用
 
@@ -242,7 +244,7 @@ public class ParamActivity extends BaseParamActivity {
        // 检查不通过会抛出ParamException()类型的异常,
        // 可用过e.getParamName()获取参数名自行处理。
        try {
-           GoRouter.getInstance().injectCheck(this);
+           ParamActivity$$Inject.injectCheck(this);
        } catch (ParamException e) {
            String paramName = e.getParamName();
            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -257,7 +259,7 @@ public class ParamActivity extends BaseParamActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         // inject()方法参数支持intent、bundle
-        GoRouter.getInstance().inject(this, intent);
+        ParamActivity$$Inject.inject(this, intent);
     }
 }
 
@@ -795,19 +797,12 @@ Demo示例[MyApplication.java](https://github.com/wyjsonGo/GoRouter/blob/master/
 
 ##### 5.  混淆
 
-框架已经做了混淆处理，开发者无需关心。需要注意的是，如果不使用`@Param`注解方式，使用java方式注册，不要忘记参数加上java自带`@Keep`注解，否则使用`inject()`方法自动注入会失败。
+框架已经做了混淆处理，开发者无需关心。需要注意的是，如果不使用`@Param`注解方式，使用java方式注册，不要忘记参数加上java自带`@Keep`注解，否则使用`GoRouter.getInstance().inject(this)`方法自动注入会失败。
 
 ##### 6.  `inject()`工作原理
 
-`inject()`方法会先通过`this`参数拿到`bundle`对象，再去获取当前页面的`path`，通过`path`拿到`CardMeta`数据，利用java反射进行数据的绑定。
-
-下方表格是测试Android原生方式和`inject()`方法分别在不同数量值的情况耗时，每条数据都是多次运行后算计的平均值，单位毫秒。从开发便利性上讲`inject()`方法肯定是最方便快捷的，如对性能有要求，请使用Android原生方式来获取参数。
-
-| 数量 | 原生方式 | `inject()` | 相差(%) |
-| :-: | :-----: | :--------: | :----: |
-| 1   | 0.018ms | 0.083ms    | 361%   |
-| 4   | 0.327ms | 0.477ms    | 45.8%  |
-| 10  | 0.572ms | 0.761ms    | 33%    |
+*   2.3.2版本之前，`GoRouter.getInstance().inject(this)`方法会先通过`this`参数拿到`bundle`对象，再去获取当前页面的`path`，通过`path`拿到`CardMeta`数据，利用java反射进行数据的绑定。
+*   2.3.2版本起，提供了原生参数注入方式，性能更好。
 
 ##### 7.  开启调试,查看日志可以检查使用java方式注册的路由是否有重复提交的情况
 
