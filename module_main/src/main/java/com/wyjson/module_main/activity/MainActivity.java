@@ -23,8 +23,6 @@ import com.wyjson.router.annotation.Route;
 import com.wyjson.router.callback.GoCallback;
 import com.wyjson.router.model.Card;
 
-import java.util.ArrayList;
-
 @Route(path = MainRoute.MainActivity, remark = "主页")
 public class MainActivity extends FragmentActivity {
 
@@ -44,19 +42,10 @@ public class MainActivity extends FragmentActivity {
     }
 
     public void onClickParamActivity(View view) {
-
-        int[] value1 = new int[]{1, 2, 3};
-
-        ArrayList<Integer> value2 = new ArrayList<>();
-        value2.add(1);
-        value2.add(2);
-
         GoRouter.getInstance().build(UserRoute.ParamActivity)
                 .withInt("age", 78)
                 .withString("nickname", "Wyjson")
                 .withInt("base", 7758)// 父类里定义的参数
-                .withIntArray("value1", value1)
-                .withIntegerArrayList("value2", value2)
                 /**
                  * 使用此方式传递自定义参数需要实现Json服务
                  * Demo示例 {@link com.wyjson.module_common.route.service.JsonServiceImpl}

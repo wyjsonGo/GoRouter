@@ -65,10 +65,6 @@
 }
 # #   ########## Gson # end ##########
 
-# TODO :::Test
-# Retain generic signatures of TypeToken and its subclasses with R8 version 3.0 and higher.
--keep,allowobfuscation,allowshrinking class com.wyjson.module_user.activity.TypeWrapper
--keep,allowobfuscation,allowshrinking class * extends com.wyjson.module_user.activity.TypeWrapper
 
 
 

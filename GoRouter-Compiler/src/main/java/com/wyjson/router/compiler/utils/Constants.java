@@ -16,6 +16,8 @@ public class Constants {
     public static final String CONTEXT = "android.content.Context";
     public static final String CONFIGURATION = "android.content.res.Configuration";
     public static final String NONNULL = "androidx.annotation.NonNull";
+    public static final String BUNDLE = "android.os.Bundle";
+    public static final String INTENT = "android.content.Intent";
 
     public static final String PACKAGE_NAME = "com.wyjson.router";
     public static final String DOCS_PACKAGE_NAME = PACKAGE_NAME + ".docs";
@@ -33,6 +35,15 @@ public class Constants {
 
     public static final String ROUTE_CENTER_PACKAGE_NAME = PACKAGE_NAME + ".core.RouteCenter";
     public static final String ROUTE_CENTER_METHOD_NAME_GET_ROUTE_GROUPS = "getRouteGroups";
+
+    public static final String INJECT_CLASS_NAME_SUFFIX = SEPARATOR + "Inject";
+    public static final String METHOD_NAME_INJECT_CHECK = "injectCheck";
+    public static final String METHOD_NAME_INJECT = "inject";
+    public static final String PARAM_EXCEPTION = PACKAGE_NAME + ".exception.ParamException";
+    public static final String I_JSON_SERVICE = PACKAGE_NAME + ".interfaces.IJsonService";
+    public static final String ROUTER_EXCEPTION = PACKAGE_NAME + ".exception.RouterException";
+    public static final String TYPE_WRAPPER = PACKAGE_NAME + ".utils.TypeWrapper";
+
 
     // Log
     public static final String PREFIX_OF_LOGGER = PROJECT + "::Compiler ";
@@ -89,7 +100,7 @@ public class Constants {
     public static final String METHOD_NAME_ON_CREATE = "onCreate";
     public static final String METHOD_NAME_ON_LOAD_ASYNC = "onLoadAsync";
     public static final String METHOD_NAME_ON_TERMINATE = "onTerminate";
-    public static final String METHOD_NAME_ON_CONFIGURATION_CHANGED= "onConfigurationChanged";
+    public static final String METHOD_NAME_ON_CONFIGURATION_CHANGED = "onConfigurationChanged";
     public static final String METHOD_NAME_ON_LOW_MEMORY = "onLowMemory";
     public static final String METHOD_NAME_ON_TRIM_MEMORY = "onTrimMemory";
 

@@ -139,7 +139,9 @@ public class RouteCenter {
      * @param isCheck 是否检查 isRequired
      * @param <T>
      * @throws ParamException
+     * @Deprecated Higher performance methods have been available since version 2.3.2
      */
+    @Deprecated(since = "2.3.2")
     public static <T> void inject(T target, Intent intent, Bundle bundle, boolean isCheck) throws ParamException {
         GoRouter.logger.debug(null, "[inject] Auto Inject Start!");
 

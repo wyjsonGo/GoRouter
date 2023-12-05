@@ -1,4 +1,4 @@
-package com.wyjson.module_user.activity;
+package com.wyjson.router.utils;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;

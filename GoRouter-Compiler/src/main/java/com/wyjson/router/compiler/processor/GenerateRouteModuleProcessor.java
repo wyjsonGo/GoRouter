@@ -94,7 +94,6 @@ public class GenerateRouteModuleProcessor extends BaseProcessor {
         set.add(Service.class.getCanonicalName());
         set.add(Interceptor.class.getCanonicalName());
         set.add(Route.class.getCanonicalName());
-        set.add(Param.class.getCanonicalName());
         return set;
     }
 
@@ -340,42 +339,16 @@ public class GenerateRouteModuleProcessor extends BaseProcessor {
                 String typeStr = typeMirror.toString();
                 String paramType;
                 switch (typeStr) {
-                    case BYTE_PACKAGE:
-                    case BYTE_PRIMITIVE:
-                        paramType = "putByte";
-                        break;
-                    case SHORT_PACKAGE:
-                    case SHORT_PRIMITIVE:
-                        paramType = "putShort";
-                        break;
-                    case INTEGER_PACKAGE:
-                    case INTEGER_PRIMITIVE:
-                        paramType = "putInt";
-                        break;
-                    case LONG_PACKAGE:
-                    case LONG_PRIMITIVE:
-                        paramType = "putLong";
-                        break;
-                    case FLOAT_PACKAGE:
-                    case FLOAT_PRIMITIVE:
-                        paramType = "putFloat";
-                        break;
-                    case DOUBEL_PACKAGE:
-                    case DOUBEL_PRIMITIVE:
-                        paramType = "putDouble";
-                        break;
-                    case BOOLEAN_PACKAGE:
-                    case BOOLEAN_PRIMITIVE:
-                        paramType = "putBoolean";
-                        break;
-                    case CHAR_PACKAGE:
-                    case CHAR_PRIMITIVE:
-                        paramType = "putChar";
-                        break;
-                    case STRING_PACKAGE:
-                        paramType = "putString";
-                        break;
-                    default:
+                    case BYTE_PACKAGE, BYTE_PRIMITIVE -> paramType = "putByte";
+                    case SHORT_PACKAGE, SHORT_PRIMITIVE -> paramType = "putShort";
+                    case INTEGER_PACKAGE, INTEGER_PRIMITIVE -> paramType = "putInt";
+                    case LONG_PACKAGE, LONG_PRIMITIVE -> paramType = "putLong";
+                    case FLOAT_PACKAGE, FLOAT_PRIMITIVE -> paramType = "putFloat";
+                    case DOUBEL_PACKAGE, DOUBEL_PRIMITIVE -> paramType = "putDouble";
+                    case BOOLEAN_PACKAGE, BOOLEAN_PRIMITIVE -> paramType = "putBoolean";
+                    case CHAR_PACKAGE, CHAR_PRIMITIVE -> paramType = "putChar";
+                    case STRING_PACKAGE -> paramType = "putString";
+                    default -> {
                         if (types.isSubtype(typeMirror, parcelableType)) {
                             paramType = "putParcelable";
                         } else if (types.isSubtype(typeMirror, serializableType)) {
@@ -384,6 +357,7 @@ public class GenerateRouteModuleProcessor extends BaseProcessor {
                             paramType = "putObject";
 //                            throw new RuntimeException(PREFIX_OF_LOGGER + moduleName + " @Param(type='" + typeMirror + "') is marked as an unsupported type");
                         }
+                    }
                 }
 
                 if (StringUtils.isEmpty(param.name()) && !param.required()) {
