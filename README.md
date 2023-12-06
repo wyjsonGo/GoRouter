@@ -234,7 +234,7 @@ public class ParamActivity extends BaseParamActivity {
     protected void onCreate(Bundle savedInstanceState) {
        super.onCreate(savedInstanceState);
 
-       // inject()方法会自动对字段进行赋值，无需主动获取
+       // inject()方法会自动对字段进行赋值
        ParamActivity$$Inject.inject(this);
 
        // 或使用
@@ -242,11 +242,10 @@ public class ParamActivity extends BaseParamActivity {
        // injectCheck()方法会自动对字段进行赋值，
        // 并检查标记@Param(required = true)的字段，
        // 检查不通过会抛出ParamException()类型的异常,
-       // 可用过e.getParamName()获取参数名自行处理。
+       // 可通过e.getParamName()获取参数名自行处理。
        try {
            ParamActivity$$Inject.injectCheck(this);
        } catch (ParamException e) {
-           String paramName = e.getParamName();
            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
            finish();
            return;

@@ -159,7 +159,7 @@ public class ParamProcessor extends BaseProcessor {
                 .addModifiers(PUBLIC, STATIC);
 
         if (isCheck) {
-            method.addException(ClassName.get(mParamException)).addException(ClassName.get(NullPointerException.class));
+            method.addException(ClassName.get(mParamException));
         }
 
         if (types.isSubtype(parent.asType(), activityType)) {
@@ -181,7 +181,20 @@ public class ParamProcessor extends BaseProcessor {
 
         method.beginControlFlow("if (bundle == null)");
         if (isCheck) {
-            method.addStatement("throw new NullPointerException($S)", "The bundle in the intent is empty!");
+            String requiredName = null;
+            for (Element field : childs) {
+                Param param = field.getAnnotation(Param.class);
+                if (param.required()) {
+                    String key = field.getSimpleName().toString();
+                    requiredName = !StringUtils.isEmpty(param.name()) ? param.name() : key;
+                    break;
+                }
+            }
+            if (requiredName != null) {
+                method.addStatement("throw new ParamException($S)", requiredName);
+            } else {
+                method.addStatement("return");
+            }
         } else {
             method.addStatement("return");
         }

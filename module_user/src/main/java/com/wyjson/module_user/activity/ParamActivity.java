@@ -36,7 +36,6 @@ public class ParamActivity extends BaseParamActivity {
         try {
             ParamActivity$$Inject.injectCheck(this);
         } catch (ParamException e) {
-            String paramName = e.getParamName();
             ToastUtils.makeText(this, e.getMessage());
             finish();
             return;
