@@ -801,7 +801,7 @@ Demo示例[MyApplication.java](https://github.com/wyjsonGo/GoRouter/blob/master/
 ##### 6.  `inject()`工作原理
 
 *   2.3.2版本之前，`GoRouter.getInstance().inject(this)`方法会先通过`this`参数拿到`bundle`对象，再去获取当前页面的`path`，通过`path`拿到`CardMeta`数据，利用java反射进行数据的绑定。
-*   2.3.2版本起，提供了原生参数注入方式，性能更好。
+*   2.3.2版本起，自动生成了参数注入类，内部代码是原生写法，性能更好。
 
 ##### 7.  开启调试,查看日志可以检查使用java方式注册的路由是否有重复提交的情况
 

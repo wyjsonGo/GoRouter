@@ -20,20 +20,20 @@ public class Constants {
     public static final String INTENT = "android.content.Intent";
 
     public static final String PACKAGE_NAME = "com.wyjson.router";
-    public static final String DOCS_PACKAGE_NAME = PACKAGE_NAME + ".docs";
+    public static final String DOCS = PACKAGE_NAME + ".docs";
     public static final String GOROUTER = PACKAGE_NAME + ".GoRouter";
 
-    public static final String ROUTE_MODULE_PACKAGE_NAME = PACKAGE_NAME + ".module.route";
-    public static final String I_ROUTE_MODULE_PACKAGE_NAME = PACKAGE_NAME + ".module.interfaces.IRouteModule";
+    public static final String ROUTE_MODULE = PACKAGE_NAME + ".module.route";
+    public static final String I_ROUTE_MODULE = PACKAGE_NAME + ".module.interfaces.IRouteModule";
     public static final String METHOD_NAME_LOAD = "load";
     public static final String METHOD_NAME_LOAD_ROUTE_FOR_x_GROUP = "loadRouteFor%sGroup";
     public static final String METHOD_NAME_LOAD_ROUTE_GROUP = "loadRouteGroup";
     public static final String PARAM_NAME_ROUTE_GROUPS = "routeGroups";
 
-    public static final String I_ROUTE_MODULE_GROUP_PACKAGE_NAME = PACKAGE_NAME + ".module.interfaces.IRouteModuleGroup";
+    public static final String I_ROUTE_MODULE_GROUP = PACKAGE_NAME + ".module.interfaces.IRouteModuleGroup";
     public static final String I_ROUTE_MODULE_GROUP_METHOD_NAME_LOAD = "load";
 
-    public static final String ROUTE_CENTER_PACKAGE_NAME = PACKAGE_NAME + ".core.RouteCenter";
+    public static final String ROUTE_CENTER = PACKAGE_NAME + ".core.RouteCenter";
     public static final String ROUTE_CENTER_METHOD_NAME_GET_ROUTE_GROUPS = "getRouteGroups";
 
     public static final String INJECT_CLASS_NAME_SUFFIX = SEPARATOR + "Inject";
