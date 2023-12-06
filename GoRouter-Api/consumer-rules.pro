@@ -1,9 +1,5 @@
 
 # #   ########## GoRouter # start ##########
-# 需要自动注入的参数不能混淆
--keepclassmembers class * {
-    @com.wyjson.router.annotation.Param <fields>;
-}
 # 自动注册模块路由加载类不混淆
 -keep class * implements com.wyjson.router.module.interfaces.IRouteModule
 # 自动注册模块Application代理类不混淆
@@ -11,6 +7,9 @@
 # 如果开启了代码优化,需要加入这两句,已保证实现了接口的类正常
 -keep class * implements com.wyjson.router.interfaces.IInterceptor
 -keep class * implements com.wyjson.router.interfaces.IService
+# 在R8 3.0及更高版本中保留TypeToken及其子类的泛型签名
+-keep,allowobfuscation,allowshrinking class com.wyjson.router.utils.TypeWrapper
+-keep,allowobfuscation,allowshrinking class * extends com.wyjson.router.utils.TypeWrapper
 # #   ########## GoRouter # end ##########
 
 
