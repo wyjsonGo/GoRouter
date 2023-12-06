@@ -1,6 +1,6 @@
 package com.wyjson.router.compiler.doc;
 
-import static com.wyjson.router.compiler.utils.Constants.DOCS_PACKAGE_NAME;
+import static com.wyjson.router.compiler.utils.Constants.DOCS;
 import static com.wyjson.router.compiler.utils.Constants.DOCUMENT_FILE_NAME;
 
 import com.google.gson.Gson;
@@ -43,7 +43,7 @@ public class DocumentUtils {
             documentModel = new DocumentModel();
             docWriter = mFiler.createResource(
                     StandardLocation.SOURCE_OUTPUT,
-                    DOCS_PACKAGE_NAME,
+                    DOCS,
                     moduleName + "-" + DOCUMENT_FILE_NAME
             ).openWriter();
         } catch (IOException e) {

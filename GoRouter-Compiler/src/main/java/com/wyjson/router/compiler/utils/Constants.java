@@ -16,23 +16,34 @@ public class Constants {
     public static final String CONTEXT = "android.content.Context";
     public static final String CONFIGURATION = "android.content.res.Configuration";
     public static final String NONNULL = "androidx.annotation.NonNull";
+    public static final String BUNDLE = "android.os.Bundle";
+    public static final String INTENT = "android.content.Intent";
 
     public static final String PACKAGE_NAME = "com.wyjson.router";
-    public static final String DOCS_PACKAGE_NAME = PACKAGE_NAME + ".docs";
+    public static final String DOCS = PACKAGE_NAME + ".docs";
     public static final String GOROUTER = PACKAGE_NAME + ".GoRouter";
 
-    public static final String ROUTE_MODULE_PACKAGE_NAME = PACKAGE_NAME + ".module.route";
-    public static final String I_ROUTE_MODULE_PACKAGE_NAME = PACKAGE_NAME + ".module.interfaces.IRouteModule";
+    public static final String ROUTE_MODULE = PACKAGE_NAME + ".module.route";
+    public static final String I_ROUTE_MODULE = PACKAGE_NAME + ".module.interfaces.IRouteModule";
     public static final String METHOD_NAME_LOAD = "load";
     public static final String METHOD_NAME_LOAD_ROUTE_FOR_x_GROUP = "loadRouteFor%sGroup";
     public static final String METHOD_NAME_LOAD_ROUTE_GROUP = "loadRouteGroup";
     public static final String PARAM_NAME_ROUTE_GROUPS = "routeGroups";
 
-    public static final String I_ROUTE_MODULE_GROUP_PACKAGE_NAME = PACKAGE_NAME + ".module.interfaces.IRouteModuleGroup";
+    public static final String I_ROUTE_MODULE_GROUP = PACKAGE_NAME + ".module.interfaces.IRouteModuleGroup";
     public static final String I_ROUTE_MODULE_GROUP_METHOD_NAME_LOAD = "load";
 
-    public static final String ROUTE_CENTER_PACKAGE_NAME = PACKAGE_NAME + ".core.RouteCenter";
+    public static final String ROUTE_CENTER = PACKAGE_NAME + ".core.RouteCenter";
     public static final String ROUTE_CENTER_METHOD_NAME_GET_ROUTE_GROUPS = "getRouteGroups";
+
+    public static final String INJECT_CLASS_NAME_SUFFIX = SEPARATOR + "Inject";
+    public static final String METHOD_NAME_INJECT_CHECK = "injectCheck";
+    public static final String METHOD_NAME_INJECT = "inject";
+    public static final String PARAM_EXCEPTION = PACKAGE_NAME + ".exception.ParamException";
+    public static final String I_JSON_SERVICE = PACKAGE_NAME + ".interfaces.IJsonService";
+    public static final String ROUTER_EXCEPTION = PACKAGE_NAME + ".exception.RouterException";
+    public static final String TYPE_WRAPPER = PACKAGE_NAME + ".utils.TypeWrapper";
+
 
     // Log
     public static final String PREFIX_OF_LOGGER = PROJECT + "::Compiler ";
@@ -89,7 +100,7 @@ public class Constants {
     public static final String METHOD_NAME_ON_CREATE = "onCreate";
     public static final String METHOD_NAME_ON_LOAD_ASYNC = "onLoadAsync";
     public static final String METHOD_NAME_ON_TERMINATE = "onTerminate";
-    public static final String METHOD_NAME_ON_CONFIGURATION_CHANGED= "onConfigurationChanged";
+    public static final String METHOD_NAME_ON_CONFIGURATION_CHANGED = "onConfigurationChanged";
     public static final String METHOD_NAME_ON_LOW_MEMORY = "onLowMemory";
     public static final String METHOD_NAME_ON_TRIM_MEMORY = "onTrimMemory";
 
