@@ -56,24 +56,24 @@
           {
             "name": "base",
             "type": "int",
-            "isRequired": false,
+            "required": false,
             "remark": "我是一个父类字段"
           },
           {
             "name": "age",
             "type": "int",
-            "isRequired": false
+            "required": false
           },
           {
             "name": "nickname",
             "type": "java.lang.String",
-            "isRequired": false,
+            "required": true,
             "remark": "昵称"
           },
           {
             "name": "test",
             "type": "com.wyjson.module_common.model.TestModel",
-            "isRequired": false,
+            "required": true,
             "remark": "自定义类型"
           }
         ]
@@ -87,12 +87,12 @@
           {
             "name": "age",
             "type": "int",
-            "isRequired": false
+            "required": false
           },
           {
             "name": "name",
             "type": "java.lang.String",
-            "isRequired": false
+            "required": false
           }
         ]
       }
