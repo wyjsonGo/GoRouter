@@ -207,7 +207,7 @@ AndroidManifest.xml
 
 ##### 2.  解析参数
 
-在带有`@Route`注解的Activity、Fragment页面使用`@Param`注解，会自动生成`类名+$$Inject.java`注入类，可调用`inject()`和`injectCheck()`方法自动注入参数。
+在带有`@Route`注解的Activity、Fragment页面使用`@Param`注解，会自动生成`类名+$$Param.java`注入类，可调用`inject()`和`injectCheck()`方法自动注入参数。
 
 ```java
 // 为每一个参数声明一个字段(不能是private)，并使用 @Param 标注
@@ -235,7 +235,7 @@ public class ParamActivity extends BaseParamActivity {
        super.onCreate(savedInstanceState);
 
        // inject()方法会自动对字段进行赋值
-       ParamActivity$$Inject.inject(this);
+       ParamActivity$$Param.inject(this);
 
        // 或使用
 
@@ -244,7 +244,7 @@ public class ParamActivity extends BaseParamActivity {
        // 检查不通过会抛出ParamException()类型的异常,
        // 可通过e.getParamName()获取参数名自行处理。
        try {
-           ParamActivity$$Inject.injectCheck(this);
+           ParamActivity$$Param.injectCheck(this);
        } catch (ParamException e) {
            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
            finish();
@@ -258,7 +258,7 @@ public class ParamActivity extends BaseParamActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         // inject()方法参数支持intent、bundle
-        ParamActivity$$Inject.inject(this, intent);
+        ParamActivity$$Param.inject(this, intent);
     }
 }
 
@@ -618,6 +618,9 @@ GoRouter.getInstance().addRouterGroup("show", new IRouteModuleGroup() {
 GoRouter.getInstance().build("/user/info/activity").putTag(3).commitActivity(UserInfoActivity.class);
 // 动态注册Fragment
 GoRouter.getInstance().build("/new/param/fragment").putInt("age").putString("name").commitFragment(ParamFragment.class);
+
+// 自动注入参数
+GoRouter.getInstance().inject(this);
 ```
 
 ##### 7.  自定义模块路由加载

@@ -34,7 +34,7 @@ public class ParamActivity extends BaseParamActivity {
         setContentView(vb.getRoot());
 
         try {
-            ParamActivity$$Inject.injectCheck(this);
+            ParamActivity$$Param.injectCheck(this);
         } catch (ParamException e) {
             ToastUtils.makeText(this, e.getMessage());
             finish();
@@ -47,7 +47,7 @@ public class ParamActivity extends BaseParamActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        ParamActivity$$Inject.inject(this, intent);
+        ParamActivity$$Param.inject(this, intent);
         vb.tvTitle.setText("base:" + base + ",age:" + age + ",name:" + name);
     }
 }

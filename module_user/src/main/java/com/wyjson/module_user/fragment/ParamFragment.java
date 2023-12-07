@@ -35,7 +35,7 @@ public class ParamFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ParamFragment$$Inject.inject(this);
+        ParamFragment$$Param.inject(this);
         vb.tvTitle.setText("age:" + age + ",name:" + name);
     }
 

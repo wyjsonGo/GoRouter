@@ -36,7 +36,7 @@ public class Constants {
     public static final String ROUTE_CENTER = PACKAGE_NAME + ".core.RouteCenter";
     public static final String ROUTE_CENTER_METHOD_NAME_GET_ROUTE_GROUPS = "getRouteGroups";
 
-    public static final String INJECT_CLASS_NAME_SUFFIX = SEPARATOR + "Inject";
+    public static final String PARAM_CLASS_NAME_SUFFIX = SEPARATOR + "Param";
     public static final String METHOD_NAME_INJECT_CHECK = "injectCheck";
     public static final String METHOD_NAME_INJECT = "inject";
     public static final String PARAM_EXCEPTION = PACKAGE_NAME + ".exception.ParamException";
