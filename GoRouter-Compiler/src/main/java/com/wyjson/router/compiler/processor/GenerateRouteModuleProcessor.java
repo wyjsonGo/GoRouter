@@ -15,9 +15,9 @@ import static com.wyjson.router.compiler.utils.Constants.FRAGMENT;
 import static com.wyjson.router.compiler.utils.Constants.GOROUTER;
 import static com.wyjson.router.compiler.utils.Constants.INTEGER_PACKAGE;
 import static com.wyjson.router.compiler.utils.Constants.INTEGER_PRIMITIVE;
+import static com.wyjson.router.compiler.utils.Constants.I_ROUTE_MODULE;
+import static com.wyjson.router.compiler.utils.Constants.I_ROUTE_MODULE_GROUP;
 import static com.wyjson.router.compiler.utils.Constants.I_ROUTE_MODULE_GROUP_METHOD_NAME_LOAD;
-import static com.wyjson.router.compiler.utils.Constants.I_ROUTE_MODULE_GROUP_PACKAGE_NAME;
-import static com.wyjson.router.compiler.utils.Constants.I_ROUTE_MODULE_PACKAGE_NAME;
 import static com.wyjson.router.compiler.utils.Constants.LONG_PACKAGE;
 import static com.wyjson.router.compiler.utils.Constants.LONG_PRIMITIVE;
 import static com.wyjson.router.compiler.utils.Constants.METHOD_NAME_LOAD;
@@ -26,10 +26,10 @@ import static com.wyjson.router.compiler.utils.Constants.METHOD_NAME_LOAD_ROUTE_
 import static com.wyjson.router.compiler.utils.Constants.PARAM_NAME_ROUTE_GROUPS;
 import static com.wyjson.router.compiler.utils.Constants.PARCELABLE_PACKAGE;
 import static com.wyjson.router.compiler.utils.Constants.PREFIX_OF_LOGGER;
+import static com.wyjson.router.compiler.utils.Constants.ROUTE_CENTER;
 import static com.wyjson.router.compiler.utils.Constants.ROUTE_CENTER_METHOD_NAME_GET_ROUTE_GROUPS;
-import static com.wyjson.router.compiler.utils.Constants.ROUTE_CENTER_PACKAGE_NAME;
+import static com.wyjson.router.compiler.utils.Constants.ROUTE_MODULE;
 import static com.wyjson.router.compiler.utils.Constants.ROUTE_MODULE_GENERATE_CLASS_NAME_SUFFIX;
-import static com.wyjson.router.compiler.utils.Constants.ROUTE_MODULE_PACKAGE_NAME;
 import static com.wyjson.router.compiler.utils.Constants.SERIALIZABLE_PACKAGE;
 import static com.wyjson.router.compiler.utils.Constants.SHORT_PACKAGE;
 import static com.wyjson.router.compiler.utils.Constants.SHORT_PRIMITIVE;
@@ -94,7 +94,6 @@ public class GenerateRouteModuleProcessor extends BaseProcessor {
         set.add(Service.class.getCanonicalName());
         set.add(Interceptor.class.getCanonicalName());
         set.add(Route.class.getCanonicalName());
-        set.add(Param.class.getCanonicalName());
         return set;
     }
 
@@ -103,7 +102,7 @@ public class GenerateRouteModuleProcessor extends BaseProcessor {
         super.init(processingEnv);
         logger.info(moduleName + " >>> GenerateRouteModuleProcessor init. <<<");
         mGoRouter = elementUtils.getTypeElement(GOROUTER);
-        mIRouteModule = elementUtils.getTypeElement(I_ROUTE_MODULE_PACKAGE_NAME);
+        mIRouteModule = elementUtils.getTypeElement(I_ROUTE_MODULE);
     }
 
     @Override
@@ -125,7 +124,7 @@ public class GenerateRouteModuleProcessor extends BaseProcessor {
         LinkedHashSet<MethodSpec> routeGroupMethods = addRouteGroup(roundEnvironment, loadIntoMethod);
 
         try {
-            JavaFile.builder(ROUTE_MODULE_PACKAGE_NAME,
+            JavaFile.builder(ROUTE_MODULE,
                             TypeSpec.classBuilder(className)
                                     .addModifiers(PUBLIC)
                                     .addSuperinterface(ClassName.get(mIRouteModule))
@@ -186,8 +185,8 @@ public class GenerateRouteModuleProcessor extends BaseProcessor {
             return routeGroupMethods;
         logger.info(moduleName + " >>> Found Route, size is " + elements.size() + " <<<");
 
-        mRouteCenter = elementUtils.getTypeElement(ROUTE_CENTER_PACKAGE_NAME);
-        mIRouteModuleGroup = elementUtils.getTypeElement(I_ROUTE_MODULE_GROUP_PACKAGE_NAME);
+        mRouteCenter = elementUtils.getTypeElement(ROUTE_CENTER);
+        mIRouteModuleGroup = elementUtils.getTypeElement(I_ROUTE_MODULE_GROUP);
         serializableType = elementUtils.getTypeElement(SERIALIZABLE_PACKAGE).asType();
         parcelableType = elementUtils.getTypeElement(PARCELABLE_PACKAGE).asType();
         activityType = elementUtils.getTypeElement(ACTIVITY).asType();
@@ -340,42 +339,16 @@ public class GenerateRouteModuleProcessor extends BaseProcessor {
                 String typeStr = typeMirror.toString();
                 String paramType;
                 switch (typeStr) {
-                    case BYTE_PACKAGE:
-                    case BYTE_PRIMITIVE:
-                        paramType = "putByte";
-                        break;
-                    case SHORT_PACKAGE:
-                    case SHORT_PRIMITIVE:
-                        paramType = "putShort";
-                        break;
-                    case INTEGER_PACKAGE:
-                    case INTEGER_PRIMITIVE:
-                        paramType = "putInt";
-                        break;
-                    case LONG_PACKAGE:
-                    case LONG_PRIMITIVE:
-                        paramType = "putLong";
-                        break;
-                    case FLOAT_PACKAGE:
-                    case FLOAT_PRIMITIVE:
-                        paramType = "putFloat";
-                        break;
-                    case DOUBEL_PACKAGE:
-                    case DOUBEL_PRIMITIVE:
-                        paramType = "putDouble";
-                        break;
-                    case BOOLEAN_PACKAGE:
-                    case BOOLEAN_PRIMITIVE:
-                        paramType = "putBoolean";
-                        break;
-                    case CHAR_PACKAGE:
-                    case CHAR_PRIMITIVE:
-                        paramType = "putChar";
-                        break;
-                    case STRING_PACKAGE:
-                        paramType = "putString";
-                        break;
-                    default:
+                    case BYTE_PACKAGE, BYTE_PRIMITIVE -> paramType = "putByte";
+                    case SHORT_PACKAGE, SHORT_PRIMITIVE -> paramType = "putShort";
+                    case INTEGER_PACKAGE, INTEGER_PRIMITIVE -> paramType = "putInt";
+                    case LONG_PACKAGE, LONG_PRIMITIVE -> paramType = "putLong";
+                    case FLOAT_PACKAGE, FLOAT_PRIMITIVE -> paramType = "putFloat";
+                    case DOUBEL_PACKAGE, DOUBEL_PRIMITIVE -> paramType = "putDouble";
+                    case BOOLEAN_PACKAGE, BOOLEAN_PRIMITIVE -> paramType = "putBoolean";
+                    case CHAR_PACKAGE, CHAR_PRIMITIVE -> paramType = "putChar";
+                    case STRING_PACKAGE -> paramType = "putString";
+                    default -> {
                         if (types.isSubtype(typeMirror, parcelableType)) {
                             paramType = "putParcelable";
                         } else if (types.isSubtype(typeMirror, serializableType)) {
@@ -384,6 +357,7 @@ public class GenerateRouteModuleProcessor extends BaseProcessor {
                             paramType = "putObject";
 //                            throw new RuntimeException(PREFIX_OF_LOGGER + moduleName + " @Param(type='" + typeMirror + "') is marked as an unsupported type");
                         }
+                    }
                 }
 
                 if (StringUtils.isEmpty(param.name()) && !param.required()) {

@@ -130,6 +130,25 @@ public class RouteCenter {
         return bundle.getString(ROUTER_CURRENT_PATH);
     }
 
+    @NonNull
+    private static <T> Bundle getBundle(T target, Intent intent, Bundle bundle) {
+        if (bundle == null) {
+            if (intent != null) {
+                bundle = intent.getExtras();
+            } else {
+                if (target instanceof Activity) {
+                    bundle = ((Activity) target).getIntent().getExtras();
+                } else if (target instanceof Fragment) {
+                    bundle = ((Fragment) target).getArguments();
+                }
+            }
+            if (bundle == null) {
+                throw new RouterException("method does not get bundle!");
+            }
+        }
+        return bundle;
+    }
+
     /**
      * 解析参数
      *
@@ -139,7 +158,9 @@ public class RouteCenter {
      * @param isCheck 是否检查 isRequired
      * @param <T>
      * @throws ParamException
+     * @Deprecated Higher performance methods have been available since version 2.3.2
      */
+    @Deprecated(since = "2.3.2")
     public static <T> void inject(T target, Intent intent, Bundle bundle, boolean isCheck) throws ParamException {
         GoRouter.logger.debug(null, "[inject] Auto Inject Start!");
 
@@ -187,25 +208,6 @@ public class RouteCenter {
             }
         }
         GoRouter.logger.debug(null, "[inject] Auto Inject End!");
-    }
-
-    @NonNull
-    private static <T> Bundle getBundle(T target, Intent intent, Bundle bundle) {
-        if (bundle == null) {
-            if (intent != null) {
-                bundle = intent.getExtras();
-            } else {
-                if (target instanceof Activity) {
-                    bundle = ((Activity) target).getIntent().getExtras();
-                } else if (target instanceof Fragment) {
-                    bundle = ((Fragment) target).getArguments();
-                }
-            }
-            if (bundle == null) {
-                throw new RouterException("method does not get bundle!");
-            }
-        }
-        return bundle;
     }
 
     /**

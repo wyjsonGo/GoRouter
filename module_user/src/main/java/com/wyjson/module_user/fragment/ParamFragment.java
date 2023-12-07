@@ -13,7 +13,6 @@ import com.wyjson.module_common.route.UserRoute;
 import com.wyjson.module_user.databinding.UserFragmentParamBinding;
 import com.wyjson.router.annotation.Param;
 import com.wyjson.router.annotation.Route;
-import com.wyjson.router.GoRouter;
 
 @Route(path = UserRoute.ParamFragment, remark = "参数片段")
 public class ParamFragment extends Fragment {
@@ -21,9 +20,9 @@ public class ParamFragment extends Fragment {
     UserFragmentParamBinding vb;
 
     @Param
-    private int age = 18;
+    int age = 18;
     @Param
-    private String name;
+    String name;
 
     @Nullable
     @Override
@@ -36,7 +35,7 @@ public class ParamFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        GoRouter.getInstance().inject(this);
+        ParamFragment$$Inject.inject(this);
         vb.tvTitle.setText("age:" + age + ",name:" + name);
     }
 
