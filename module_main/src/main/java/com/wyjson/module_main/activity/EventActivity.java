@@ -15,7 +15,7 @@ import com.wyjson.router.GoRouter;
 import com.wyjson.router.annotation.Route;
 
 /**
- * 演示路由event使用方法,Activity和Fragment互通,当让你也可以在任何地方通知其他Activity或Fragment
+ * 演示路由event使用方法,Activity和Fragment互通,当然你也可以在任何地方通知其他Activity或Fragment
  */
 @Route(path = MainRoute.EventActivity, remark = "事件页面")
 public class EventActivity extends FragmentActivity {
