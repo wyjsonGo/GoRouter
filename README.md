@@ -70,7 +70,7 @@ dependencyResolutionManagement {
 ```groovy
 dependencies {
     // x.x.x 替换为jitpack最新版本
-    implementation 'com.github.wyjsonGo.GoRouter:GoRouter-Api:x.x.x'
+    api 'com.github.wyjsonGo.GoRouter:GoRouter-Api:x.x.x'
 }
 ```
 
