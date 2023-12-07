@@ -14,7 +14,7 @@ import static com.wyjson.router.compiler.utils.Constants.FLOAT_PACKAGE;
 import static com.wyjson.router.compiler.utils.Constants.FLOAT_PRIMITIVE;
 import static com.wyjson.router.compiler.utils.Constants.FRAGMENT;
 import static com.wyjson.router.compiler.utils.Constants.GOROUTER;
-import static com.wyjson.router.compiler.utils.Constants.INJECT_CLASS_NAME_SUFFIX;
+import static com.wyjson.router.compiler.utils.Constants.PARAM_CLASS_NAME_SUFFIX;
 import static com.wyjson.router.compiler.utils.Constants.INTEGER_PACKAGE;
 import static com.wyjson.router.compiler.utils.Constants.INTEGER_PRIMITIVE;
 import static com.wyjson.router.compiler.utils.Constants.INTENT;
@@ -125,7 +125,7 @@ public class ParamProcessor extends BaseProcessor {
 
                 String qualifiedName = parent.getQualifiedName().toString();
                 String packageName = qualifiedName.substring(0, qualifiedName.lastIndexOf("."));
-                String className = parent.getSimpleName() + INJECT_CLASS_NAME_SUFFIX;
+                String className = parent.getSimpleName() + PARAM_CLASS_NAME_SUFFIX;
 
                 LinkedHashSet<MethodSpec> injectMethods = addInjectMethod(parent, childs, false);
                 LinkedHashSet<MethodSpec> injectCheckMethods = addInjectMethod(parent, childs, true);

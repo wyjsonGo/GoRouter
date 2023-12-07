@@ -49,37 +49,28 @@ class AssembleRouteModuleCodeInjector(val routeModuleClassList: List<String>) {
     inner class AssembleRouteModuleMethodAdapter(mv: MethodVisitor, access: Int, name: String, desc: String?)
         : AdviceAdapter(Opcodes.ASM9, mv, access, name, desc) {
 
-        override fun visitInsn(opcode: Int) {
-            if (opcode >= Opcodes.IRETURN && opcode <= Opcodes.RETURN) {
-                if (routeModuleClassList.isNotEmpty()) {
-                    val injectClassName = ROUTE_MODULE_INJECT_CLASS_NAME
-                    Logger.i(TAG, "Start inject the [${injectClassName}.${ROUTE_MODULE_INJECT_METHOD_NAME}]")
-                } else {
-                    Logger.w(TAG, "No need for an inject!")
-                }
-                routeModuleClassList.forEach { routeModuleClassName ->
-                    val name = Constants.slashToDot(ROUTE_MODULE_SCAN_TARGET_INJECT_PACKAGE_NAME) + "." + routeModuleClassName.replace(_CLASS, "")
-                    Logger.i(TAG, "inject the [${ROUTE_MODULE_INJECT_TARGET_METHOD_NAME}(\"${name}\")]")
-                    mv.visitLdcInsn(name)
-                    mv.visitMethodInsn(
-                            INVOKESTATIC,
-                            Constants.dotToSlash(ROUTE_MODULE_INJECT_CLASS_NAME),
-                            ROUTE_MODULE_INJECT_TARGET_METHOD_NAME,
-                            "(Ljava/lang/String;)V",
-                            false
-                    )
-                }
-            }
-            super.visitInsn(opcode)
-        }
-
-        override fun visitMaxs(maxStack: Int, maxLocals: Int) {
-            super.visitMaxs(maxStack + 4, maxLocals)
-        }
-
+        @Override
         override fun onMethodExit(opcode: Int) {
-            super.onMethodExit(opcode)
-            Logger.i(TAG, "End of method inject")
+            if (routeModuleClassList.isNotEmpty()) {
+                val injectClassName = ROUTE_MODULE_INJECT_CLASS_NAME
+                Logger.i(TAG, "Start inject the [${injectClassName}.${ROUTE_MODULE_INJECT_METHOD_NAME}]")
+            } else {
+                Logger.w(TAG, "No need for an inject!")
+            }
+            routeModuleClassList.forEach { routeModuleClassName ->
+                val name = Constants.slashToDot(ROUTE_MODULE_SCAN_TARGET_INJECT_PACKAGE_NAME) + "." + routeModuleClassName.replace(_CLASS, "")
+                Logger.i(TAG, "inject the [${ROUTE_MODULE_INJECT_TARGET_METHOD_NAME}(\"${name}\")]")
+                mv.visitLdcInsn(name)
+                mv.visitMethodInsn(
+                    INVOKESTATIC,
+                    Constants.dotToSlash(ROUTE_MODULE_INJECT_CLASS_NAME),
+                    ROUTE_MODULE_INJECT_TARGET_METHOD_NAME,
+                    "(Ljava/lang/String;)V",
+                    false
+                )
+            }
+            super.onMethodExit(opcode);
         }
+
     }
 }
