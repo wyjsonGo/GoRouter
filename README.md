@@ -366,8 +366,8 @@ public class DegradeServiceImpl implements IDegradeService {
 
 ```java
 // 我们经常需要在目标页面中配置一些属性，比方说"是否需要登陆"之类的
-// 可以通过@Route注解的tag属性进行扩展，这个属性是一个 int值，换句话说，单个int有4字节，也就是32位，可以配置32个开关
-// 剩下的可以自行发挥，通过字节操作可以标识32个开关，通过开关标记目标页面的一些属性，在拦截器中可以拿到这个标记进行业务逻辑判断
+// 可以通过@Route注解的tag属性进行扩展，这个属性是一个 int值，换句话说，单个int有4字节，可以配置31个开关
+// 剩下的可以自行发挥，通过字节操作可以标识31个开关，通过开关标记目标页面的一些属性，在拦截器中可以拿到这个标记进行业务逻辑判断
 @Route(path = "/user/info/activity", tag = LOGIN | AUTHENTICATION)
 ```
 

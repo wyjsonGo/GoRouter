@@ -3,7 +3,7 @@ package com.wyjson.module_common.route.utils;
 import java.util.ArrayList;
 
 /**
- * 单个int有4字节，也就是32位，可以配置31个开关,范围从1到1 << 30
+ * 单个int有4字节，可以配置31个开关,范围从1到1 << 30
  */
 public class RouteTagUtils {
 
