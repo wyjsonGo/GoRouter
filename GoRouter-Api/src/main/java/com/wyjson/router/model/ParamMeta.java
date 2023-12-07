@@ -8,7 +8,7 @@ import com.wyjson.router.enums.ParamType;
 public class ParamMeta {
     private final String name;// 自定义参数名,未定义使用变量名
     private final ParamType type;// 参数类型
-    private final boolean required;// 如果需要，当value为null时，应用程序将崩溃。原始类型不会被检查!
+    private final boolean required;// 是否是必需的
 
     public ParamMeta(String name, ParamType type, boolean required) {
         this.name = name;
