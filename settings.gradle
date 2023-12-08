@@ -21,6 +21,7 @@ rootProject.name = "GoRouter"
 include ':app'
 include ':module_main'
 include ':module_user'
+include ':module_kotlin'
 include ':module_common'
 
 include ':GoRouter-Api'
