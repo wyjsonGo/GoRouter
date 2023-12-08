@@ -7,7 +7,7 @@
 
 ## 简介
 
-之前一直在用阿里开源的[ARouter](https://github.com/alibaba/ARouter)项目，因为ARouter多年未更新，ARouter开始有些不太适合了，所以重新开发了这款Android路由框架，同样的API，更多的功能，迁移请参见文末7-8。
+之前一直在用阿里开源的[ARouter](https://github.com/alibaba/ARouter)项目，因为ARouter多年未更新，ARouter开始有些不太适合了，所以重新开发了这款Android路由框架，同样的API，更多的功能，迁移请参见文末7-10。
 
 ## GoRouter和ARouter功能差异对比
 
@@ -37,12 +37,13 @@
 9.  页面、拦截器、服务等组件均自动注册到框架
 10. 支持多种方式配置转场动画
 11. 支持获取Fragment
-12. **支持第三方 App 加固**
-13. **支持生成路由文档**
-14. 支持增量编译
-15. 支持动态注册路由、路由组、服务和拦截器
-16. 支持模块Application生命周期
-16. 支持路由页面Event
+12. 完全支持Kotlin以及混编(配置见文末 其他#5)
+13. **支持第三方 App 加固**
+14. **支持生成路由文档**
+15. 支持增量编译
+16. 支持动态注册路由、路由组、服务和拦截器
+17. 支持模块Application生命周期
+18. 支持路由页面Event
 
 ## 二、典型应用
 
@@ -72,6 +73,7 @@ dependencies {
     // x.x.x 替换为jitpack最新版本
     api 'com.github.wyjsonGo.GoRouter:GoRouter-Api:x.x.x'
 }
+// Kotlin配置参见7-1
 ```
 
 ##### 2.  在module项目下添加注解处理器依赖和配置 (如只使用java方式注册,可忽略此步骤)
@@ -776,37 +778,63 @@ Demo示例[MyApplication.java](https://github.com/wyjsonGo/GoRouter/blob/master/
 
 ## 七、其他
 
-##### 1.  路由中的分组概念
+##### 1.  Kotlin项目中的配置方式
+
+```groovy
+plugins {
+    ...
+    id 'kotlin-kapt'
+}
+
+kapt {
+    arguments {
+        arg("GOROUTER_MODULE_NAME", project.getName())
+    }
+}
+
+dependencies {
+    // x.x.x 替换为jitpack最新版本
+    kapt 'com.github.wyjsonGo.GoRouter:GoRouter-Compiler:x.x.x'
+}
+```
+
+module_kotlin模块Demo示例[module_kotlin/build.gradle](https://github.com/wyjsonGo/GoRouter/blob/master/module_kotlin/build.gradle)
+
+##### 2.  Kotlin类中的字段无法注入如何解决？
+
+首先，Kotlin中的字段是可以自动注入的，但是注入代码为了减少反射，使用的字段赋值的方式来注入的，Kotlin默认会生成set/get方法，并把属性设置为private 所以只要保证Kotlin中字段可见性不是private即可，简单解决可以在字段上添加 @JvmField。Demo示例[KotlinActivity.java](https://github.com/wyjsonGo/GoRouter/blob/master/module_kotlin/src/main/java/com/wyjson/module_kotlin/activity/KotlinActivity.java)
+
+##### 3.  路由中的分组概念
 
 *   SDK中针对所有的路径`/test/1`、`/test/2`进行分组，分组只有在分组中的某一个路径第一次被访问的时候，该分组才会被初始化。分组使用路径中第一段字符串(/*/)作为分组，这里的路径需要注意的是至少需要有两级`/xx/xx`。
 *   GRouter允许一个module中存在多个分组，也允许多个module中存在相同的分组，但是最好不要在多个module中存在相同的分组，因为在注册路由组时发现存在相同的分组，会立即注册老的路由组里的全部路由，然后更新新的路由组信息。
 
-##### 2.  拦截器和服务的异同
+##### 4.  拦截器和服务的异同
 
 *   拦截器和服务所需要实现的接口不同，但是结构类似，都存在`init()`方法，但是两者的调用时机不同。
 *   拦截器因为其特殊性，只对Activity路由有效，拦截器会在GoRouter首次调用的时候初始化。
 *   服务没有该限制，某一服务可能在App整个生命周期中都不会用到，所以服务只有被调用的时候才会触发初始化操作。
 
-##### 3.  使用java方式注册服务
+##### 5.  使用java方式注册服务
 
 *   实现相同服务（HelloService）的实现类（HelloServiceImpl）多次调用`addService()`方法会被覆盖(更新)，全局唯一，使用`getService(service)`方法获取。
 *   实现相同服务（PayService）的多个实现类（AliPayServiceImpl、WechatPayServiceImpl）调用`addService(service, alias)`方法注册，使用`getService(service, alias)`方法获取。
 
-##### 4.  使用java方式注册拦截器
+##### 6.  使用java方式注册拦截器
 
 *   `addInterceptor(ordinal, interceptor)`重复添加相同序号级会catch。
 *   `setInterceptor(ordinal, interceptor)`重复添加相同序号会覆盖(更新)。
 
-##### 5.  混淆
+##### 7.  混淆
 
 框架已经做了混淆处理，开发者无需关心。需要注意的是，如果不使用`@Param`注解方式，使用java方式注册，不要忘记参数加上java自带`@Keep`注解，否则使用`GoRouter.getInstance().inject(this)`方法自动注入会失败。
 
-##### 6.  `inject()`工作原理
+##### 8.  `inject()`工作原理
 
 *   2.3.2版本之前，`GoRouter.getInstance().inject(this)`方法会先通过`this`参数拿到`bundle`对象，再去获取当前页面的`path`，通过`path`拿到`CardMeta`数据，利用java反射进行数据的绑定。
 *   2.3.2版本起，自动生成了参数注入类，内部代码是原生写法，性能更好。
 
-##### 7.  开启调试,查看日志可以检查使用java方式注册的路由是否有重复提交的情况
+##### 9.  开启调试,查看日志可以检查使用java方式注册的路由是否有重复提交的情况
 
 ```log
 route path[/xx/xx] duplicate commit!!!
@@ -817,7 +845,7 @@ route pathClass[class xx.xx] duplicate commit!!!
 ```
 GoRouter日志tag为`GoRouter`，GoRouter-Compiler日志tag为`GoRouter::Compiler`，GoRouter-Gradle-Plugin日志tag为`GoRouter::Gradle-Plugin`。
 
-##### 8.  ARouter迁移指南
+##### 10.  ARouter迁移指南
 
 | ARouter              | GoRouter             |
 | -------------------- | -------------------- |
