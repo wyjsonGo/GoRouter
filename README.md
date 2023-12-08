@@ -64,11 +64,7 @@ dependencyResolutionManagement {
         maven { url 'https://jitpack.io' }
     }
 }
-```
 
-[![Release Version](https://jitpack.io/v/wyjsonGo/GoRouter.svg)](https://jitpack.io/#wyjsonGo/GoRouter)
-
-```groovy
 dependencies {
     api 'com.github.wyjsonGo.GoRouter:GoRouter-Api:2.3.5'
 }
@@ -88,11 +84,7 @@ android {
         }
     }
 }
-```
 
-[![Release Version](https://jitpack.io/v/wyjsonGo/GoRouter.svg)](https://jitpack.io/#wyjsonGo/GoRouter)
-
-```groovy
 dependencies {
     annotationProcessor 'com.github.wyjsonGo.GoRouter:GoRouter-Compiler:2.3.5'
 }
@@ -145,8 +137,6 @@ pluginManagement {
     }
 }
 ```
-
-[![Release Version](https://jitpack.io/v/wyjsonGo/GoRouter.svg)](https://jitpack.io/#wyjsonGo/GoRouter)
 
 ```groovy
 // 项目根目录下的build.gradle
