@@ -49,7 +49,6 @@ class AssembleRouteModuleCodeInjector(val routeModuleClassList: List<String>) {
     inner class AssembleRouteModuleMethodAdapter(mv: MethodVisitor, access: Int, name: String, desc: String?)
         : AdviceAdapter(Opcodes.ASM9, mv, access, name, desc) {
 
-        @Override
         override fun onMethodExit(opcode: Int) {
             if (routeModuleClassList.isNotEmpty()) {
                 val injectClassName = ROUTE_MODULE_INJECT_CLASS_NAME
