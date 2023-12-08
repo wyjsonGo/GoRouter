@@ -70,8 +70,7 @@ dependencyResolutionManagement {
 
 ```groovy
 dependencies {
-    // x.x.x 替换为jitpack最新版本
-    api 'com.github.wyjsonGo.GoRouter:GoRouter-Api:x.x.x'
+    api 'com.github.wyjsonGo.GoRouter:GoRouter-Api:2.3.5'
 }
 // Kotlin配置参见7-1
 ```
@@ -95,8 +94,7 @@ android {
 
 ```groovy
 dependencies {
-    // x.x.x 替换为jitpack最新版本
-    annotationProcessor 'com.github.wyjsonGo.GoRouter:GoRouter-Compiler:x.x.x'
+    annotationProcessor 'com.github.wyjsonGo.GoRouter:GoRouter-Compiler:2.3.5'
 }
 ```
 
@@ -154,8 +152,7 @@ pluginManagement {
 // 项目根目录下的build.gradle
 buildscript {
     dependencies {
-        // x.x.x 替换为jitpack最新版本
-        classpath 'com.github.wyjsonGo.GoRouter:GoRouter-Gradle-Plugin:x.x.x'
+        classpath 'com.github.wyjsonGo.GoRouter:GoRouter-Gradle-Plugin:2.3.5'
     }
 }
 ```
@@ -793,8 +790,7 @@ kapt {
 }
 
 dependencies {
-    // x.x.x 替换为jitpack最新版本
-    kapt 'com.github.wyjsonGo.GoRouter:GoRouter-Compiler:x.x.x'
+    kapt 'com.github.wyjsonGo.GoRouter:GoRouter-Compiler:2.3.5'
 }
 ```
 
