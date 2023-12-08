@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
 import com.wyjson.module_common.model.TestModel;
+import com.wyjson.module_common.route.KotlinRoute;
 import com.wyjson.module_common.route.MainRoute;
 import com.wyjson.module_common.route.UserRoute;
 import com.wyjson.module_common.route.service.user.PayService;
@@ -126,6 +127,13 @@ public class MainActivity extends FragmentActivity {
 
     public void onClickEventActivity(View view) {
         GoRouter.getInstance().build(MainRoute.EventActivity).go(this);
+    }
+
+    public void onClickKotlinActivity(View view) {
+        GoRouter.getInstance().build(KotlinRoute.KotlinActivity)
+                .withInt("age", 78)
+                .withString("nickname", "Wyjson")
+                .go(this);
     }
 
     private void showRouteLoadMode() {

@@ -129,6 +129,17 @@
             android:text="go EventActivity"
             android:textSize="16sp"
             android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:background="#ffaa00"
+            android:onClick="onClickKotlinActivity"
+            android:padding="8dp"
+            android:text="go Kotlin页面"
+            android:textSize="16sp"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <LinearLayout

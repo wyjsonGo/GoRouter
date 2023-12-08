@@ -6,12 +6,6 @@
       "prototype": "com.wyjson.module_common.route.service.user.PayService",
       "className": "com.wyjson.module_user.route.service.WechatPayServiceImpl"
     },
-    "PayService$Alipay": {
-      "alias": "Alipay",
-      "remark": "AliPay服务",
-      "prototype": "com.wyjson.module_common.route.service.user.PayService",
-      "className": "com.wyjson.module_user.route.service.AliPayServiceImpl"
-    },
     "UserService": {
       "remark": "用户服务",
       "prototype": "com.wyjson.module_common.route.service.user.UserService",
@@ -21,6 +15,18 @@
       "remark": "全局降级策略",
       "prototype": "com.wyjson.router.interfaces.IDegradeService",
       "className": "com.wyjson.module_common.route.service.DegradeServiceImpl"
+    },
+    "PayService$Alipay": {
+      "alias": "Alipay",
+      "remark": "AliPay服务",
+      "prototype": "com.wyjson.module_common.route.service.user.PayService",
+      "className": "com.wyjson.module_user.route.service.AliPayServiceImpl"
+    },
+    "UserService$KotlinUserService": {
+      "alias": "KotlinUserService",
+      "remark": "Kotlin模块用户服务",
+      "prototype": "com.wyjson.module_common.route.service.user.UserService",
+      "className": "com.wyjson.module_kotlin.route.service.KotlinUserServiceImpl"
     },
     "IPretreatmentService": {
       "remark": "预处理服务",
@@ -38,6 +44,11 @@
       "ordinal": 1,
       "remark": "登录拦截器",
       "className": "com.wyjson.module_user.route.interceptor.SignInInterceptor"
+    },
+    {
+      "ordinal": 50,
+      "remark": "Kotlin拦截器",
+      "className": "com.wyjson.module_kotlin.route.interceptor.KotlinInterceptor"
     },
     {
       "ordinal": 100,
@@ -93,6 +104,27 @@
             "name": "name",
             "type": "java.lang.String",
             "required": false
+          }
+        ]
+      }
+    ],
+    "kotlin": [
+      {
+        "path": "/kotlin/activity",
+        "remark": "这是一个kotlin页面，本库支持kapt",
+        "type": "Activity",
+        "pathClass": "com.wyjson.module_kotlin.activity.KotlinActivity",
+        "paramsType": [
+          {
+            "name": "age",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "nickname",
+            "type": "java.lang.String",
+            "required": true,
+            "remark": "昵称"
           }
         ]
       }
