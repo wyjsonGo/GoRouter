@@ -6,6 +6,7 @@ public class ParamModel {
 
     private String name;
     private String type;
+    private String intentType;
     private boolean required;
     private String remark;
 
@@ -35,6 +36,14 @@ public class ParamModel {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getIntentType() {
+        return intentType;
+    }
+
+    public void setIntentType(String intentType) {
+        this.intentType = intentType;
     }
 
     public boolean isRequired() {

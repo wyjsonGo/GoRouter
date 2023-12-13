@@ -1,4 +1,4 @@
-package com.wyjson.router.gradle_plugin.doc.model
+package com.wyjson.router.gradle_plugin.helper.model
 
 data class ServiceModel(
     val alias: String?,

@@ -1,4 +1,4 @@
-package com.wyjson.router.gradle_plugin.doc.model
+package com.wyjson.router.gradle_plugin.helper.model
 
 data class RouteModel(
     val path: String,
@@ -6,5 +6,5 @@ data class RouteModel(
     val type: String,
     val pathClass: String,
     val tag: Int?,
-    val paramsType: List<ParamModel>
+    val paramsType: List<ParamModel>?
 )

@@ -1,7 +1,24 @@
 package com.wyjson.router.compiler.doc;
 
+import static com.wyjson.router.compiler.utils.Constants.BOOLEAN_PACKAGE;
+import static com.wyjson.router.compiler.utils.Constants.BOOLEAN_PRIMITIVE;
+import static com.wyjson.router.compiler.utils.Constants.BYTE_PACKAGE;
+import static com.wyjson.router.compiler.utils.Constants.BYTE_PRIMITIVE;
+import static com.wyjson.router.compiler.utils.Constants.CHAR_PACKAGE;
+import static com.wyjson.router.compiler.utils.Constants.CHAR_PRIMITIVE;
 import static com.wyjson.router.compiler.utils.Constants.DOCS;
 import static com.wyjson.router.compiler.utils.Constants.DOCUMENT_FILE_NAME;
+import static com.wyjson.router.compiler.utils.Constants.DOUBLE_PACKAGE;
+import static com.wyjson.router.compiler.utils.Constants.DOUBLE_PRIMITIVE;
+import static com.wyjson.router.compiler.utils.Constants.FLOAT_PACKAGE;
+import static com.wyjson.router.compiler.utils.Constants.FLOAT_PRIMITIVE;
+import static com.wyjson.router.compiler.utils.Constants.INTEGER_PACKAGE;
+import static com.wyjson.router.compiler.utils.Constants.INTEGER_PRIMITIVE;
+import static com.wyjson.router.compiler.utils.Constants.LONG_PACKAGE;
+import static com.wyjson.router.compiler.utils.Constants.LONG_PRIMITIVE;
+import static com.wyjson.router.compiler.utils.Constants.SHORT_PACKAGE;
+import static com.wyjson.router.compiler.utils.Constants.SHORT_PRIMITIVE;
+import static com.wyjson.router.compiler.utils.Constants.STRING_PACKAGE;
 
 import com.google.gson.Gson;
 import com.wyjson.router.annotation.Interceptor;
@@ -27,6 +44,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.Types;
 import javax.tools.StandardLocation;
 
 public class DocumentUtils {
@@ -98,7 +116,7 @@ public class DocumentUtils {
         }
     }
 
-    public static void addRouteDoc(String moduleName, Logger logger, Element element, List<RouteModel> routeModelList, Route route, String typeDoc) {
+    public static void addRouteDoc(String moduleName, Logger logger, Element element, List<RouteModel> routeModelList, Route route, String typeDoc, Types types, TypeMirror serializableType, TypeMirror parcelableType) {
         if (!isDocEnable)
             return;
         try {
@@ -112,14 +130,14 @@ public class DocumentUtils {
             if (route.tag() != 0) {
                 routeModel.setTag(route.tag());
             }
-            addParamCode(moduleName, logger, element, routeModel);
+            addParamCode(moduleName, logger, element, routeModel, types, serializableType, parcelableType);
             routeModelList.add(routeModel);
         } catch (Exception e) {
             logger.error(moduleName + " Failed to add route [" + element.toString() + "] document, " + e.getMessage());
         }
     }
 
-    private static void addParamCode(String moduleName, Logger logger, Element element, RouteModel routeModel) {
+    private static void addParamCode(String moduleName, Logger logger, Element element, RouteModel routeModel, Types types, TypeMirror serializableType, TypeMirror parcelableType) {
         List<ParamModel> tempParamModels = new ArrayList<>();
         for (Element field : element.getEnclosedElements()) {
             if (field.getKind().isField() && field.getAnnotation(Param.class) != null) {
@@ -134,6 +152,29 @@ public class DocumentUtils {
                 }
                 paramModel.setRequired(param.required());
                 paramModel.setType(typeStr);
+
+                switch (typeStr) {
+                    case BYTE_PACKAGE, BYTE_PRIMITIVE -> paramModel.setIntentType("Byte");
+
+                    case SHORT_PACKAGE, SHORT_PRIMITIVE -> paramModel.setIntentType("Short");
+                    case INTEGER_PACKAGE, INTEGER_PRIMITIVE -> paramModel.setIntentType("Int");
+                    case LONG_PACKAGE, LONG_PRIMITIVE -> paramModel.setIntentType("Long");
+                    case FLOAT_PACKAGE, FLOAT_PRIMITIVE -> paramModel.setIntentType("Float");
+                    case DOUBLE_PACKAGE, DOUBLE_PRIMITIVE -> paramModel.setIntentType("Double");
+                    case BOOLEAN_PACKAGE, BOOLEAN_PRIMITIVE -> paramModel.setIntentType("Boolean");
+                    case CHAR_PACKAGE, CHAR_PRIMITIVE -> paramModel.setIntentType("Char");
+                    case STRING_PACKAGE -> paramModel.setIntentType("String");
+                    default -> {
+                        if (types.isSubtype(typeMirror, parcelableType)) {
+                            paramModel.setIntentType("Parcelable");
+                        } else if (types.isSubtype(typeMirror, serializableType)) {
+                            paramModel.setIntentType("Serializable");
+                        } else {
+                            paramModel.setIntentType("Object");
+                        }
+                    }
+                }
+
                 if (StringUtils.isEmpty(param.name()) && !param.required()) {
                     paramModel.setName(paramName);
                 } else {
@@ -158,7 +199,7 @@ public class DocumentUtils {
         if (parent instanceof DeclaredType) {
             Element parentElement = ((DeclaredType) parent).asElement();
             if (parentElement instanceof TypeElement && !((TypeElement) parentElement).getQualifiedName().toString().startsWith("android")) {
-                addParamCode(moduleName, logger, parentElement, routeModel);
+                addParamCode(moduleName, logger, parentElement, routeModel, types, serializableType, parcelableType);
             }
         }
     }

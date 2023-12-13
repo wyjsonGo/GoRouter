@@ -4,7 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.wyjson.router.gradle_plugin.doc.model.DocumentModel
 import com.wyjson.router.gradle_plugin.utils.Constants
-import com.wyjson.router.gradle_plugin.utils.Constants.GENERATE_ROUTE_DOC_TASK_NAME
+import com.wyjson.router.gradle_plugin.utils.Constants.GENERATE_ROUTE_DOC
 import com.wyjson.router.gradle_plugin.utils.Logger
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
@@ -39,10 +39,10 @@ abstract class GenerateRouteDocTask : DefaultTask() {
             }
         }
         if (document == null) {
-            if (GENERATE_ROUTE_DOC_TASK_NAME == name) {
+            if (GENERATE_ROUTE_DOC == name) {
                 Logger.e(TAG, "Failed to generate the route document!")
             } else {
-                Logger.e(TAG, "Failed to generate the route document! Use the '${GENERATE_ROUTE_DOC_TASK_NAME}' task to generate a new route document.")
+                Logger.e(TAG, "Failed to generate the route document! Use the '${GENERATE_ROUTE_DOC}' task to generate a new route document.")
             }
             return
         }
@@ -65,10 +65,10 @@ abstract class GenerateRouteDocTask : DefaultTask() {
                 }
                 document!!.interceptors.sortBy { interceptor -> interceptor.ordinal }
             } catch (e: Exception) {
-                Logger.e(TAG, "module[${curProject.name}] route document parsing failed, do not modify the generated route file, use the '${GENERATE_ROUTE_DOC_TASK_NAME}' task to generate a new route document.")
+                Logger.e(TAG, "module[${curProject.name}] route document parsing failed, do not modify the generated route file, use the '${GENERATE_ROUTE_DOC}' task to generate a new route document.")
             }
         } else {
-            Logger.e(TAG, "module[${curProject.name}] route document content is empty and a new route document is generated using the '${GENERATE_ROUTE_DOC_TASK_NAME}' task.")
+            Logger.e(TAG, "module[${curProject.name}] route document content is empty and a new route document is generated using the '${GENERATE_ROUTE_DOC}' task.")
         }
     }
 

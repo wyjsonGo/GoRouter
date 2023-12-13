@@ -325,7 +325,7 @@ public class GenerateRouteModuleProcessor extends BaseProcessor {
         unifyCode.add(typeCode.build());
 
         loadRouteGroupMethod.addStatement(unifyCode.build());
-        DocumentUtils.addRouteDoc(moduleName, logger, element, routeModelDocList, route, typeDoc);
+        DocumentUtils.addRouteDoc(moduleName, logger, element, routeModelDocList, route, typeDoc, types, serializableType, parcelableType);
     }
 
     private CodeBlock.Builder handleParam(CodeBlock.Builder paramCode, Element element) {
