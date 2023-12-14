@@ -28,8 +28,12 @@ abstract class GenerateRouteDocTask : DefaultTask() {
     fun taskAction() {
         Logger.i(TAG, "Generate GoRouter document task start.")
         project.dependProject().plus(project).forEach { curProject ->
-            val genFile = curProject.file("${curProject.buildDir}/generated").listFiles()
-            val collection = curProject.files(genFile).asFileTree.filter { it.name.endsWith(Constants.DOCUMENT_FILE_NAME) }
+            var genFile = curProject.file("${curProject.buildDir}/generated/ap_generated_sources").listFiles()
+            var collection = curProject.files(genFile).asFileTree.filter { it.name.endsWith(Constants.DOCUMENT_FILE_NAME) }
+            if (collection.isEmpty) {
+                genFile = curProject.file("${curProject.buildDir}/generated/source/kapt").listFiles()
+                collection = curProject.files(genFile).asFileTree.filter { it.name.endsWith(Constants.DOCUMENT_FILE_NAME) }
+            }
             if (collection.isEmpty) {
                 Logger.w(TAG, "project[${curProject.name}] scan 0 route document.")
             } else {

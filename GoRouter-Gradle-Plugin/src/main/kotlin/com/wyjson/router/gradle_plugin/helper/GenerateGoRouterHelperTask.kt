@@ -33,8 +33,6 @@ abstract class GenerateGoRouterHelperTask : DefaultTask() {
         val outputFile = File(
             project.project(":module_common").projectDir,
             "/src/${variantName}/java/com/wyjson/router/${className}.java"
-//            project.project(":module_common").buildDir,
-//            "/generated/${variantName}/java/com/wyjson/router/${className}.java"
         )
         outputFile.parentFile.mkdirs()
         outputFile.writeText(AssembleGoRouteHelperCode(routeHelperModel!!).toJavaCode(className), Charsets.UTF_8)
@@ -42,9 +40,11 @@ abstract class GenerateGoRouterHelperTask : DefaultTask() {
 
     private fun scanRouteModule(): Boolean {
         project.dependProject().plus(project).forEach { curProject ->
-            val genFile = curProject.file("${curProject.buildDir}/generated/ap_generated_sources/${variantName}").listFiles()
-            val collection = curProject.files(genFile).asFileTree.filter {
-                it.name.endsWith(Constants.DOCUMENT_FILE_NAME)
+            var genFile = curProject.file("${curProject.buildDir}/generated/ap_generated_sources").listFiles()
+            var collection = curProject.files(genFile).asFileTree.filter { it.name.endsWith(Constants.DOCUMENT_FILE_NAME) }
+            if (collection.isEmpty) {
+                genFile = curProject.file("${curProject.buildDir}/generated/source/kapt").listFiles()
+                collection = curProject.files(genFile).asFileTree.filter { it.name.endsWith(Constants.DOCUMENT_FILE_NAME) }
             }
             if (collection.isEmpty) {
                 Logger.w(TAG, "project[${curProject.name}] scan 0 route.")
@@ -72,10 +72,10 @@ abstract class GenerateGoRouterHelperTask : DefaultTask() {
                     routeHelperModel!!.routes.putAll(model.routes)
                 }
             } catch (e: Exception) {
-                Logger.e(TAG, "module[${curProject.name}] route document parsing failed, do not modify the generated route file, use the '${Constants.GENERATE_ROUTE_DOC}' task to generate a new route document.")
+                Logger.e(TAG, "module[${curProject.name}] route json parsing failed, do not modify the generated route json, use the '${Constants.GENERATE_ROUTE_DOC}' task to generate a new route json.")
             }
         } else {
-            Logger.e(TAG, "module[${curProject.name}] route document content is empty and a new route document is generated using the '${Constants.GENERATE_ROUTE_DOC}' task.")
+            Logger.e(TAG, "module[${curProject.name}] route json content is empty and a new route json is generated using the '${Constants.GENERATE_ROUTE_DOC}' task.")
         }
     }
 
