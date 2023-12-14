@@ -155,7 +155,6 @@ public class DocumentUtils {
 
                 switch (typeStr) {
                     case BYTE_PACKAGE, BYTE_PRIMITIVE -> paramModel.setIntentType("Byte");
-
                     case SHORT_PACKAGE, SHORT_PRIMITIVE -> paramModel.setIntentType("Short");
                     case INTEGER_PACKAGE, INTEGER_PRIMITIVE -> paramModel.setIntentType("Int");
                     case LONG_PACKAGE, LONG_PRIMITIVE -> paramModel.setIntentType("Long");
