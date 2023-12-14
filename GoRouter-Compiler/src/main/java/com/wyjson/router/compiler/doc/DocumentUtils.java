@@ -20,7 +20,7 @@ import static com.wyjson.router.compiler.utils.Constants.SHORT_PACKAGE;
 import static com.wyjson.router.compiler.utils.Constants.SHORT_PRIMITIVE;
 import static com.wyjson.router.compiler.utils.Constants.STRING_PACKAGE;
 
-import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.wyjson.router.annotation.Interceptor;
 import com.wyjson.router.annotation.Param;
 import com.wyjson.router.annotation.Route;
@@ -73,7 +73,7 @@ public class DocumentUtils {
         if (!isDocEnable)
             return;
         try {
-            docWriter.append(new Gson().toJson(documentModel));
+            docWriter.append(new GsonBuilder().setPrettyPrinting().create().toJson(documentModel));
             docWriter.flush();
             docWriter.close();
         } catch (IOException e) {

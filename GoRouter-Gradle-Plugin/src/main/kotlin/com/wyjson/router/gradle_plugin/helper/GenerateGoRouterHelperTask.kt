@@ -33,6 +33,8 @@ abstract class GenerateGoRouterHelperTask : DefaultTask() {
         val outputFile = File(
             project.project(":module_common").projectDir,
             "/src/${variantName}/java/com/wyjson/router/${className}.java"
+//            project.project(":module_common").buildDir,
+//            "/generated/${variantName}/java/com/wyjson/router/${className}.java"
         )
         outputFile.parentFile.mkdirs()
         outputFile.writeText(AssembleGoRouteHelperCode(routeHelperModel!!).toJavaCode(className), Charsets.UTF_8)
@@ -62,7 +64,7 @@ abstract class GenerateGoRouterHelperTask : DefaultTask() {
     private fun mergeRouteModule(curProject: Project, file: File) {
         if (file.readLines().isNotEmpty()) {
             try {
-                val model = Gson().fromJson(file.readLines()[0], RouteHelperModel::class.java);
+                val model = Gson().fromJson(file.readText(), RouteHelperModel::class.java);
                 if (routeHelperModel == null) {
                     routeHelperModel = model;
                 } else {
@@ -70,16 +72,10 @@ abstract class GenerateGoRouterHelperTask : DefaultTask() {
                     routeHelperModel!!.routes.putAll(model.routes)
                 }
             } catch (e: Exception) {
-                Logger.e(
-                    TAG,
-                    "module[${curProject.name}] route document parsing failed, do not modify the generated route file, use the '${Constants.GENERATE_ROUTE_DOC}' task to generate a new route document."
-                )
+                Logger.e(TAG, "module[${curProject.name}] route document parsing failed, do not modify the generated route file, use the '${Constants.GENERATE_ROUTE_DOC}' task to generate a new route document.")
             }
         } else {
-            Logger.e(
-                TAG,
-                "module[${curProject.name}] route document content is empty and a new route document is generated using the '${Constants.GENERATE_ROUTE_DOC}' task."
-            )
+            Logger.e(TAG, "module[${curProject.name}] route document content is empty and a new route document is generated using the '${Constants.GENERATE_ROUTE_DOC}' task.")
         }
     }
 
@@ -99,8 +95,7 @@ abstract class GenerateGoRouterHelperTask : DefaultTask() {
         return projects.distinct()
     }
 
-    private fun Project.isAndroid() =
-        plugins.hasPlugin("com.android.application") || plugins.hasPlugin("com.android.library")
+    private fun Project.isAndroid() = plugins.hasPlugin("com.android.application") || plugins.hasPlugin("com.android.library")
 
 
 }

@@ -55,7 +55,7 @@ abstract class GenerateRouteDocTask : DefaultTask() {
     private fun mergeRouteModuleDoc(curProject: Project, file: File) {
         if (file.readLines().isNotEmpty()) {
             try {
-                val documentModel = Gson().fromJson(file.readLines()[0], DocumentModel::class.java);
+                val documentModel = Gson().fromJson(file.readText(), DocumentModel::class.java);
                 if (document == null) {
                     document = documentModel;
                 } else {
