@@ -2,15 +2,15 @@ package com.wyjson.router.gradle_plugin.utils
 
 object Constants {
     const val GENERATE_ROUTE_DOC = "generateRouteDoc";
-    const val QUICK_GENERATE_ROUTE_DOC = "quickGenerateRouteDoc";
-    const val ASSEMBLE_ROUTE_MODULE_TASK = "AssembleRouteModuleTask";
-    const val ASSEMBLE_APPLICATION_MODULE_TASK = "AssembleApplicationModuleTask";
-    const val GENERATE_GOROUTER_HELPER_TASK = "GenerateGoRouterHelperTask";
+    const val ASSEMBLE_ROUTE_MODULE = "assembleRouteModule";
+    const val ASSEMBLE_APPLICATION_MODULE = "assembleApplicationModule";
+    const val GENERATE_GOROUTER_HELPER = "generateGoRouterHelper";
 
     private const val SEPARATOR = "$$";
     const val PACKAGE_NAME = "com.wyjson.router"
 
     const val PROJECT = "GoRouter";
+    const val PROJECT_OTHER = "${PROJECT}_other";
     const val DOCUMENT_FILE_NAME = "route-doc.json"
     const val _CLASS = ".class"
 

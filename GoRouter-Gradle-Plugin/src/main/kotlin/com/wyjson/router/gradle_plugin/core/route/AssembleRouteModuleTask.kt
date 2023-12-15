@@ -26,6 +26,10 @@ import kotlin.system.measureTimeMillis
 
 abstract class AssembleRouteModuleTask : DefaultTask() {
 
+    init {
+        group = Constants.PROJECT_OTHER
+    }
+
     private val TAG = "RM"
 
     @get:InputFiles

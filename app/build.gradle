@@ -23,12 +23,25 @@ android {
     }
 
     buildTypes {
+        debug {
+        }
         release {
             shrinkResources true
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    flavorDimensions +="env"
+    productFlavors {
+        dev {
+            dimension "env"
+        }
+        prod {
+            dimension "env"
+        }
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
