@@ -72,7 +72,7 @@ class AssembleApplicationModuleCodeInjector(val routeModuleClassList: List<Strin
                     false
                 )
             }
-            super.onMethodExit(opcode);
+            super.onMethodExit(opcode)
         }
     }
 }

@@ -22,14 +22,15 @@ abstract class GenerateGoRouterHelperTask : DefaultTask() {
 
     @get:Input
     abstract var variant: Variant
+    @get:Input
+    abstract var rootModuleName: String
 
     private val TAG = "RH"
 
     private var dependModeList: ArrayList<String> = ArrayList()
     private var routeHelperModel: RouteHelperModel? = null
 
-    // TODO: :::未完成
-    private lateinit var catalog: String // main or variantName or buildType
+    private val catalog: String = "main" // main or variantName or buildType
 
     @TaskAction
     fun taskAction() {
@@ -40,20 +41,21 @@ abstract class GenerateGoRouterHelperTask : DefaultTask() {
         setDependModeList(variantName, buildType, flavorName)
 
         if (!scanRouteModule(variantName, buildType)) return
-        val className = GOROUTER_HELPER_CLASS_NAME;
+        val className = GOROUTER_HELPER_CLASS_NAME
         val rootProject = try {
-            project.project(":${project.properties.get("ROOT_MODULE_NAME")}")
+            project.project(":${rootModuleName}")
         } catch (e: Exception) {
-            Logger.e(TAG, "Add the 'ROOT_MODULE_NAME' configuration to the 'gradle.properties' file")
-            return;
+            Logger.e(TAG, "Please check if the project name[${rootModuleName}] specified by the attribute 'helperToRootModuleName' is correct and exists")
+            return
         }
+        val path = "/src/${catalog}/java/com/wyjson/router/${className}.java"
         val outputFile = File(
             rootProject.projectDir,
-            "/src/main/java/com/wyjson/router/${className}.java"
+            path
         )
         outputFile.parentFile.mkdirs()
         outputFile.writeText(AssembleGoRouteHelperCode(routeHelperModel!!).toJavaCode(className), Charsets.UTF_8)
-        Logger.i(TAG, "Generate GoRouterHelper task end. ${rootProject.projectDir}/src/main/java/com/wyjson/router/${className}.java")
+        Logger.i(TAG, "Generate GoRouterHelper task end. ${rootProject.projectDir}${path}")
     }
 
     private fun scanRouteModule(variantName: String, buildType: String?): Boolean {
@@ -86,16 +88,16 @@ abstract class GenerateGoRouterHelperTask : DefaultTask() {
         } else {
             val file = collection.first()
             Logger.i(TAG, "project[${curProject.name}] found the file[${file.name}].")
-            return file;
+            return file
         }
     }
 
     private fun mergeRouteModule(curProject: Project, file: File) {
         if (file.readLines().isNotEmpty()) {
             try {
-                val model = Gson().fromJson(file.readText(), RouteHelperModel::class.java);
+                val model = Gson().fromJson(file.readText(), RouteHelperModel::class.java)
                 if (routeHelperModel == null) {
-                    routeHelperModel = model;
+                    routeHelperModel = model
                 } else {
                     routeHelperModel!!.services.putAll(model.services)
                     routeHelperModel!!.routes.putAll(model.routes)
@@ -133,8 +135,7 @@ abstract class GenerateGoRouterHelperTask : DefaultTask() {
         val projects = ArrayList<Project>()
         dependModeList.forEach { name ->
             try {
-                val byName = configurations.getByName(name)
-                val dependencyProjects = byName.dependencies
+                val dependencyProjects = configurations.getByName(name).dependencies
                     .filterIsInstance<DefaultProjectDependency>()
                     .filter { it.dependencyProject.isAndroid() }
                     .map { it.dependencyProject }

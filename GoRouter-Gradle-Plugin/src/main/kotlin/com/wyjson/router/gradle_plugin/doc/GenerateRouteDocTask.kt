@@ -57,11 +57,7 @@ abstract class GenerateRouteDocTask : DefaultTask() {
             }
         }
         if (document == null) {
-            if (GENERATE_ROUTE_DOC == this.name) {
-                Logger.e(TAG, "Failed to generate the route document!")
-            } else {
-                Logger.e(TAG, "Failed to generate the route document! Use the '${GENERATE_ROUTE_DOC}' task to generate a new route document.")
-            }
+            Logger.e(TAG, "Failed to generate the route document!")
             return false
         }
         return true
@@ -80,16 +76,16 @@ abstract class GenerateRouteDocTask : DefaultTask() {
         } else {
             val file = collection.first()
             Logger.i(TAG, "project[${curProject.name}] found the file[${file.name}].")
-            return file;
+            return file
         }
     }
 
     private fun mergeRouteModuleDoc(curProject: Project, file: File) {
         if (file.readLines().isNotEmpty()) {
             try {
-                val documentModel = Gson().fromJson(file.readText(), DocumentModel::class.java);
+                val documentModel = Gson().fromJson(file.readText(), DocumentModel::class.java)
                 if (document == null) {
-                    document = documentModel;
+                    document = documentModel
                 } else {
                     document!!.services.putAll(documentModel.services)
                     document!!.interceptors.addAll(documentModel.interceptors)
@@ -127,15 +123,16 @@ abstract class GenerateRouteDocTask : DefaultTask() {
      */
     private fun Project.dependProject(): List<Project> {
         val projects = ArrayList<Project>()
-        try {
-            val byName = configurations.getByName(name)
-            val dependencyProjects = byName.dependencies
-                .filterIsInstance<DefaultProjectDependency>()
-                .filter { it.dependencyProject.isAndroid() }
-                .map { it.dependencyProject }
-            projects.addAll(dependencyProjects)
-            dependencyProjects.forEach { projects.addAll(it.dependProject()) }
-        } catch (_: UnknownConfigurationException) {
+        dependModeList.forEach { name ->
+            try {
+                val dependencyProjects = configurations.getByName(name).dependencies
+                    .filterIsInstance<DefaultProjectDependency>()
+                    .filter { it.dependencyProject.isAndroid() }
+                    .map { it.dependencyProject }
+                projects.addAll(dependencyProjects)
+                dependencyProjects.forEach { projects.addAll(it.dependProject()) }
+            } catch (_: UnknownConfigurationException) {
+            }
         }
         return projects.distinct()
     }

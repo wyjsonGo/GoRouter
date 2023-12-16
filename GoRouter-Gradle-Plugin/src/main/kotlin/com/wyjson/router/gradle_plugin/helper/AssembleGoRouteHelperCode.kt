@@ -42,7 +42,7 @@ class AssembleGoRouteHelperCode(private val routeHelperModel: RouteHelperModel) 
                 || service.value.prototype == I_PRETREATMENT_SERVICE
                 || service.value.prototype == I_JSON_SERVICE
             ) {
-                continue;
+                continue
             }
             val serviceClassName = ClassName.bestGuess(service.value.prototype)
             val itemMethod = MethodSpec.methodBuilder("get${service.key}".replace("$", "For"))
@@ -91,12 +91,12 @@ class AssembleGoRouteHelperCode(private val routeHelperModel: RouteHelperModel) 
                     goMethod.addJavadoc("{@link \$N}", routeModel.pathClass)
                 }
                 if (routeModel.paramsType != null) {
-                    val paramCode = CodeBlock.builder();
-                    val goParamCode = CodeBlock.builder();
+                    val paramCode = CodeBlock.builder()
+                    val goParamCode = CodeBlock.builder()
                     var requiredCount = 0
                     for (param in routeModel.paramsType) {
                         if (!param.required)
-                            continue;
+                            continue
                         requiredCount++
                         handleParam(param, buildMethod, goMethod, paramCode, goParamCode)
                     }
@@ -105,7 +105,7 @@ class AssembleGoRouteHelperCode(private val routeHelperModel: RouteHelperModel) 
                     if (requiredCount != routeModel.paramsType.size) {
                         for (param in routeModel.paramsType) {
                             if (param.required)
-                                continue;
+                                continue
                             handleParam(param, buildMethod, goMethod, paramCode, goParamCode)
                         }
                         toCodeEnd(buildMethod, goMethod, routeModel, paramCode, goParamCode, methods)
@@ -118,7 +118,7 @@ class AssembleGoRouteHelperCode(private val routeHelperModel: RouteHelperModel) 
     }
 
     private fun toCodeEnd(buildMethod: MethodSpec.Builder,goMethod: MethodSpec.Builder, routeModel: RouteModel, paramCode: CodeBlock.Builder, goParamCode: CodeBlock.Builder, methods: LinkedHashSet<MethodSpec>) {
-        val newBuildMethod = buildMethod.build().toBuilder();
+        val newBuildMethod = buildMethod.build().toBuilder()
         newBuildMethod.addStatement(
             "return GoRouter.getInstance().build(\$S)\$L",
             routeModel.path,
@@ -126,7 +126,7 @@ class AssembleGoRouteHelperCode(private val routeHelperModel: RouteHelperModel) 
         )
         methods.add(newBuildMethod.build())
 
-        val newGoMethod = goMethod.build().toBuilder();
+        val newGoMethod = goMethod.build().toBuilder()
         var goParamCodeString = goParamCode.build().toString()
         if (goParamCodeString.isNotEmpty()) {
             goParamCodeString = goParamCodeString.substring(0, goParamCodeString.length - 2)

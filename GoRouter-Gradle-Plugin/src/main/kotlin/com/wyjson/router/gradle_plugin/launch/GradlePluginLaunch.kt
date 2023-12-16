@@ -42,15 +42,22 @@ class GradlePluginLaunch : Plugin<Project> {
             val variantName = variant.name
             val variantNameCapitalized = variantName.capitalized()
 
-            project.tasks.register("${GENERATE_ROUTE_DOC}$variantNameCapitalized", GenerateRouteDocTask::class.java){ it.variant = variant }.dependsOn("assemble${variantNameCapitalized}")
-            project.tasks.register("${GENERATE_GOROUTER_HELPER}$variantNameCapitalized", GenerateGoRouterHelperTask::class.java){ it.variant = variant }.dependsOn("assemble${variantNameCapitalized}")
+            project.tasks.register("${GENERATE_ROUTE_DOC}$variantNameCapitalized", GenerateRouteDocTask::class.java){
+                it.variant = variant
+            }.dependsOn("assemble${variantNameCapitalized}")
+            if (goRouterConfig.helperToRootModuleName.isNotEmpty()){
+                project.tasks.register("${GENERATE_GOROUTER_HELPER}$variantNameCapitalized", GenerateGoRouterHelperTask::class.java) {
+                    it.variant = variant
+                    it.rootModuleName = goRouterConfig.helperToRootModuleName
+                }.dependsOn("assemble${variantNameCapitalized}")
+            }
 
             // 处理允许执行自动注册任务的集合,未设置表示全部任务都可执行
-            var isRunTask = false;
-            if (goRouterConfig.runBuildTypes.isNotEmpty()) {
-                for (buildType in goRouterConfig.runBuildTypes) {
+            var isRunTask = false
+            if (goRouterConfig.runAutoRegisterBuildTypes.isNotEmpty()) {
+                for (buildType in goRouterConfig.runAutoRegisterBuildTypes) {
                     if (buildType.equals(variant.buildType, true)) {
-                        isRunTask = true;
+                        isRunTask = true
                         break
                     }
                 }
@@ -82,10 +89,13 @@ class GradlePluginLaunch : Plugin<Project> {
             }
         }
         project.afterEvaluate {
-            for (variant in variantList) {
-                val variantName = variant.name
-                val variantNameCapitalized = variantName.capitalized()
-                project.tasks.findByName("assemble${variantNameCapitalized}")?.finalizedBy("${GENERATE_GOROUTER_HELPER}$variantNameCapitalized")
+            val goRouterConfig = it.extensions.getByType(GoRouterConfig::class.java)
+            if (goRouterConfig.helperToRootModuleName.isNotEmpty()){
+                for (variant in variantList) {
+                    val variantName = variant.name
+                    val variantNameCapitalized = variantName.capitalized()
+                    project.tasks.findByName("assemble${variantNameCapitalized}")?.finalizedBy("${GENERATE_GOROUTER_HELPER}$variantNameCapitalized")
+                }
             }
         }
     }
