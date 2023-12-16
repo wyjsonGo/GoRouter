@@ -6,14 +6,13 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 
 import com.wyjson.module_common.model.TestModel;
-import com.wyjson.module_common.route.UserRoute;
 import com.wyjson.module_common.utils.ToastUtils;
 import com.wyjson.module_user.databinding.UserActivityParamBinding;
 import com.wyjson.router.annotation.Param;
 import com.wyjson.router.annotation.Route;
 import com.wyjson.router.exception.ParamException;
 
-@Route(path = UserRoute.ParamActivity, remark = "参数页面")
+@Route(path = "/new/param/activity", remark = "参数页面")
 public class ParamActivity extends BaseParamActivity {
 
     UserActivityParamBinding vb;

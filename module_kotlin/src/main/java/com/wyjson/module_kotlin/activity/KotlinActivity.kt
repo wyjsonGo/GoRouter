@@ -2,12 +2,11 @@ package com.wyjson.module_kotlin.activity
 
 import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
-import com.wyjson.module_common.route.KotlinRoute
 import com.wyjson.module_kotlin.databinding.KotlinActivityKotlinBinding
 import com.wyjson.router.annotation.Param
 import com.wyjson.router.annotation.Route
 
-@Route(path = KotlinRoute.KotlinActivity, remark = "这是一个kotlin页面，本库支持kapt")
+@Route(path = "/kotlin/activity", remark = "这是一个kotlin页面，本库支持kapt")
 class KotlinActivity : FragmentActivity() {
 
     @JvmField

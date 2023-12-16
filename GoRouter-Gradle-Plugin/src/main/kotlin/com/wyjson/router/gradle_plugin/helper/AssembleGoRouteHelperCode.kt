@@ -75,21 +75,35 @@ class AssembleGoRouteHelperCode(private val routeHelperModel: RouteHelperModel) 
         for (route in routeHelperModel.routes) {
             for (routeModel in route.value) {
                 val routeClassName = ClassName.bestGuess(routeModel.pathClass)
+
+                val getPathMethod = MethodSpec.methodBuilder("get${routeClassName.simpleName()}Path")
+                    .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+                    .returns(String::class.java)
+                    .addStatement("return \$S", routeModel.path)
+
                 val buildMethod = MethodSpec.methodBuilder("build${routeClassName.simpleName()}")
                     .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                     .returns(ClassName.bestGuess(CARD))
+
                 val goMethod = MethodSpec.methodBuilder("go${routeClassName.simpleName()}")
                     .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                     .addParameter(ClassName.bestGuess(CONTEXT), "context")
+
                 if (routeModel.remark?.isNotEmpty() == true) {
-                    buildMethod.addJavadoc(routeModel.remark)
+                    getPathMethod.addJavadoc("path:\$N", routeModel.remark)
+                    getPathMethod.addJavadoc("\n{@link \$N}", routeModel.pathClass)
+
+                    buildMethod.addJavadoc("build:\$N", routeModel.remark)
                     buildMethod.addJavadoc("\n{@link \$N}", routeModel.pathClass)
-                    goMethod.addJavadoc(routeModel.remark)
+
+                    goMethod.addJavadoc("go:\$N", routeModel.remark)
                     goMethod.addJavadoc("\n{@link \$N}", routeModel.pathClass)
                 } else {
+                    getPathMethod.addJavadoc("{@link \$N}", routeModel.pathClass)
                     buildMethod.addJavadoc("{@link \$N}", routeModel.pathClass)
                     goMethod.addJavadoc("{@link \$N}", routeModel.pathClass)
                 }
+                methods.add(getPathMethod.build())
                 if (routeModel.paramsType != null) {
                     val paramCode = CodeBlock.builder()
                     val goParamCode = CodeBlock.builder()
@@ -100,7 +114,7 @@ class AssembleGoRouteHelperCode(private val routeHelperModel: RouteHelperModel) 
                         requiredCount++
                         handleParam(param, buildMethod, goMethod, paramCode, goParamCode)
                     }
-                    toCodeEnd(buildMethod, goMethod, routeModel, paramCode, goParamCode, methods)
+                    toCodeEnd(getPathMethod, buildMethod, goMethod, routeModel, paramCode, goParamCode, methods)
 
                     if (requiredCount != routeModel.paramsType.size) {
                         for (param in routeModel.paramsType) {
@@ -108,20 +122,20 @@ class AssembleGoRouteHelperCode(private val routeHelperModel: RouteHelperModel) 
                                 continue
                             handleParam(param, buildMethod, goMethod, paramCode, goParamCode)
                         }
-                        toCodeEnd(buildMethod, goMethod, routeModel, paramCode, goParamCode, methods)
+                        toCodeEnd(getPathMethod, buildMethod, goMethod, routeModel, paramCode, goParamCode, methods)
                     }
                 } else {
-                    toCodeEnd(buildMethod, goMethod, routeModel, CodeBlock.builder(), CodeBlock.builder(), methods)
+                    toCodeEnd(getPathMethod,buildMethod, goMethod, routeModel, CodeBlock.builder(), CodeBlock.builder(), methods)
                 }
             }
         }
     }
 
-    private fun toCodeEnd(buildMethod: MethodSpec.Builder,goMethod: MethodSpec.Builder, routeModel: RouteModel, paramCode: CodeBlock.Builder, goParamCode: CodeBlock.Builder, methods: LinkedHashSet<MethodSpec>) {
+    private fun toCodeEnd(getPathMethod: MethodSpec.Builder, buildMethod: MethodSpec.Builder, goMethod: MethodSpec.Builder, routeModel: RouteModel, paramCode: CodeBlock.Builder, goParamCode: CodeBlock.Builder, methods: LinkedHashSet<MethodSpec>) {
         val newBuildMethod = buildMethod.build().toBuilder()
         newBuildMethod.addStatement(
-            "return GoRouter.getInstance().build(\$S)\$L",
-            routeModel.path,
+            "return GoRouter.getInstance().build(\$N())\$L",
+            getPathMethod.build().name,
             paramCode.build()
         )
         methods.add(newBuildMethod.build())
