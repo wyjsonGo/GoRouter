@@ -49,7 +49,7 @@ public class GoRouterHelper {
     }
 
     /**
-     * 参数页面 path
+     * path 参数页面
      * {@link com.wyjson.module_user.activity.ParamActivity}
      */
     public static String getParamActivityPath() {
@@ -79,19 +79,21 @@ public class GoRouterHelper {
     }
 
     /**
+     * get 参数页面
+     * {@link com.wyjson.module_user.activity.ParamActivity}
+     */
+    public static ParamActivityBuilder getParamActivity(String nickname,
+            com.wyjson.module_common.model.TestModel test) {
+        return new ParamActivityBuilder(nickname, test);
+    }
+
+    /**
      * build 参数页面
      * {@link com.wyjson.module_user.activity.ParamActivity}
      */
     public static Card buildParamActivity(String nickname,
             com.wyjson.module_common.model.TestModel test, int base, int age) {
-        return GoRouter.getInstance().build(getParamActivityPath())
-                // 昵称
-                .withString("nickname", nickname)
-                // 自定义类型
-                .withObject("test", test)
-                // 我是一个父类字段
-                .withInt("base", base)
-                .withInt("age", age);
+        return getParamActivity(nickname, test).setBase(base).setAge(age).build();
     }
 
     /**
@@ -104,7 +106,7 @@ public class GoRouterHelper {
     }
 
     /**
-     * 参数片段 path
+     * path 参数片段
      * {@link com.wyjson.module_user.fragment.ParamFragment}
      */
     public static String getParamFragmentPath() {
@@ -128,13 +130,19 @@ public class GoRouterHelper {
     }
 
     /**
+     * get 参数片段
+     * {@link com.wyjson.module_user.fragment.ParamFragment}
+     */
+    public static ParamFragmentBuilder getParamFragment() {
+        return new ParamFragmentBuilder();
+    }
+
+    /**
      * build 参数片段
      * {@link com.wyjson.module_user.fragment.ParamFragment}
      */
     public static Card buildParamFragment(int age, String name) {
-        return GoRouter.getInstance().build(getParamFragmentPath())
-                .withInt("age", age)
-                .withString("name", name);
+        return getParamFragment().setAge(age).setName(name).build();
     }
 
     /**
@@ -146,7 +154,7 @@ public class GoRouterHelper {
     }
 
     /**
-     * 这是一个kotlin页面，本库支持kapt path
+     * path 这是一个kotlin页面，本库支持kapt
      * {@link com.wyjson.module_kotlin.activity.KotlinActivity}
      */
     public static String getKotlinActivityPath() {
@@ -172,14 +180,19 @@ public class GoRouterHelper {
     }
 
     /**
+     * get 这是一个kotlin页面，本库支持kapt
+     * {@link com.wyjson.module_kotlin.activity.KotlinActivity}
+     */
+    public static KotlinActivityBuilder getKotlinActivity(String nickname) {
+        return new KotlinActivityBuilder(nickname);
+    }
+
+    /**
      * build 这是一个kotlin页面，本库支持kapt
      * {@link com.wyjson.module_kotlin.activity.KotlinActivity}
      */
     public static Card buildKotlinActivity(String nickname, int age) {
-        return GoRouter.getInstance().build(getKotlinActivityPath())
-                // 昵称
-                .withString("nickname", nickname)
-                .withInt("age", age);
+        return getKotlinActivity(nickname).setAge(age).build();
     }
 
     /**
@@ -191,7 +204,7 @@ public class GoRouterHelper {
     }
 
     /**
-     * 主页 path
+     * path 主页
      * {@link com.wyjson.module_main.activity.MainActivity}
      */
     public static String getMainActivityPath() {
@@ -215,7 +228,7 @@ public class GoRouterHelper {
     }
 
     /**
-     * 事件页面 path
+     * path 事件页面
      * {@link com.wyjson.module_main.activity.EventActivity}
      */
     public static String getEventActivityPath() {
@@ -239,7 +252,7 @@ public class GoRouterHelper {
     }
 
     /**
-     * 事件片段 path
+     * path 事件片段
      * {@link com.wyjson.module_main.fragment.EventFragment}
      */
     public static String getEventFragmentPath() {
@@ -263,7 +276,7 @@ public class GoRouterHelper {
     }
 
     /**
-     * 欢迎页 path
+     * path 欢迎页
      * {@link com.wyjson.module_main.activity.SplashActivity}
      */
     public static String getSplashActivityPath() {
@@ -287,7 +300,7 @@ public class GoRouterHelper {
     }
 
     /**
-     * 卡片片段 path
+     * path 卡片片段
      * {@link com.wyjson.module_user.fragment.CardFragment}
      */
     public static String getCardFragmentPath() {
@@ -311,7 +324,7 @@ public class GoRouterHelper {
     }
 
     /**
-     * 用户信息页面 path
+     * path 用户信息页面
      * {@link com.wyjson.module_user.activity.UserInfoActivity}
      */
     public static String getUserInfoActivityPath() {
@@ -335,7 +348,7 @@ public class GoRouterHelper {
     }
 
     /**
-     * 登录页面 path
+     * path 登录页面
      * {@link com.wyjson.module_user.activity.SignInActivity}
      */
     public static String getSignInActivityPath() {
@@ -356,5 +369,88 @@ public class GoRouterHelper {
      */
     public static void goSignInActivity(Context context) {
         buildSignInActivity().go(context);
+    }
+
+    /**
+     * 参数页面 Builder
+     * {@link com.wyjson.module_user.activity.ParamActivity}
+     */
+    public static class ParamActivityBuilder {
+        private final Card mCard;
+
+        public ParamActivityBuilder(String nickname,
+                com.wyjson.module_common.model.TestModel test) {
+            mCard = GoRouter.getInstance().build(getParamActivityPath())
+                    // 昵称
+                    .withString("nickname", nickname)
+                    // 自定义类型
+                    .withObject("test", test);
+        }
+
+        /**
+         * 我是一个父类字段
+         */
+        public ParamActivityBuilder setBase(int base) {
+            mCard.withInt("base", base);
+            return this;
+        }
+
+        public ParamActivityBuilder setAge(int age) {
+            mCard.withInt("age", age);
+            return this;
+        }
+
+        public Card build() {
+            return mCard;
+        }
+    }
+
+    /**
+     * 参数片段 Builder
+     * {@link com.wyjson.module_user.fragment.ParamFragment}
+     */
+    public static class ParamFragmentBuilder {
+        private final Card mCard;
+
+        public ParamFragmentBuilder() {
+            mCard = GoRouter.getInstance().build(getParamFragmentPath());
+        }
+
+        public ParamFragmentBuilder setAge(int age) {
+            mCard.withInt("age", age);
+            return this;
+        }
+
+        public ParamFragmentBuilder setName(String name) {
+            mCard.withString("name", name);
+            return this;
+        }
+
+        public Card build() {
+            return mCard;
+        }
+    }
+
+    /**
+     * 这是一个kotlin页面，本库支持kapt Builder
+     * {@link com.wyjson.module_kotlin.activity.KotlinActivity}
+     */
+    public static class KotlinActivityBuilder {
+        private final Card mCard;
+
+        public KotlinActivityBuilder(String nickname) {
+            mCard = GoRouter.getInstance().build(getKotlinActivityPath())
+                    // 昵称
+                    .withString("nickname", nickname);
+        }
+
+        public KotlinActivityBuilder setAge(int age) {
+            mCard.withInt("age", age);
+            return this;
+        }
+
+        public Card build() {
+            return mCard;
+        }
     }
 }

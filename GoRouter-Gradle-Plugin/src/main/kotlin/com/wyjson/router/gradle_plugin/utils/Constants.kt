@@ -71,4 +71,7 @@ object Constants {
     const val I_DEGRADE_SERVICE = "${PACKAGE_NAME}.interfaces.IDegradeService"
     const val I_PRETREATMENT_SERVICE = "${PACKAGE_NAME}.interfaces.IPretreatmentService"
     const val I_JSON_SERVICE = "${PACKAGE_NAME}.interfaces.IJsonService"
+    const val FIELD_CARD = "mCard"
+
+
 }

@@ -50,6 +50,10 @@ public class MainActivity extends FragmentActivity {
         TestModel testModel = new TestModel(123, "Jack");
 
         GoRouterHelper.goParamActivity(this, "Wyjson", testModel, base, 78);
+        // or
+//        GoRouterHelper.goParamActivity(this, "Wyjson", testModel);
+        // or
+//        GoRouterHelper.getParamActivity("Wyjson", testModel).setAge(78).setBase(base).build().go(this);
     }
 
     public void onClickCardFragment(View view) {
