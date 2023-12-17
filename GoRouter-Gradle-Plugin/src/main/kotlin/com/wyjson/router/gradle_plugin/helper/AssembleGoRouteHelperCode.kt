@@ -19,10 +19,14 @@ import com.wyjson.router.gradle_plugin.utils.Constants.I_PRETREATMENT_SERVICE
 import com.wyjson.router.gradle_plugin.utils.Constants.NULLABLE
 import com.wyjson.router.gradle_plugin.utils.Constants.PACKAGE_NAME
 import com.wyjson.router.gradle_plugin.utils.Constants.WARNING_TIPS
+import com.wyjson.router.gradle_plugin.utils.Logger
 import org.gradle.configurationcache.extensions.capitalized
 import javax.lang.model.element.Modifier
+import kotlin.RuntimeException
 
 class AssembleGoRouteHelperCode(private val routeHelperModel: RouteHelperModel) {
+
+    private val TAG = "RHCode"
 
     fun toJavaCode(className: String): String {
         val methods = LinkedHashSet<MethodSpec>()
@@ -78,18 +82,23 @@ class AssembleGoRouteHelperCode(private val routeHelperModel: RouteHelperModel) 
     private fun addRoute(methods: LinkedHashSet<MethodSpec>, typeSpecs: LinkedHashSet<TypeSpec>) {
         for (route in routeHelperModel.routes) {
             for (routeModel in route.value) {
-                val routeClassName = ClassName.bestGuess(routeModel.pathClass)
+                val methodName = try {
+                    extractMethodName(routeModel.path)
+                } catch (e: Exception) {
+                    Logger.e(TAG, e.message!!)
+                    return
+                }
 
-                val getPathMethod = MethodSpec.methodBuilder("get${routeClassName.simpleName()}Path")
+                val getPathMethod = MethodSpec.methodBuilder("get${methodName}Path")
                     .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                     .returns(String::class.java)
                     .addStatement("return \$S", routeModel.path)
 
-                val buildMethod = MethodSpec.methodBuilder("build${routeClassName.simpleName()}")
+                val buildMethod = MethodSpec.methodBuilder("build$methodName")
                     .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                     .returns(ClassName.bestGuess(CARD))
 
-                val goMethod = MethodSpec.methodBuilder("go${routeClassName.simpleName()}")
+                val goMethod = MethodSpec.methodBuilder("go$methodName")
                     .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                     .addParameter(ClassName.bestGuess(CONTEXT), "context")
                 if (routeModel.remark?.isNotEmpty() == true) {
@@ -120,11 +129,11 @@ class AssembleGoRouteHelperCode(private val routeHelperModel: RouteHelperModel) 
                     toCodeEnd(getPathMethod, buildMethod, goMethod, routeModel, paramCode, goParamCode, methods)
 
                     if (requiredCount != routeModel.paramsType.size) {
-                        val getMethod = MethodSpec.methodBuilder("get${routeClassName.simpleName()}")
+                        val getMethod = MethodSpec.methodBuilder("get$methodName")
                             .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                         val goParamCodeString = handleGoParamCodeString(goParamCode)
                         val allParamMethodParamCode = CodeBlock.builder()
-                        handleBuilderInnerClass(routeClassName, routeModel,  getPathMethod, getMethod, buildMethod, paramCode, goParamCodeString, typeSpecs, methods)
+                        handleBuilderInnerClass(methodName, routeModel,  getPathMethod, getMethod, buildMethod, paramCode, goParamCodeString, typeSpecs, methods)
 
                         for (param in routeModel.paramsType) {
                             if (param.required)
@@ -140,8 +149,40 @@ class AssembleGoRouteHelperCode(private val routeHelperModel: RouteHelperModel) 
         }
     }
 
+    private fun extractMethodName(path: String): String {
+        var methodName = ""
+        val replace = path.replace(".", "")
+            .replace("~", "")
+            .replace("!", "")
+            .replace("@", "")
+            .replace("#", "")
+            .replace("$", "")
+            .replace("%", "")
+            .replace("^", "")
+            .replace("&", "")
+            .replace("*", "")
+            .replace("(", "")
+            .replace(")", "")
+            .replace("-", "")
+            .replace("+", "")
+            .replace("=", "")
+        for (item in replace.split("/")) {
+            if (item.contains("_")){
+                for (_item in item.split("_")) {
+                    methodName += _item.capitalized()
+                }
+            } else {
+                methodName += item.capitalized()
+            }
+        }
+        if (methodName.isEmpty()) {
+            throw RuntimeException("Failed to extract method name,path[${path}]")
+        }
+        return methodName
+    }
+
     private fun handleBuilderInnerClass(
-        routeClassName: ClassName,
+        methodName: String,
         routeModel: RouteModel,
         getPathMethod: MethodSpec.Builder,
         getMethod: MethodSpec.Builder,
@@ -152,7 +193,7 @@ class AssembleGoRouteHelperCode(private val routeHelperModel: RouteHelperModel) 
         methods: LinkedHashSet<MethodSpec>
     ) {
         val builderInnerClassMethods = LinkedHashSet<MethodSpec>()
-        val builderInnerClass = TypeSpec.classBuilder("${routeClassName.simpleName()}Builder")
+        val builderInnerClass = TypeSpec.classBuilder("${methodName}Builder")
             .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
         if (routeModel.remark?.isNotEmpty() == true) {
             builderInnerClass.addJavadoc("\$N Builder", routeModel.remark)

@@ -52,7 +52,7 @@ public class GoRouterHelper {
      * path 参数页面
      * {@link com.wyjson.module_user.activity.ParamActivity}
      */
-    public static String getParamActivityPath() {
+    public static String getNewParamActivityPath() {
         return "/new/param/activity";
     }
 
@@ -60,9 +60,9 @@ public class GoRouterHelper {
      * build 参数页面
      * {@link com.wyjson.module_user.activity.ParamActivity}
      */
-    public static Card buildParamActivity(String nickname,
+    public static Card buildNewParamActivity(String nickname,
             com.wyjson.module_common.model.TestModel test) {
-        return GoRouter.getInstance().build(getParamActivityPath())
+        return GoRouter.getInstance().build(getNewParamActivityPath())
                 // 昵称
                 .withString("nickname", nickname)
                 // 自定义类型
@@ -73,43 +73,43 @@ public class GoRouterHelper {
      * go 参数页面
      * {@link com.wyjson.module_user.activity.ParamActivity}
      */
-    public static void goParamActivity(Context context, String nickname,
+    public static void goNewParamActivity(Context context, String nickname,
             com.wyjson.module_common.model.TestModel test) {
-        buildParamActivity(nickname, test).go(context);
+        buildNewParamActivity(nickname, test).go(context);
     }
 
     /**
      * get 参数页面
      * {@link com.wyjson.module_user.activity.ParamActivity}
      */
-    public static ParamActivityBuilder getParamActivity(String nickname,
+    public static NewParamActivityBuilder getNewParamActivity(String nickname,
             com.wyjson.module_common.model.TestModel test) {
-        return new ParamActivityBuilder(nickname, test);
+        return new NewParamActivityBuilder(nickname, test);
     }
 
     /**
      * build 参数页面
      * {@link com.wyjson.module_user.activity.ParamActivity}
      */
-    public static Card buildParamActivity(String nickname,
+    public static Card buildNewParamActivity(String nickname,
             com.wyjson.module_common.model.TestModel test, int base, int age) {
-        return getParamActivity(nickname, test).setBase(base).setAge(age).build();
+        return getNewParamActivity(nickname, test).setBase(base).setAge(age).build();
     }
 
     /**
      * go 参数页面
      * {@link com.wyjson.module_user.activity.ParamActivity}
      */
-    public static void goParamActivity(Context context, String nickname,
+    public static void goNewParamActivity(Context context, String nickname,
             com.wyjson.module_common.model.TestModel test, int base, int age) {
-        buildParamActivity(nickname, test, base, age).go(context);
+        buildNewParamActivity(nickname, test, base, age).go(context);
     }
 
     /**
      * path 参数片段
      * {@link com.wyjson.module_user.fragment.ParamFragment}
      */
-    public static String getParamFragmentPath() {
+    public static String getNewParamFragmentPath() {
         return "/new/param/fragment";
     }
 
@@ -117,40 +117,40 @@ public class GoRouterHelper {
      * build 参数片段
      * {@link com.wyjson.module_user.fragment.ParamFragment}
      */
-    public static Card buildParamFragment() {
-        return GoRouter.getInstance().build(getParamFragmentPath());
+    public static Card buildNewParamFragment() {
+        return GoRouter.getInstance().build(getNewParamFragmentPath());
     }
 
     /**
      * go 参数片段
      * {@link com.wyjson.module_user.fragment.ParamFragment}
      */
-    public static Fragment goParamFragment(Context context) {
-        return (Fragment) buildParamFragment().go(context);
+    public static Fragment goNewParamFragment(Context context) {
+        return (Fragment) buildNewParamFragment().go(context);
     }
 
     /**
      * get 参数片段
      * {@link com.wyjson.module_user.fragment.ParamFragment}
      */
-    public static ParamFragmentBuilder getParamFragment() {
-        return new ParamFragmentBuilder();
+    public static NewParamFragmentBuilder getNewParamFragment() {
+        return new NewParamFragmentBuilder();
     }
 
     /**
      * build 参数片段
      * {@link com.wyjson.module_user.fragment.ParamFragment}
      */
-    public static Card buildParamFragment(int age, String name) {
-        return getParamFragment().setAge(age).setName(name).build();
+    public static Card buildNewParamFragment(int age, String name) {
+        return getNewParamFragment().setAge(age).setName(name).build();
     }
 
     /**
      * go 参数片段
      * {@link com.wyjson.module_user.fragment.ParamFragment}
      */
-    public static Fragment goParamFragment(Context context, int age, String name) {
-        return (Fragment) buildParamFragment(age, name).go(context);
+    public static Fragment goNewParamFragment(Context context, int age, String name) {
+        return (Fragment) buildNewParamFragment(age, name).go(context);
     }
 
     /**
@@ -231,7 +231,7 @@ public class GoRouterHelper {
      * path 事件页面
      * {@link com.wyjson.module_main.activity.EventActivity}
      */
-    public static String getEventActivityPath() {
+    public static String getMainEventActivityPath() {
         return "/main/event/activity";
     }
 
@@ -239,23 +239,23 @@ public class GoRouterHelper {
      * build 事件页面
      * {@link com.wyjson.module_main.activity.EventActivity}
      */
-    public static Card buildEventActivity() {
-        return GoRouter.getInstance().build(getEventActivityPath());
+    public static Card buildMainEventActivity() {
+        return GoRouter.getInstance().build(getMainEventActivityPath());
     }
 
     /**
      * go 事件页面
      * {@link com.wyjson.module_main.activity.EventActivity}
      */
-    public static void goEventActivity(Context context) {
-        buildEventActivity().go(context);
+    public static void goMainEventActivity(Context context) {
+        buildMainEventActivity().go(context);
     }
 
     /**
      * path 事件片段
      * {@link com.wyjson.module_main.fragment.EventFragment}
      */
-    public static String getEventFragmentPath() {
+    public static String getMainEventFragmentPath() {
         return "/main/event/fragment";
     }
 
@@ -263,23 +263,23 @@ public class GoRouterHelper {
      * build 事件片段
      * {@link com.wyjson.module_main.fragment.EventFragment}
      */
-    public static Card buildEventFragment() {
-        return GoRouter.getInstance().build(getEventFragmentPath());
+    public static Card buildMainEventFragment() {
+        return GoRouter.getInstance().build(getMainEventFragmentPath());
     }
 
     /**
      * go 事件片段
      * {@link com.wyjson.module_main.fragment.EventFragment}
      */
-    public static Fragment goEventFragment(Context context) {
-        return (Fragment) buildEventFragment().go(context);
+    public static Fragment goMainEventFragment(Context context) {
+        return (Fragment) buildMainEventFragment().go(context);
     }
 
     /**
      * path 欢迎页
      * {@link com.wyjson.module_main.activity.SplashActivity}
      */
-    public static String getSplashActivityPath() {
+    public static String getMainSplashActivityPath() {
         return "/main/splash/activity";
     }
 
@@ -287,23 +287,23 @@ public class GoRouterHelper {
      * build 欢迎页
      * {@link com.wyjson.module_main.activity.SplashActivity}
      */
-    public static Card buildSplashActivity() {
-        return GoRouter.getInstance().build(getSplashActivityPath());
+    public static Card buildMainSplashActivity() {
+        return GoRouter.getInstance().build(getMainSplashActivityPath());
     }
 
     /**
      * go 欢迎页
      * {@link com.wyjson.module_main.activity.SplashActivity}
      */
-    public static void goSplashActivity(Context context) {
-        buildSplashActivity().go(context);
+    public static void goMainSplashActivity(Context context) {
+        buildMainSplashActivity().go(context);
     }
 
     /**
      * path 卡片片段
      * {@link com.wyjson.module_user.fragment.CardFragment}
      */
-    public static String getCardFragmentPath() {
+    public static String getUserCardFragmentPath() {
         return "/user/card/fragment";
     }
 
@@ -311,16 +311,16 @@ public class GoRouterHelper {
      * build 卡片片段
      * {@link com.wyjson.module_user.fragment.CardFragment}
      */
-    public static Card buildCardFragment() {
-        return GoRouter.getInstance().build(getCardFragmentPath());
+    public static Card buildUserCardFragment() {
+        return GoRouter.getInstance().build(getUserCardFragmentPath());
     }
 
     /**
      * go 卡片片段
      * {@link com.wyjson.module_user.fragment.CardFragment}
      */
-    public static Fragment goCardFragment(Context context) {
-        return (Fragment) buildCardFragment().go(context);
+    public static Fragment goUserCardFragment(Context context) {
+        return (Fragment) buildUserCardFragment().go(context);
     }
 
     /**
@@ -351,7 +351,7 @@ public class GoRouterHelper {
      * path 登录页面
      * {@link com.wyjson.module_user.activity.SignInActivity}
      */
-    public static String getSignInActivityPath() {
+    public static String getUserSignInActivityPath() {
         return "/user/sign_in/activity";
     }
 
@@ -359,28 +359,28 @@ public class GoRouterHelper {
      * build 登录页面
      * {@link com.wyjson.module_user.activity.SignInActivity}
      */
-    public static Card buildSignInActivity() {
-        return GoRouter.getInstance().build(getSignInActivityPath());
+    public static Card buildUserSignInActivity() {
+        return GoRouter.getInstance().build(getUserSignInActivityPath());
     }
 
     /**
      * go 登录页面
      * {@link com.wyjson.module_user.activity.SignInActivity}
      */
-    public static void goSignInActivity(Context context) {
-        buildSignInActivity().go(context);
+    public static void goUserSignInActivity(Context context) {
+        buildUserSignInActivity().go(context);
     }
 
     /**
      * 参数页面 Builder
      * {@link com.wyjson.module_user.activity.ParamActivity}
      */
-    public static class ParamActivityBuilder {
+    public static class NewParamActivityBuilder {
         private final Card mCard;
 
-        public ParamActivityBuilder(String nickname,
+        public NewParamActivityBuilder(String nickname,
                 com.wyjson.module_common.model.TestModel test) {
-            mCard = GoRouter.getInstance().build(getParamActivityPath())
+            mCard = GoRouter.getInstance().build(getNewParamActivityPath())
                     // 昵称
                     .withString("nickname", nickname)
                     // 自定义类型
@@ -390,12 +390,12 @@ public class GoRouterHelper {
         /**
          * 我是一个父类字段
          */
-        public ParamActivityBuilder setBase(int base) {
+        public NewParamActivityBuilder setBase(int base) {
             mCard.withInt("base", base);
             return this;
         }
 
-        public ParamActivityBuilder setAge(int age) {
+        public NewParamActivityBuilder setAge(int age) {
             mCard.withInt("age", age);
             return this;
         }
@@ -409,19 +409,19 @@ public class GoRouterHelper {
      * 参数片段 Builder
      * {@link com.wyjson.module_user.fragment.ParamFragment}
      */
-    public static class ParamFragmentBuilder {
+    public static class NewParamFragmentBuilder {
         private final Card mCard;
 
-        public ParamFragmentBuilder() {
-            mCard = GoRouter.getInstance().build(getParamFragmentPath());
+        public NewParamFragmentBuilder() {
+            mCard = GoRouter.getInstance().build(getNewParamFragmentPath());
         }
 
-        public ParamFragmentBuilder setAge(int age) {
+        public NewParamFragmentBuilder setAge(int age) {
             mCard.withInt("age", age);
             return this;
         }
 
-        public ParamFragmentBuilder setName(String name) {
+        public NewParamFragmentBuilder setName(String name) {
             mCard.withString("name", name);
             return this;
         }

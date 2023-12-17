@@ -37,7 +37,7 @@ public class MainActivity extends FragmentActivity {
     }
 
     public void onClickSignInActivity(View view) {
-        GoRouterHelper.goSignInActivity(this);
+        GoRouterHelper.goUserSignInActivity(this);
     }
 
     public void onClickParamActivity(View view) {
@@ -49,15 +49,15 @@ public class MainActivity extends FragmentActivity {
          */
         TestModel testModel = new TestModel(123, "Jack");
 
-        GoRouterHelper.goParamActivity(this, "Wyjson", testModel, base, 78);
+        GoRouterHelper.goNewParamActivity(this, "Wyjson", testModel, base, 78);
         // or
-//        GoRouterHelper.goParamActivity(this, "Wyjson", testModel);
+//        GoRouterHelper.goNewParamActivity(this, "Wyjson", testModel);
         // or
-//        GoRouterHelper.getParamActivity("Wyjson", testModel).setAge(78).setBase(base).build().go(this);
+//        GoRouterHelper.getNewParamActivity("Wyjson", testModel).setAge(78).setBase(base).build().go(this);
     }
 
     public void onClickCardFragment(View view) {
-        Fragment cardFragment = GoRouterHelper.goCardFragment(this);
+        Fragment cardFragment = GoRouterHelper.goUserCardFragment(this);
         if (cardFragment != null) {
             getSupportFragmentManager()
                     .beginTransaction()
@@ -67,7 +67,7 @@ public class MainActivity extends FragmentActivity {
     }
 
     public void onClickParamFragment(View view) {
-        Fragment cardFragment = GoRouterHelper.goParamFragment(this, 78, "Wyjson");
+        Fragment cardFragment = GoRouterHelper.goNewParamFragment(this, 78, "Wyjson");
         if (cardFragment != null) {
             getSupportFragmentManager()
                     .beginTransaction()
@@ -124,7 +124,7 @@ public class MainActivity extends FragmentActivity {
     }
 
     public void onClickEventActivity(View view) {
-        GoRouterHelper.goEventActivity(this);
+        GoRouterHelper.goMainEventActivity(this);
     }
 
     public void onClickKotlinActivity(View view) {
