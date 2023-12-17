@@ -5,6 +5,7 @@ object Constants {
     const val ASSEMBLE_ROUTE_MODULE = "assembleRouteModule"
     const val ASSEMBLE_APPLICATION_MODULE = "assembleApplicationModule"
     const val GENERATE_GOROUTER_HELPER = "generateGoRouterHelper"
+    const val GENERATE_GOROUTER_HELPER_TODO = "generateGoRouterHelperTODO"
 
     private const val SEPARATOR = "$$"
     const val PACKAGE_NAME = "com.wyjson.router"
@@ -72,6 +73,11 @@ object Constants {
     const val I_PRETREATMENT_SERVICE = "${PACKAGE_NAME}.interfaces.IPretreatmentService"
     const val I_JSON_SERVICE = "${PACKAGE_NAME}.interfaces.IJsonService"
     const val FIELD_CARD = "mCard"
-
-
+    const val HELPER_TAG = "com.wyjson.gorouter.helper.tag"
+    const val NO_FOUND_HELPER_TAG_PLUGIN_TIPS = """
+        Not helper tag plugin found in the root project, please in the root project:
+        plugins {
+            id '${HELPER_TAG}'
+        }
+    """
 }

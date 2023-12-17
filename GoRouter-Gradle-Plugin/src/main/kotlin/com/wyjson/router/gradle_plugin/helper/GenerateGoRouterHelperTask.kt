@@ -5,6 +5,8 @@ import com.google.gson.Gson
 import com.wyjson.router.gradle_plugin.helper.model.RouteHelperModel
 import com.wyjson.router.gradle_plugin.utils.Constants
 import com.wyjson.router.gradle_plugin.utils.Constants.GOROUTER_HELPER_CLASS_NAME
+import com.wyjson.router.gradle_plugin.utils.Constants.HELPER_TAG
+import com.wyjson.router.gradle_plugin.utils.Constants.NO_FOUND_HELPER_TAG_PLUGIN_TIPS
 import com.wyjson.router.gradle_plugin.utils.Logger
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
@@ -17,13 +19,11 @@ import java.io.File
 abstract class GenerateGoRouterHelperTask : DefaultTask() {
 
     init {
-        group = Constants.PROJECT_OTHER
+        group = Constants.PROJECT
     }
 
     @get:Input
     abstract var variant: Variant
-    @get:Input
-    abstract var rootModuleName: String
 
     private val TAG = "RH"
 
@@ -31,6 +31,7 @@ abstract class GenerateGoRouterHelperTask : DefaultTask() {
     private var routeHelperModel: RouteHelperModel? = null
 
     private val catalog: String = "main" // main or variantName or buildType
+    private var rootProject: Project? = null
 
     @TaskAction
     fun taskAction() {
@@ -41,25 +42,25 @@ abstract class GenerateGoRouterHelperTask : DefaultTask() {
         setDependModeList(variantName, buildType, flavorName)
 
         if (!scanRouteModule(variantName, buildType)) return
-        val className = GOROUTER_HELPER_CLASS_NAME
-        val rootProject = try {
-            project.project(":${rootModuleName}")
-        } catch (e: Exception) {
-            Logger.e(TAG, "Please check if the project name[${rootModuleName}] specified by the attribute 'helperToRootModuleName' is correct and exists")
+        if (rootProject == null){
+            Logger.e(TAG, NO_FOUND_HELPER_TAG_PLUGIN_TIPS.trimIndent())
             return
         }
-        val path = "/src/${catalog}/java/com/wyjson/router/${className}.java"
-        val outputFile = File(
-            rootProject.projectDir,
-            path
-        )
+
+        val className = GOROUTER_HELPER_CLASS_NAME
+        val dir = rootProject!!.buildDir
+        val path = "/generated/source/gorouter/${catalog}/com/wyjson/router/${className}.java"
+        val outputFile = File(dir, path)
         outputFile.parentFile.mkdirs()
         outputFile.writeText(AssembleGoRouteHelperCode(routeHelperModel!!).toJavaCode(className), Charsets.UTF_8)
-        Logger.i(TAG, "Generate GoRouterHelper task end. ${rootProject.projectDir}${path}")
+        Logger.i(TAG, "Generate GoRouterHelper task end. ${dir}${path}")
     }
 
     private fun scanRouteModule(variantName: String, buildType: String?): Boolean {
         project.dependProject().plus(project).forEach { curProject ->
+            if (curProject.isHelperTag()) {
+                rootProject = curProject
+            }
             var file = searchJSONFile(curProject, variantName)
             if (file == null && buildType != null) {
                  file = searchJSONFile(curProject, buildType)
@@ -88,6 +89,7 @@ abstract class GenerateGoRouterHelperTask : DefaultTask() {
         } else {
             val file = collection.first()
             Logger.i(TAG, "project[${curProject.name}] found the file[${file.name}].")
+//            catalog = name
             return file
         }
     }
@@ -148,6 +150,7 @@ abstract class GenerateGoRouterHelperTask : DefaultTask() {
     }
 
     private fun Project.isAndroid() = plugins.hasPlugin("com.android.application") || plugins.hasPlugin("com.android.library")
+    private fun Project.isHelperTag() = plugins.hasPlugin(HELPER_TAG)
 
 
 }
