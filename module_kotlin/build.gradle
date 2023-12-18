@@ -21,10 +21,6 @@ android {
 
     viewBinding.enable = true
 
-    buildFeatures {
-        buildConfig = false
-    }
-
     buildTypes {
         debug {
         }

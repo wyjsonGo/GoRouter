@@ -1,4 +1,4 @@
-package com.wyjson.router.gradle_plugin.helper.model
+package com.wyjson.router.gradle_plugin.model
 
 data class ParamModel(
     val name: String,

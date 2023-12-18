@@ -22,8 +22,8 @@
       "prototype": "com.wyjson.module_common.route.service.user.PayService",
       "className": "com.wyjson.module_user.route.service.AliPayServiceImpl"
     },
-    "UserService$KotlinUserService": {
-      "alias": "KotlinUserService",
+    "UserService$Kotlin": {
+      "alias": "Kotlin",
       "remark": "Kotlin模块用户服务",
       "prototype": "com.wyjson.module_common.route.service.user.UserService",
       "className": "com.wyjson.module_kotlin.route.service.KotlinUserServiceImpl"

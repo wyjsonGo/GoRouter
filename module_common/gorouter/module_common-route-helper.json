@@ -1,0 +1,21 @@
+{
+  "readme": "Do not delete this file, which is important to the GoRouter helper function!!!",
+  "services": {
+    "IDegradeService": {
+      "remark": "全局降级策略",
+      "prototype": "com.wyjson.router.interfaces.IDegradeService",
+      "className": "com.wyjson.module_common.route.service.DegradeServiceImpl"
+    },
+    "IPretreatmentService": {
+      "remark": "预处理服务",
+      "prototype": "com.wyjson.router.interfaces.IPretreatmentService",
+      "className": "com.wyjson.module_common.route.service.PretreatmentServiceImpl"
+    },
+    "IJsonService": {
+      "remark": "json服务",
+      "prototype": "com.wyjson.router.interfaces.IJsonService",
+      "className": "com.wyjson.module_common.route.service.JsonServiceImpl"
+    }
+  },
+  "routes": {}
+}

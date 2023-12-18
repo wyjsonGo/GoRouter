@@ -1,4 +1,4 @@
-package com.wyjson.router.gradle_plugin.helper.core
+package com.wyjson.router.gradle_plugin.helper.tag
 
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.CodeBlock
@@ -11,7 +11,6 @@ import com.wyjson.router.gradle_plugin.model.RouteHelperModel
 import com.wyjson.router.gradle_plugin.model.RouteModel
 import com.wyjson.router.gradle_plugin.utils.Constants.CARD
 import com.wyjson.router.gradle_plugin.utils.Constants.CONTEXT
-import com.wyjson.router.gradle_plugin.utils.Constants.FIELD_CARD
 import com.wyjson.router.gradle_plugin.utils.Constants.FRAGMENT
 import com.wyjson.router.gradle_plugin.utils.Constants.I_DEGRADE_SERVICE
 import com.wyjson.router.gradle_plugin.utils.Constants.I_JSON_SERVICE
@@ -22,11 +21,10 @@ import com.wyjson.router.gradle_plugin.utils.Constants.WARNING_TIPS
 import com.wyjson.router.gradle_plugin.utils.Logger
 import org.gradle.configurationcache.extensions.capitalized
 import javax.lang.model.element.Modifier
-import kotlin.RuntimeException
 
-class AssembleGoRouteHelperCode(private val model: RouteHelperModel) {
+class AssembleGoRouteHelperTagCode(private val model: RouteHelperModel) {
 
-    private val TAG = "RHCode"
+    private val TAG = "RH(Tag)Code"
 
     fun toJavaCode(className: String): String {
         val methods = LinkedHashSet<MethodSpec>()
@@ -60,27 +58,8 @@ class AssembleGoRouteHelperCode(private val model: RouteHelperModel) {
             val itemMethod = MethodSpec.methodBuilder("get$key")
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .addAnnotation(ClassName.bestGuess(NULLABLE))
-                .returns(TypeVariableName.get(serviceClassName.simpleName()))
-
-            if (service.value.remark?.isNotEmpty() == true) {
-                itemMethod.addJavadoc(service.value.remark)
-                itemMethod.addJavadoc("\n{@link \$N}", service.value.className)
-            } else {
-                itemMethod.addJavadoc("{@link \$N}", service.value.className)
-            }
-
-            if (service.value.alias?.isNotEmpty() == true) {
-                itemMethod.addStatement(
-                    "return GoRouter.getInstance().getService(\$T.class, \$S)",
-                    serviceClassName,
-                    service.value.alias
-                )
-            } else {
-                itemMethod.addStatement(
-                    "return GoRouter.getInstance().getService(\$T.class)",
-                    serviceClassName
-                )
-            }
+                .returns(serviceClassName)
+                .addStatement("return null")
             methods.add(itemMethod.build())
         }
     }
@@ -98,7 +77,7 @@ class AssembleGoRouteHelperCode(private val model: RouteHelperModel) {
                 val getPathMethod = MethodSpec.methodBuilder("get${methodName}Path")
                     .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                     .returns(String::class.java)
-                    .addStatement("return \$S", routeModel.path)
+                    .addStatement("return null")
 
                 val buildMethod = MethodSpec.methodBuilder("build$methodName")
                     .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
@@ -107,21 +86,6 @@ class AssembleGoRouteHelperCode(private val model: RouteHelperModel) {
                 val goMethod = MethodSpec.methodBuilder("go$methodName")
                     .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                     .addParameter(ClassName.bestGuess(CONTEXT), "context")
-
-                if (routeModel.remark?.isNotEmpty() == true) {
-                    getPathMethod.addJavadoc("path \$N", routeModel.remark)
-                    getPathMethod.addJavadoc("\n{@link \$N}", routeModel.pathClass)
-
-                    buildMethod.addJavadoc("build \$N", routeModel.remark)
-                    buildMethod.addJavadoc("\n{@link \$N}", routeModel.pathClass)
-
-                    goMethod.addJavadoc("go \$N", routeModel.remark)
-                    goMethod.addJavadoc("\n{@link \$N}", routeModel.pathClass)
-                } else {
-                    getPathMethod.addJavadoc("{@link \$N}", routeModel.pathClass)
-                    buildMethod.addJavadoc("{@link \$N}", routeModel.pathClass)
-                    goMethod.addJavadoc("{@link \$N}", routeModel.pathClass)
-                }
 
                 methods.add(getPathMethod.build())
                 if (routeModel.paramsType != null) {
@@ -203,40 +167,23 @@ class AssembleGoRouteHelperCode(private val model: RouteHelperModel) {
         val builderInnerClassMethods = LinkedHashSet<MethodSpec>()
         val builderInnerClass = TypeSpec.classBuilder("${methodName}Builder")
             .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-        if (routeModel.remark?.isNotEmpty() == true) {
-            builderInnerClass.addJavadoc("\$N Builder", routeModel.remark)
-            builderInnerClass.addJavadoc("\n{@link \$N}", routeModel.pathClass)
-        } else {
-            builderInnerClass.addJavadoc("{@link \$N}", routeModel.pathClass)
-        }
 
-        builderInnerClass.addField(ClassName.bestGuess(CARD), FIELD_CARD, Modifier.PRIVATE, Modifier.FINAL)
         builderInnerClass.addMethod(
             MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)
                 .addParameters(buildMethod.parameters)
-                .addStatement(
-                    "\$N = GoRouter.getInstance().build(\$N())\$L",
-                    FIELD_CARD,
-                    getPathMethod.build().name,
-                    paramCode.build()
-                )
                 .build()
         )
 
         for (param in routeModel.paramsType!!) {
             if (param.required)
                 continue
-            val type = param.type.replace("java.lang.", "")
+            val type = "Object"
             val name = param.name
             val itemSetMethod = MethodSpec.methodBuilder("set${param.name.capitalized()}")
                 .addModifiers(Modifier.PUBLIC)
                 .returns(TypeVariableName.get(builderInnerClass.build().name))
                 .addParameter(TypeVariableName.get(type), name)
-            if (param.remark?.isNotEmpty() == true) {
-                itemSetMethod.addJavadoc(param.remark)
-            }
-            itemSetMethod.addStatement("\$N.with\$L(\$S, \$N)", FIELD_CARD, param.intentType, name, name)
             itemSetMethod.addStatement("return this")
             builderInnerClassMethods.add(itemSetMethod.build())
         }
@@ -244,21 +191,15 @@ class AssembleGoRouteHelperCode(private val model: RouteHelperModel) {
         val buildCardMethod = MethodSpec.methodBuilder("build")
             .addModifiers(Modifier.PUBLIC)
             .returns(ClassName.bestGuess(CARD))
-            .addStatement("return \$N", FIELD_CARD)
+            .addStatement("return null")
         builderInnerClassMethods.add(buildCardMethod.build())
 
         builderInnerClass.addMethods(builderInnerClassMethods)
         typeSpecs.add(builderInnerClass.build())
 
         getMethod.returns(TypeVariableName.get(builderInnerClass.build().name))
-        if (routeModel.remark?.isNotEmpty() == true) {
-            getMethod.addJavadoc("get \$N", routeModel.remark)
-            getMethod.addJavadoc("\n{@link \$N}", routeModel.pathClass)
-        } else {
-            getMethod.addJavadoc("{@link \$N}", routeModel.pathClass)
-        }
         getMethod.addParameters(buildMethod.parameters)
-        getMethod.addStatement("return new \$L(\$L)", builderInnerClass.build().name, goParamCodeString)
+        getMethod.addStatement("return null")
         methods.add(getMethod.build())
     }
 
@@ -271,35 +212,23 @@ class AssembleGoRouteHelperCode(private val model: RouteHelperModel) {
     }
 
     private fun handleParam(param: ParamModel, buildMethod: MethodSpec.Builder, goMethod: MethodSpec.Builder, paramCode: CodeBlock.Builder, goParamCode: CodeBlock.Builder, allParamMethodParamCode: CodeBlock.Builder) {
-        val type = param.type.replace("java.lang.", "")
+        val type = "Object"
         val name = param.name
-        if (param.remark?.isNotEmpty() == true) {
-            paramCode.add("\n// \$N", param.remark)
-        }
-        paramCode.add("\n.with\$L(\$S, \$N)", param.intentType, name, name)
         buildMethod.addParameter(TypeVariableName.get(type), name)
 
         goParamCode.add("\$N, ", name)
-        allParamMethodParamCode.add(".set\$N(\$N)", name.capitalized(), name)
         goMethod.addParameter(TypeVariableName.get(type), name)
     }
 
     private fun toCodeEnd(getPathMethod: MethodSpec.Builder, buildMethod: MethodSpec.Builder, goMethod: MethodSpec.Builder, routeModel: RouteModel, paramCode: CodeBlock.Builder, goParamCode: CodeBlock.Builder, methods: LinkedHashSet<MethodSpec>) {
         val newBuildMethod = buildMethod.build().toBuilder()
-        newBuildMethod.addStatement(
-            "return GoRouter.getInstance().build(\$N())\$L",
-            getPathMethod.build().name,
-            paramCode.build()
-        )
+        newBuildMethod.addStatement("return null")
         methods.add(newBuildMethod.build())
 
         val newGoMethod = goMethod.build().toBuilder()
-        val goParamCodeString = handleGoParamCodeString(goParamCode)
-        if (routeModel.type == "Activity") {
-            newGoMethod.addStatement("\$N(\$L).go(context)", buildMethod.build().name, goParamCodeString)
-        } else {
+        if (routeModel.type != "Activity") {
             newGoMethod.returns(ClassName.bestGuess(FRAGMENT))
-            newGoMethod.addStatement("return (Fragment) \$N(\$L).go(context)", buildMethod.build().name, goParamCodeString)
+            newGoMethod.addStatement("return null")
         }
         methods.add(newGoMethod.build())
     }
@@ -315,22 +244,14 @@ class AssembleGoRouteHelperCode(private val model: RouteHelperModel) {
         methods: LinkedHashSet<MethodSpec>
     ) {
         val newBuildMethod = buildMethod.build().toBuilder()
-        newBuildMethod.addStatement(
-            "return \$N(\$L)\$L.build()",
-            getMethod.build().name,
-            oldGoParamCodeString,
-            allParamMethodParamCode.build()
-        )
+        newBuildMethod.addStatement("return null")
 
         methods.add(newBuildMethod.build())
 
         val newGoMethod = goMethod.build().toBuilder()
-        val goParamCodeString = handleGoParamCodeString(goParamCode)
-        if (routeModel.type == "Activity") {
-            newGoMethod.addStatement("\$N(\$L).go(context)", buildMethod.build().name, goParamCodeString)
-        } else {
+        if (routeModel.type != "Activity") {
             newGoMethod.returns(ClassName.bestGuess(FRAGMENT))
-            newGoMethod.addStatement("return (Fragment) \$N(\$L).go(context)", buildMethod.build().name, goParamCodeString)
+            newGoMethod.addStatement("return null")
         }
         methods.add(newGoMethod.build())
     }

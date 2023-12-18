@@ -2,9 +2,11 @@ package com.wyjson.router.gradle_plugin.helper.core
 
 import com.android.build.api.variant.Variant
 import com.google.gson.Gson
-import com.wyjson.router.gradle_plugin.helper.model.RouteHelperModel
+import com.google.gson.GsonBuilder
+import com.wyjson.router.gradle_plugin.model.RouteHelperModel
 import com.wyjson.router.gradle_plugin.utils.Constants
 import com.wyjson.router.gradle_plugin.utils.Constants.GOROUTER_HELPER_CLASS_NAME
+import com.wyjson.router.gradle_plugin.utils.Constants.HELPER_JSON_FILE_NAME
 import com.wyjson.router.gradle_plugin.utils.Constants.HELPER_TAG_PACKAGE_NAME
 import com.wyjson.router.gradle_plugin.utils.Constants.NO_FOUND_HELPER_TAG_PACKAGE_NAME_PLUGIN_TIPS
 import com.wyjson.router.gradle_plugin.utils.Logger
@@ -29,19 +31,24 @@ abstract class GenerateGoRouterHelperTask : DefaultTask() {
 
     private var dependModeList: ArrayList<String> = ArrayList()
     private var routeHelperModel: RouteHelperModel? = null
+    private var routeHelperTagModelMap: HashMap<Project, RouteHelperModel> = HashMap()
 
     private val catalog: String = "main" // main or variantName or buildType
     private var rootProject: Project? = null
 
     @TaskAction
     fun taskAction() {
-        Logger.i(TAG, "Generate GoRouterHelper task start.")
+        Logger.i(TAG, "GoRouterHelper task start.")
         val variantName = variant.name
         val buildType = variant.buildType
         val flavorName = variant.flavorName
         setDependModeList(variantName, buildType, flavorName)
+        routeHelperTagModelMap.clear()
 
-        if (!scanRouteModule(variantName, buildType)) return
+        if (!scanRouteModule(variantName, buildType)) {
+            Logger.w(TAG, "GoRouterHelper task end.")
+            return
+        }
         if (rootProject == null){
             Logger.e(TAG, NO_FOUND_HELPER_TAG_PACKAGE_NAME_PLUGIN_TIPS.trimIndent())
             return
@@ -53,7 +60,20 @@ abstract class GenerateGoRouterHelperTask : DefaultTask() {
         val outputFile = File(dir, path)
         outputFile.parentFile.mkdirs()
         outputFile.writeText(AssembleGoRouteHelperCode(routeHelperModel!!).toJavaCode(className), Charsets.UTF_8)
-        Logger.i(TAG, "Generate GoRouterHelper task end. ${dir}${path}")
+        saveTagJSON()
+        Logger.i(TAG, "GoRouterHelper task end. ${dir}${path}")
+    }
+
+    private fun saveTagJSON() {
+        val dir = rootProject!!.projectDir
+        if (routeHelperTagModelMap.size > 0) {
+            routeHelperTagModelMap.forEach {
+                val path = "/gorouter/${it.key.name}-${HELPER_JSON_FILE_NAME}"
+                val outputFile = File(dir, path)
+                outputFile.parentFile.mkdirs()
+                outputFile.writeText(GsonBuilder().setPrettyPrinting().create().toJson(it.value), Charsets.UTF_8)
+            }
+        }
     }
 
     private fun scanRouteModule(variantName: String, buildType: String?): Boolean {
@@ -104,12 +124,19 @@ abstract class GenerateGoRouterHelperTask : DefaultTask() {
                     routeHelperModel!!.services.putAll(model.services)
                     routeHelperModel!!.routes.putAll(model.routes)
                 }
+
+                addTagModel(curProject, file)
             } catch (e: Exception) {
-                Logger.e(TAG, "module[${curProject.name}] route json parsing failed, do not modify the generated route json, use the '${Constants.GENERATE_ROUTE_DOC}' task to generate a new route json.")
+                Logger.e(TAG, "Module[${curProject.name}] route json parsing failed, do not modify the generated route json, use the '${Constants.GENERATE_ROUTE_DOC}' task to generate a new route json.")
             }
         } else {
-            Logger.e(TAG, "module[${curProject.name}] route json content is empty and a new route json is generated using the '${Constants.GENERATE_ROUTE_DOC}' task.")
+            Logger.e(TAG, "Module[${curProject.name}] route json content is empty and a new route json is generated using the '${Constants.GENERATE_ROUTE_DOC}' task.")
         }
+    }
+
+    private fun addTagModel(curProject: Project, file: File) {
+        val tagModel = Gson().fromJson(file.readText(), RouteHelperModel::class.java)
+        routeHelperTagModelMap.put(curProject, tagModel)
     }
 
     private fun setDependModeList(variantName: String, buildType: String?, flavorName: String?) {

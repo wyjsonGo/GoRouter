@@ -1,0 +1,36 @@
+{
+  "readme": "Do not delete this file, which is important to the GoRouter helper function!!!",
+  "services": {
+    "UserService$Kotlin": {
+      "alias": "Kotlin",
+      "remark": "Kotlin模块用户服务",
+      "prototype": "com.wyjson.module_common.route.service.user.UserService",
+      "className": "com.wyjson.module_kotlin.route.service.KotlinUserServiceImpl"
+    }
+  },
+  "routes": {
+    "kotlin": [
+      {
+        "path": "/kotlin/activity",
+        "remark": "这是一个kotlin页面，本库支持kapt",
+        "type": "Activity",
+        "pathClass": "com.wyjson.module_kotlin.activity.KotlinActivity",
+        "paramsType": [
+          {
+            "name": "age",
+            "type": "int",
+            "intentType": "Int",
+            "required": false
+          },
+          {
+            "name": "nickname",
+            "type": "java.lang.String",
+            "intentType": "String",
+            "required": true,
+            "remark": "昵称"
+          }
+        ]
+      }
+    ]
+  }
+}

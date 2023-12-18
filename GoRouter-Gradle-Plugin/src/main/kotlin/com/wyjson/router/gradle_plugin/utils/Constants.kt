@@ -13,6 +13,7 @@ object Constants {
     const val PROJECT = "GoRouter"
     const val PROJECT_OTHER = "${PROJECT}_other"
     const val DOCUMENT_FILE_NAME = "route-doc.json"
+    const val HELPER_JSON_FILE_NAME = "route-helper.json"
     const val _CLASS = ".class"
 
     // 路由注册生成类名后缀$$Route

@@ -1,4 +1,4 @@
-package com.wyjson.router.gradle_plugin.core.doc.model
+package com.wyjson.router.gradle_plugin.model
 
 data class InterceptorModel(
     val ordinal: Int,

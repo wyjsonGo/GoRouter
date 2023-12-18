@@ -3,7 +3,7 @@ package com.wyjson.router.gradle_plugin.core.doc
 import com.android.build.api.variant.Variant
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.wyjson.router.gradle_plugin.core.doc.model.DocumentModel
+import com.wyjson.router.gradle_plugin.model.DocumentModel
 import com.wyjson.router.gradle_plugin.utils.Constants
 import com.wyjson.router.gradle_plugin.utils.Constants.GENERATE_ROUTE_DOC
 import com.wyjson.router.gradle_plugin.utils.Logger
