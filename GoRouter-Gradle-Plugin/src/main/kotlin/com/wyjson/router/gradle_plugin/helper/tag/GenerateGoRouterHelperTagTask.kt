@@ -18,13 +18,13 @@ abstract class GenerateGoRouterHelperTagTask : DefaultTask() {
     @get:OutputDirectory
     abstract val outputFolder: DirectoryProperty
 
-    private val TAG = "RH(TODO)"
+    private val TAG = "RH(TAG)"
 
     private val catalog: String = "main"
 
     @TaskAction
     fun taskAction() {
-        Logger.i(TAG, "Generate GoRouterHelper(TODO) task start.")
+        Logger.i(TAG, "Generate GoRouterHelper(TAG) task start.")
         val className = GOROUTER_HELPER_CLASS_NAME
         val dir = project.buildDir
         val path = "/generated/source/gorouter/${catalog}/com/wyjson/router/${className}.java"
@@ -491,7 +491,7 @@ abstract class GenerateGoRouterHelperTagTask : DefaultTask() {
 
         """.trimIndent(), Charsets.UTF_8
         )
-        Logger.i(TAG, "Generate GoRouterHelper(TODO) task end. ${dir}${path}")
+        Logger.i(TAG, "Generate GoRouterHelper(TAG) task end. ${dir}${path}")
     }
 
 

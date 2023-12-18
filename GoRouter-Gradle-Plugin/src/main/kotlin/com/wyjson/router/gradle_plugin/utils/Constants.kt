@@ -5,7 +5,7 @@ object Constants {
     const val ASSEMBLE_ROUTE_MODULE = "assembleRouteModule"
     const val ASSEMBLE_APPLICATION_MODULE = "assembleApplicationModule"
     const val GENERATE_GOROUTER_HELPER = "generateGoRouterHelper"
-    const val GENERATE_GOROUTER_HELPER_TODO = "generateGoRouterHelperTODO"
+    const val GENERATE_GOROUTER_HELPER_TAG = "generateGoRouterHelperTag"
 
     private const val SEPARATOR = "$$"
     const val PACKAGE_NAME = "com.wyjson.router"
