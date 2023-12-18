@@ -1,4 +1,4 @@
-package com.wyjson.router.gradle_plugin.helper.core
+package com.wyjson.router.gradle_plugin.helper
 
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.CodeBlock
@@ -9,42 +9,38 @@ import com.squareup.javapoet.TypeVariableName
 import com.wyjson.router.gradle_plugin.model.ParamModel
 import com.wyjson.router.gradle_plugin.model.RouteHelperModel
 import com.wyjson.router.gradle_plugin.model.RouteModel
-import com.wyjson.router.gradle_plugin.utils.Constants.CARD
+import com.wyjson.router.gradle_plugin.utils.Constants.CARD_CLSS_NAME
 import com.wyjson.router.gradle_plugin.utils.Constants.CONTEXT
 import com.wyjson.router.gradle_plugin.utils.Constants.FIELD_CARD
 import com.wyjson.router.gradle_plugin.utils.Constants.FRAGMENT
+import com.wyjson.router.gradle_plugin.utils.Constants.GOROUTER_CLASS_NAME
+import com.wyjson.router.gradle_plugin.utils.Constants.GOROUTER_HELPER_PACKAGE_NAME
 import com.wyjson.router.gradle_plugin.utils.Constants.I_DEGRADE_SERVICE
 import com.wyjson.router.gradle_plugin.utils.Constants.I_JSON_SERVICE
 import com.wyjson.router.gradle_plugin.utils.Constants.I_PRETREATMENT_SERVICE
 import com.wyjson.router.gradle_plugin.utils.Constants.NULLABLE
-import com.wyjson.router.gradle_plugin.utils.Constants.PACKAGE_NAME
+import com.wyjson.router.gradle_plugin.utils.Constants.PROJECT
 import com.wyjson.router.gradle_plugin.utils.Constants.WARNING_TIPS
 import com.wyjson.router.gradle_plugin.utils.Logger
 import org.gradle.configurationcache.extensions.capitalized
+import java.io.File
 import javax.lang.model.element.Modifier
-import kotlin.RuntimeException
 
 class AssembleGoRouteHelperCode(private val model: RouteHelperModel) {
 
     private val TAG = "RHCode"
+    private val GoRouter = ClassName.bestGuess(GOROUTER_CLASS_NAME)
+    private val Card = ClassName.bestGuess(CARD_CLSS_NAME)
+    private val Context = ClassName.bestGuess(CONTEXT)
+    private val Fragment = ClassName.bestGuess(FRAGMENT)
+    private val Nullable = ClassName.bestGuess(NULLABLE)
 
-    fun toJavaCode(className: String): String {
-        val methods = LinkedHashSet<MethodSpec>()
-        val typeSpecs = LinkedHashSet<TypeSpec>()
-        addService(methods)
-        addRoute(methods, typeSpecs)
-        return JavaFile.builder(
-            PACKAGE_NAME,
-            TypeSpec.classBuilder(className)
-                .addModifiers(Modifier.PUBLIC)
-                .addJavadoc(WARNING_TIPS)
-                .addMethods(methods)
-                .addTypes(typeSpecs)
-                .build()
-        ).indent("    ").build().toString()
+    fun generateJavaFile(packageFile: File) {
+        addService(packageFile)
+        addRoute(packageFile)
     }
 
-    private fun addService(methods: LinkedHashSet<MethodSpec>) {
+    private fun addService(packageFile: File) {
         for (service in model.services) {
             if (service.value.prototype == I_DEGRADE_SERVICE
                 || service.value.prototype == I_PRETREATMENT_SERVICE
@@ -52,76 +48,86 @@ class AssembleGoRouteHelperCode(private val model: RouteHelperModel) {
             ) {
                 continue
             }
-            val serviceClassName = ClassName.bestGuess(service.value.prototype)
-            var key = service.key
-            if (service.value.alias?.isNotEmpty() == true) {
-                key = service.key.split("$")[0] + "For" + service.value.alias!!.capitalized()
-            }
-            val itemMethod = MethodSpec.methodBuilder("get$key")
-                .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-                .addAnnotation(ClassName.bestGuess(NULLABLE))
-                .returns(TypeVariableName.get(serviceClassName.simpleName()))
+            val methods = LinkedHashSet<MethodSpec>()
 
-            if (service.value.remark?.isNotEmpty() == true) {
-                itemMethod.addJavadoc(service.value.remark)
-                itemMethod.addJavadoc("\n{@link \$N}", service.value.className)
-            } else {
-                itemMethod.addJavadoc("{@link \$N}", service.value.className)
+            var className = service.key
+            if (service.value.alias?.isNotEmpty() == true) {
+                className = service.key.split("$")[0] + "For" + service.value.alias!!.capitalized()
             }
+            className += PROJECT;
+
+            val serviceClassName = ClassName.bestGuess(service.value.prototype)
+            val itemMethod = MethodSpec.methodBuilder("get")
+                .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+                .addAnnotation(Nullable)
+                .returns(TypeVariableName.get(serviceClassName.simpleName()))
 
             if (service.value.alias?.isNotEmpty() == true) {
                 itemMethod.addStatement(
-                    "return GoRouter.getInstance().getService(\$T.class, \$S)",
+                    "return \$T.getInstance().getService(\$T.class, \$S)",
+                    GoRouter,
                     serviceClassName,
                     service.value.alias
                 )
             } else {
                 itemMethod.addStatement(
-                    "return GoRouter.getInstance().getService(\$T.class)",
+                    "return \$T.getInstance().getService(\$T.class)",
+                    GoRouter,
                     serviceClassName
                 )
             }
             methods.add(itemMethod.build())
+
+            val classBuilder = TypeSpec.classBuilder(className)
+                .addModifiers(Modifier.PUBLIC)
+                .addJavadoc(WARNING_TIPS)
+                .addMethods(methods)
+
+            if (service.value.remark?.isNotEmpty() == true) {
+                classBuilder.addJavadoc("\n${service.value.remark}")
+                classBuilder.addJavadoc("\n{@link \$N}", service.value.className)
+            } else {
+                classBuilder.addJavadoc("\n{@link \$N}", service.value.className)
+            }
+
+            val java = JavaFile.builder("${GOROUTER_HELPER_PACKAGE_NAME}.service", classBuilder.build()).indent("    ").build().toString()
+            val outputFile = File(packageFile, "/service/${className}.java")
+            outputFile.parentFile.mkdirs()
+            outputFile.writeText(java, Charsets.UTF_8)
         }
     }
 
-    private fun addRoute(methods: LinkedHashSet<MethodSpec>, typeSpecs: LinkedHashSet<TypeSpec>) {
+    private fun addRoute(packageFile: File) {
         for (route in model.routes) {
+            val groupName = route.key
+            val groupFile = File(packageFile, "/group_${groupName}")
+            if (groupFile.exists()) {
+                groupFile.deleteRecursively()
+            }
             for (routeModel in route.value) {
-                val methodName = try {
-                    extractMethodName(routeModel.path)
+                var className = try {
+                    extractClassNameByPath(routeModel.path)
                 } catch (e: Exception) {
                     Logger.e(TAG, e.message!!)
                     return
                 }
+                className += PROJECT
 
-                val getPathMethod = MethodSpec.methodBuilder("get${methodName}Path")
+                val methods = LinkedHashSet<MethodSpec>()
+                val typeSpecs = LinkedHashSet<TypeSpec>()
+
+                val getPathMethod = MethodSpec.methodBuilder("getPath")
                     .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                     .returns(String::class.java)
                     .addStatement("return \$S", routeModel.path)
 
-                val buildMethod = MethodSpec.methodBuilder("build$methodName")
+                val buildMethod = MethodSpec.methodBuilder("build")
                     .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-                    .returns(ClassName.bestGuess(CARD))
+                    .returns(Card)
 
-                val goMethod = MethodSpec.methodBuilder("go$methodName")
+                val goMethod = MethodSpec.methodBuilder("go")
                     .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-                    .addParameter(ClassName.bestGuess(CONTEXT), "context")
-
-                if (routeModel.remark?.isNotEmpty() == true) {
-                    getPathMethod.addJavadoc("path \$N", routeModel.remark)
-                    getPathMethod.addJavadoc("\n{@link \$N}", routeModel.pathClass)
-
-                    buildMethod.addJavadoc("build \$N", routeModel.remark)
-                    buildMethod.addJavadoc("\n{@link \$N}", routeModel.pathClass)
-
-                    goMethod.addJavadoc("go \$N", routeModel.remark)
-                    goMethod.addJavadoc("\n{@link \$N}", routeModel.pathClass)
-                } else {
-                    getPathMethod.addJavadoc("{@link \$N}", routeModel.pathClass)
-                    buildMethod.addJavadoc("{@link \$N}", routeModel.pathClass)
-                    goMethod.addJavadoc("{@link \$N}", routeModel.pathClass)
-                }
+                    .addParameter(Context, "context")
 
                 methods.add(getPathMethod.build())
                 if (routeModel.paramsType != null) {
@@ -137,11 +143,11 @@ class AssembleGoRouteHelperCode(private val model: RouteHelperModel) {
                     toCodeEnd(getPathMethod, buildMethod, goMethod, routeModel, paramCode, goParamCode, methods)
 
                     if (requiredCount != routeModel.paramsType.size) {
-                        val getMethod = MethodSpec.methodBuilder("get$methodName")
+                        val getMethod = MethodSpec.methodBuilder("get")
                             .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                         val goParamCodeString = handleGoParamCodeString(goParamCode)
                         val allParamMethodParamCode = CodeBlock.builder()
-                        handleBuilderInnerClass(methodName, routeModel,  getPathMethod, getMethod, buildMethod, paramCode, goParamCodeString, typeSpecs, methods)
+                        handleBuilderInnerClass(className, routeModel,  getPathMethod, getMethod, buildMethod, paramCode, goParamCodeString, typeSpecs, methods)
 
                         for (param in routeModel.paramsType) {
                             if (param.required)
@@ -153,11 +159,29 @@ class AssembleGoRouteHelperCode(private val model: RouteHelperModel) {
                 } else {
                     toCodeEnd(getPathMethod,buildMethod, goMethod, routeModel, CodeBlock.builder(), CodeBlock.builder(), methods)
                 }
+
+                val classBuilder = TypeSpec.classBuilder(className)
+                    .addModifiers(Modifier.PUBLIC)
+                    .addJavadoc(WARNING_TIPS)
+                    .addMethods(methods)
+                    .addTypes(typeSpecs)
+
+                if (routeModel.remark?.isNotEmpty() == true) {
+                    classBuilder.addJavadoc("\n${routeModel.remark}")
+                    classBuilder.addJavadoc("\n{@link \$N}", routeModel.pathClass)
+                } else {
+                    classBuilder.addJavadoc("\n{@link \$N}", routeModel.pathClass)
+                }
+
+                val java = JavaFile.builder("${GOROUTER_HELPER_PACKAGE_NAME}.group_${groupName}", classBuilder.build()).indent("    ").build().toString()
+                val outputFile = File(packageFile, "/group_${groupName}/${className}.java")
+                outputFile.parentFile.mkdirs()
+                outputFile.writeText(java, Charsets.UTF_8)
             }
         }
     }
 
-    private fun extractMethodName(path: String): String {
+    private fun extractClassNameByPath(path: String): String {
         var methodName = ""
         val replace = path.replace(".", "")
             .replace("~", "")
@@ -201,23 +225,18 @@ class AssembleGoRouteHelperCode(private val model: RouteHelperModel) {
         methods: LinkedHashSet<MethodSpec>
     ) {
         val builderInnerClassMethods = LinkedHashSet<MethodSpec>()
-        val builderInnerClass = TypeSpec.classBuilder("${methodName}Builder")
+        val builderInnerClass = TypeSpec.classBuilder("Builder")
             .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-        if (routeModel.remark?.isNotEmpty() == true) {
-            builderInnerClass.addJavadoc("\$N Builder", routeModel.remark)
-            builderInnerClass.addJavadoc("\n{@link \$N}", routeModel.pathClass)
-        } else {
-            builderInnerClass.addJavadoc("{@link \$N}", routeModel.pathClass)
-        }
 
-        builderInnerClass.addField(ClassName.bestGuess(CARD), FIELD_CARD, Modifier.PRIVATE, Modifier.FINAL)
+        builderInnerClass.addField(Card, FIELD_CARD, Modifier.PRIVATE, Modifier.FINAL)
         builderInnerClass.addMethod(
             MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)
                 .addParameters(buildMethod.parameters)
                 .addStatement(
-                    "\$N = GoRouter.getInstance().build(\$N())\$L",
+                    "\$N = \$T.getInstance().build(\$N())\$L",
                     FIELD_CARD,
+                    GoRouter,
                     getPathMethod.build().name,
                     paramCode.build()
                 )
@@ -243,7 +262,7 @@ class AssembleGoRouteHelperCode(private val model: RouteHelperModel) {
 
         val buildCardMethod = MethodSpec.methodBuilder("build")
             .addModifiers(Modifier.PUBLIC)
-            .returns(ClassName.bestGuess(CARD))
+            .returns(Card)
             .addStatement("return \$N", FIELD_CARD)
         builderInnerClassMethods.add(buildCardMethod.build())
 
@@ -251,12 +270,6 @@ class AssembleGoRouteHelperCode(private val model: RouteHelperModel) {
         typeSpecs.add(builderInnerClass.build())
 
         getMethod.returns(TypeVariableName.get(builderInnerClass.build().name))
-        if (routeModel.remark?.isNotEmpty() == true) {
-            getMethod.addJavadoc("get \$N", routeModel.remark)
-            getMethod.addJavadoc("\n{@link \$N}", routeModel.pathClass)
-        } else {
-            getMethod.addJavadoc("{@link \$N}", routeModel.pathClass)
-        }
         getMethod.addParameters(buildMethod.parameters)
         getMethod.addStatement("return new \$L(\$L)", builderInnerClass.build().name, goParamCodeString)
         methods.add(getMethod.build())
@@ -287,7 +300,8 @@ class AssembleGoRouteHelperCode(private val model: RouteHelperModel) {
     private fun toCodeEnd(getPathMethod: MethodSpec.Builder, buildMethod: MethodSpec.Builder, goMethod: MethodSpec.Builder, routeModel: RouteModel, paramCode: CodeBlock.Builder, goParamCode: CodeBlock.Builder, methods: LinkedHashSet<MethodSpec>) {
         val newBuildMethod = buildMethod.build().toBuilder()
         newBuildMethod.addStatement(
-            "return GoRouter.getInstance().build(\$N())\$L",
+            "return \$T.getInstance().build(\$N())\$L",
+            GoRouter,
             getPathMethod.build().name,
             paramCode.build()
         )
@@ -298,7 +312,7 @@ class AssembleGoRouteHelperCode(private val model: RouteHelperModel) {
         if (routeModel.type == "Activity") {
             newGoMethod.addStatement("\$N(\$L).go(context)", buildMethod.build().name, goParamCodeString)
         } else {
-            newGoMethod.returns(ClassName.bestGuess(FRAGMENT))
+            newGoMethod.returns(Fragment)
             newGoMethod.addStatement("return (Fragment) \$N(\$L).go(context)", buildMethod.build().name, goParamCodeString)
         }
         methods.add(newGoMethod.build())
@@ -329,7 +343,7 @@ class AssembleGoRouteHelperCode(private val model: RouteHelperModel) {
         if (routeModel.type == "Activity") {
             newGoMethod.addStatement("\$N(\$L).go(context)", buildMethod.build().name, goParamCodeString)
         } else {
-            newGoMethod.returns(ClassName.bestGuess(FRAGMENT))
+            newGoMethod.returns(Fragment)
             newGoMethod.addStatement("return (Fragment) \$N(\$L).go(context)", buildMethod.build().name, goParamCodeString)
         }
         methods.add(newGoMethod.build())

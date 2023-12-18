@@ -17,9 +17,18 @@ import com.wyjson.module_common.utils.ToastUtils;
 import com.wyjson.module_main.R;
 import com.wyjson.module_main.databinding.MainActivityMainBinding;
 import com.wyjson.router.GoRouter;
-import com.wyjson.router.GoRouterHelper;
 import com.wyjson.router.annotation.Route;
 import com.wyjson.router.callback.GoCallback;
+import com.wyjson.router.helper.group_kotlin.KotlinActivityGoRouter;
+import com.wyjson.router.helper.group_main.MainEventActivityGoRouter;
+import com.wyjson.router.helper.group_new.NewParamActivityGoRouter;
+import com.wyjson.router.helper.group_new.NewParamFragmentGoRouter;
+import com.wyjson.router.helper.group_user.UserCardFragmentGoRouter;
+import com.wyjson.router.helper.group_user.UserInfoActivityGoRouter;
+import com.wyjson.router.helper.group_user.UserSignInActivityGoRouter;
+import com.wyjson.router.helper.service.PayServiceForAlipayGoRouter;
+import com.wyjson.router.helper.service.PayServiceForWechatPayGoRouter;
+import com.wyjson.router.helper.service.UserServiceGoRouter;
 import com.wyjson.router.model.Card;
 
 @Route(path = "/main/activity", remark = "主页")
@@ -37,7 +46,7 @@ public class MainActivity extends FragmentActivity {
     }
 
     public void onClickSignInActivity(View view) {
-        GoRouterHelper.goUserSignInActivity(this);
+        UserSignInActivityGoRouter.go(this);
     }
 
     public void onClickParamActivity(View view) {
@@ -48,16 +57,15 @@ public class MainActivity extends FragmentActivity {
          * Demo示例 {@link com.wyjson.module_common.route.service.JsonServiceImpl}
          */
         TestModel testModel = new TestModel(123, "Jack");
-
-        GoRouterHelper.goNewParamActivity(this, "Wyjson", testModel, base, 78);
+        NewParamActivityGoRouter.go(this, "Wyjson", testModel, base, 78);
         // or
-//        GoRouterHelper.goNewParamActivity(this, "Wyjson", testModel);
+//        NewParamActivityGoRouter.go(this, "Wyjson", testModel);
         // or
-//        GoRouterHelper.getNewParamActivity("Wyjson", testModel).setAge(78).setBase(base).build().go(this);
+//        NewParamActivityGoRouter.get("Wyjson", testModel).setAge(78).setBase(base).build().go(this);
     }
 
     public void onClickCardFragment(View view) {
-        Fragment cardFragment = GoRouterHelper.goUserCardFragment(this);
+        Fragment cardFragment = UserCardFragmentGoRouter.go(this);
         if (cardFragment != null) {
             getSupportFragmentManager()
                     .beginTransaction()
@@ -67,7 +75,7 @@ public class MainActivity extends FragmentActivity {
     }
 
     public void onClickParamFragment(View view) {
-        Fragment cardFragment = GoRouterHelper.goNewParamFragment(this, 78, "Wyjson");
+        Fragment cardFragment = NewParamFragmentGoRouter.go(this, 78, "Wyjson");
         if (cardFragment != null) {
             getSupportFragmentManager()
                     .beginTransaction()
@@ -77,7 +85,7 @@ public class MainActivity extends FragmentActivity {
     }
 
     public void onClickUserInfoActivity(View view) {
-        GoRouterHelper.buildUserInfoActivity().go(this, new GoCallback() {
+        UserInfoActivityGoRouter.build().go(this, new GoCallback() {
             @Override
             public void onFound(Card card) {
 
@@ -103,32 +111,32 @@ public class MainActivity extends FragmentActivity {
     }
 
     public void onClickUserService(View view) {
-        UserService userService = GoRouterHelper.getUserService();
+        UserService userService = UserServiceGoRouter.get();
         if (userService != null) {
             ToastUtils.makeText(MainActivity.this, "userId:" + userService.getUserId());
         }
     }
 
     public void onClickPayService1(View view) {
-        PayService payServiceForAlipay = GoRouterHelper.getPayServiceForAlipay();
+        PayService payServiceForAlipay = PayServiceForAlipayGoRouter.get();
         if (payServiceForAlipay != null) {
             ToastUtils.makeText(MainActivity.this, "payType:" + payServiceForAlipay.getPayType());
         }
     }
 
     public void onClickPayService2(View view) {
-        PayService payServiceForWechatPay = GoRouterHelper.getPayServiceForWechatPay();
+        PayService payServiceForWechatPay = PayServiceForWechatPayGoRouter.get();
         if (payServiceForWechatPay != null) {
             ToastUtils.makeText(MainActivity.this, "payType:" + payServiceForWechatPay.getPayType());
         }
     }
 
     public void onClickEventActivity(View view) {
-        GoRouterHelper.goMainEventActivity(this);
+        MainEventActivityGoRouter.go(this);
     }
 
     public void onClickKotlinActivity(View view) {
-        GoRouterHelper.goKotlinActivity(this, "Wyjson", 78);
+        KotlinActivityGoRouter.go(this, "Wyjson", 78);
     }
 
     private void showRouteLoadMode() {
