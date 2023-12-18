@@ -73,11 +73,12 @@ object Constants {
     const val I_PRETREATMENT_SERVICE = "${PACKAGE_NAME}.interfaces.IPretreatmentService"
     const val I_JSON_SERVICE = "${PACKAGE_NAME}.interfaces.IJsonService"
     const val FIELD_CARD = "mCard"
-    const val HELPER_TAG = "com.wyjson.gorouter.helper.tag"
-    const val NO_FOUND_HELPER_TAG_PLUGIN_TIPS = """
+    const val HELPER_PACKAGE_NAME = "com.wyjson.gorouter.helper"
+    const val HELPER_TAG_PACKAGE_NAME = "com.wyjson.gorouter.helper.tag"
+    const val NO_FOUND_HELPER_TAG_PACKAGE_NAME_PLUGIN_TIPS = """
         Not helper tag plugin found in the root project, please in the root project:
         plugins {
-            id '${HELPER_TAG}'
+            id '${HELPER_TAG_PACKAGE_NAME}'
         }
     """
 }

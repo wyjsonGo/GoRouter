@@ -1,7 +1,7 @@
-package com.wyjson.router.gradle_plugin.launch
+package com.wyjson.router.gradle_plugin.helper.launch
 
 import com.android.build.api.variant.AndroidComponentsExtension
-import com.wyjson.router.gradle_plugin.helper.tag.GenerateGoRouterHelperTODOTask
+import com.wyjson.router.gradle_plugin.helper.tag.GenerateGoRouterHelperTagTask
 import com.wyjson.router.gradle_plugin.utils.Constants.GENERATE_GOROUTER_HELPER_TODO
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -18,8 +18,8 @@ class HelperTagGradlePluginLaunch : Plugin<Project> {
             variant.sources.java?.let {
                 val path = "build/generated/source/gorouter/main"
                 variant.sources.java?.addStaticSourceDirectory(path)
-                val rhTODOTask = project.tasks.register("${GENERATE_GOROUTER_HELPER_TODO}$variantNameCapitalized", GenerateGoRouterHelperTODOTask::class.java)
-                variant.sources.java?.addGeneratedSourceDirectory(rhTODOTask, GenerateGoRouterHelperTODOTask::outputFolder)
+                val rhTODOTask = project.tasks.register("${GENERATE_GOROUTER_HELPER_TODO}$variantNameCapitalized", GenerateGoRouterHelperTagTask::class.java)
+                variant.sources.java?.addGeneratedSourceDirectory(rhTODOTask, GenerateGoRouterHelperTagTask::outputFolder)
             }
         }
     }

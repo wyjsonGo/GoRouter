@@ -1,4 +1,4 @@
-package com.wyjson.router.gradle_plugin.helper
+package com.wyjson.router.gradle_plugin.helper.core
 
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.CodeBlock

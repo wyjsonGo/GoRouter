@@ -9,7 +9,7 @@ import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
 import java.io.File
 
-abstract class GenerateGoRouterHelperTODOTask : DefaultTask() {
+abstract class GenerateGoRouterHelperTagTask : DefaultTask() {
 
     init {
         group = Constants.PROJECT
