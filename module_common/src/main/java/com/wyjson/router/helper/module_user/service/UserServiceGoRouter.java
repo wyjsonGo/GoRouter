@@ -1,4 +1,4 @@
-package com.wyjson.router.helper.service;
+package com.wyjson.router.helper.module_user.service;
 
 import androidx.annotation.Nullable;
 import com.wyjson.module_common.route.service.user.UserService;

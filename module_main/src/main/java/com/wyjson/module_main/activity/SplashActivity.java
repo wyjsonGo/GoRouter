@@ -4,7 +4,7 @@ import androidx.fragment.app.FragmentActivity;
 
 import com.wyjson.router.annotation.Route;
 import com.wyjson.router.callback.impl.GoCallbackImpl;
-import com.wyjson.router.helper.group_main.MainActivityGoRouter;
+import com.wyjson.router.helper.module_main.group_main.MainActivityGoRouter;
 import com.wyjson.router.model.Card;
 
 @Route(path = "/main/splash/activity", remark = "欢迎页")

@@ -90,7 +90,7 @@ public class DocumentUtils {
             if (!StringUtils.isEmpty(service.alias())) {
                 key += "$" + service.alias();
             }
-            documentModel.getServices().put(key, new ServiceModel(service.alias(), className, element.toString(), service.remark()));
+            documentModel.getServices().put(key, new ServiceModel(service.alias(), className, element.toString(), service.remark(), moduleName));
         } catch (Exception e) {
             logger.error(moduleName + " Failed to add service [" + element.toString() + "] document, " + e.getMessage());
         }
@@ -100,7 +100,7 @@ public class DocumentUtils {
         if (!isDocEnable)
             return;
         try {
-            documentModel.getInterceptors().add(new InterceptorModel(interceptor.ordinal(), element.toString(), interceptor.remark()));
+            documentModel.getInterceptors().add(new InterceptorModel(interceptor.ordinal(), element.toString(), interceptor.remark(), moduleName));
         } catch (Exception e) {
             logger.error(moduleName + " Failed to add interceptor [" + element.toString() + "] document, " + e.getMessage());
         }
@@ -130,6 +130,7 @@ public class DocumentUtils {
             if (route.tag() != 0) {
                 routeModel.setTag(route.tag());
             }
+            routeModel.setModuleName(moduleName);
             addParamCode(moduleName, logger, element, routeModel, types, serializableType, parcelableType);
             routeModelList.add(routeModel);
         } catch (Exception e) {

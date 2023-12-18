@@ -6,18 +6,20 @@ public class ServiceModel {
 
     private String alias;
     private String remark;
+    private String moduleName;
     private String prototype;
     private String className;
 
     public ServiceModel() {
     }
 
-    public ServiceModel(String alias, String prototype, String className, String remark) {
+    public ServiceModel(String alias, String prototype, String className, String remark, String moduleName) {
         if (!StringUtils.isEmpty(alias)) {
             this.alias = alias;
         }
         this.prototype = prototype;
         this.className = className;
+        this.moduleName = moduleName;
         if (!StringUtils.isEmpty(remark)) {
             this.remark = remark;
         }
@@ -53,5 +55,14 @@ public class ServiceModel {
 
     public void setClassName(String className) {
         this.className = className;
+    }
+
+    public String getModuleName() {
+        return moduleName;
+    }
+
+    public ServiceModel setModuleName(String moduleName) {
+        this.moduleName = moduleName;
+        return this;
     }
 }

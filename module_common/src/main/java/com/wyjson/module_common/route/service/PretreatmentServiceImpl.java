@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.wyjson.router.annotation.Service;
-import com.wyjson.router.helper.group_user.UserSignInActivityGoRouter;
+import com.wyjson.router.helper.module_user.group_user.UserSignInActivityGoRouter;
 import com.wyjson.router.interfaces.IPretreatmentService;
 import com.wyjson.router.model.Card;
 

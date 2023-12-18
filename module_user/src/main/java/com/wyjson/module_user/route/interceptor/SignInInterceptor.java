@@ -9,7 +9,7 @@ import com.wyjson.module_common.route.utils.RouteTagUtils;
 import com.wyjson.router.annotation.Interceptor;
 import com.wyjson.router.callback.InterceptorCallback;
 import com.wyjson.router.exception.RouterException;
-import com.wyjson.router.helper.group_user.UserSignInActivityGoRouter;
+import com.wyjson.router.helper.module_user.group_user.UserSignInActivityGoRouter;
 import com.wyjson.router.interfaces.IInterceptor;
 import com.wyjson.router.model.Card;
 

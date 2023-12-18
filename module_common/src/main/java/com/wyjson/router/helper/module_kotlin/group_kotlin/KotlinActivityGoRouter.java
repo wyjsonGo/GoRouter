@@ -1,4 +1,4 @@
-package com.wyjson.router.helper.group_kotlin;
+package com.wyjson.router.helper.module_kotlin.group_kotlin;
 
 import android.content.Context;
 import com.wyjson.router.GoRouter;

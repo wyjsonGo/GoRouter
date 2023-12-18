@@ -9,6 +9,7 @@ public class RouteModel {
 
     private String path;
     private String remark;
+    private String moduleName;
     private String type;
     private String pathClass;
     private Integer tag;
@@ -17,11 +18,12 @@ public class RouteModel {
     public RouteModel() {
     }
 
-    public RouteModel(String path, String type, String pathClass, Integer tag, List<ParamModel> paramsType, String remark) {
+    public RouteModel(String path, String type, String pathClass, Integer tag, List<ParamModel> paramsType, String remark, String moduleName) {
         this.path = path;
         this.type = type;
         this.pathClass = pathClass;
         this.tag = tag;
+        this.moduleName = moduleName;
         this.paramsType = paramsType;
         if (!StringUtils.isEmpty(remark)) {
             this.remark = remark;
@@ -77,5 +79,14 @@ public class RouteModel {
 
     public void setParamsType(List<ParamModel> paramsType) {
         this.paramsType = paramsType;
+    }
+
+    public String getModuleName() {
+        return moduleName;
+    }
+
+    public RouteModel setModuleName(String moduleName) {
+        this.moduleName = moduleName;
+        return this;
     }
 }

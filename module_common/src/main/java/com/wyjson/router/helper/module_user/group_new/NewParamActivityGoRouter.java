@@ -1,4 +1,4 @@
-package com.wyjson.router.helper.group_new;
+package com.wyjson.router.helper.module_user.group_new;
 
 import android.content.Context;
 import com.wyjson.router.GoRouter;

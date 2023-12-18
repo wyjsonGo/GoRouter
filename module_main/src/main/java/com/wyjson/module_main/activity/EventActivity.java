@@ -12,8 +12,8 @@ import com.wyjson.module_main.R;
 import com.wyjson.module_main.databinding.MainActivityEventBinding;
 import com.wyjson.router.GoRouter;
 import com.wyjson.router.annotation.Route;
-import com.wyjson.router.helper.group_main.MainActivityGoRouter;
-import com.wyjson.router.helper.group_main.MainEventFragmentGoRouter;
+import com.wyjson.router.helper.module_main.group_main.MainActivityGoRouter;
+import com.wyjson.router.helper.module_main.group_main.MainEventFragmentGoRouter;
 
 /**
  * 演示路由event使用方法,Activity和Fragment互通,当然你也可以在任何地方通知其他Activity或Fragment

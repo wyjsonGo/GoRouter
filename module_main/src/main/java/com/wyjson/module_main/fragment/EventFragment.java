@@ -13,7 +13,7 @@ import com.wyjson.module_common.entity.UserEntity;
 import com.wyjson.module_main.databinding.MainFragmentEventBinding;
 import com.wyjson.router.GoRouter;
 import com.wyjson.router.annotation.Route;
-import com.wyjson.router.helper.group_main.MainEventActivityGoRouter;
+import com.wyjson.router.helper.module_main.group_main.MainEventActivityGoRouter;
 
 @Route(path = "/main/event/fragment", remark = "事件片段")
 public class EventFragment extends Fragment {

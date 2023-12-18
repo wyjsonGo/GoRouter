@@ -19,16 +19,16 @@ import com.wyjson.module_main.databinding.MainActivityMainBinding;
 import com.wyjson.router.GoRouter;
 import com.wyjson.router.annotation.Route;
 import com.wyjson.router.callback.GoCallback;
-import com.wyjson.router.helper.group_kotlin.KotlinActivityGoRouter;
-import com.wyjson.router.helper.group_main.MainEventActivityGoRouter;
-import com.wyjson.router.helper.group_new.NewParamActivityGoRouter;
-import com.wyjson.router.helper.group_new.NewParamFragmentGoRouter;
-import com.wyjson.router.helper.group_user.UserCardFragmentGoRouter;
-import com.wyjson.router.helper.group_user.UserInfoActivityGoRouter;
-import com.wyjson.router.helper.group_user.UserSignInActivityGoRouter;
-import com.wyjson.router.helper.service.PayServiceForAlipayGoRouter;
-import com.wyjson.router.helper.service.PayServiceForWechatPayGoRouter;
-import com.wyjson.router.helper.service.UserServiceGoRouter;
+import com.wyjson.router.helper.module_kotlin.group_kotlin.KotlinActivityGoRouter;
+import com.wyjson.router.helper.module_main.group_main.MainEventActivityGoRouter;
+import com.wyjson.router.helper.module_user.group_new.NewParamActivityGoRouter;
+import com.wyjson.router.helper.module_user.group_new.NewParamFragmentGoRouter;
+import com.wyjson.router.helper.module_user.group_user.UserCardFragmentGoRouter;
+import com.wyjson.router.helper.module_user.group_user.UserInfoActivityGoRouter;
+import com.wyjson.router.helper.module_user.group_user.UserSignInActivityGoRouter;
+import com.wyjson.router.helper.module_user.service.PayServiceForAlipayGoRouter;
+import com.wyjson.router.helper.module_user.service.PayServiceForWechatPayGoRouter;
+import com.wyjson.router.helper.module_user.service.UserServiceGoRouter;
 import com.wyjson.router.model.Card;
 
 @Route(path = "/main/activity", remark = "主页")

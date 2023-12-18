@@ -61,7 +61,7 @@ public abstract class BaseProcessor extends AbstractProcessor {
             return str;
         }
         // 去除首字母是0-9和_的情况
-        str = str.replaceAll("^[0-9_]", "");
+        str = str.replaceAll("^[0-9_]+", "");
         // 首字母大写
         str = str.substring(0, 1).toUpperCase() + str.substring(1);
         // 处理下划线
@@ -69,7 +69,7 @@ public abstract class BaseProcessor extends AbstractProcessor {
         StringBuilder sb = new StringBuilder(len);
         for (int i = 0; i < len; i++) {
             char c = str.charAt(i);
-            if (c == '_') {
+            if (c == '_' || c == '-') {
                 if (++i < len) {
                     sb.append(Character.toUpperCase(str.charAt(i)));
                 }

@@ -34,8 +34,10 @@ class AssembleGoRouteHelperCode(private val model: RouteHelperModel) {
     private val Context = ClassName.bestGuess(CONTEXT)
     private val Fragment = ClassName.bestGuess(FRAGMENT)
     private val Nullable = ClassName.bestGuess(NULLABLE)
+    private val clearDirList = ArrayList<String>()
 
     fun generateJavaFile(packageFile: File) {
+        clearDirList.clear()
         addService(packageFile)
         addRoute(packageFile)
     }
@@ -90,8 +92,10 @@ class AssembleGoRouteHelperCode(private val model: RouteHelperModel) {
                 classBuilder.addJavadoc("\n{@link \$N}", service.value.className)
             }
 
-            val java = JavaFile.builder("${GOROUTER_HELPER_PACKAGE_NAME}.service", classBuilder.build()).indent("    ").build().toString()
-            val outputFile = File(packageFile, "/service/${className}.java")
+            val moduleName = projectNameToPackageName(service.value.moduleName)
+            clearModuleDir(packageFile, moduleName)
+            val java = JavaFile.builder("${GOROUTER_HELPER_PACKAGE_NAME}.${moduleName}.service", classBuilder.build()).indent("    ").build().toString()
+            val outputFile = File(packageFile, "/${moduleName}/service/${className}.java")
             outputFile.parentFile.mkdirs()
             outputFile.writeText(java, Charsets.UTF_8)
         }
@@ -99,11 +103,6 @@ class AssembleGoRouteHelperCode(private val model: RouteHelperModel) {
 
     private fun addRoute(packageFile: File) {
         for (route in model.routes) {
-            val groupName = route.key
-            val groupFile = File(packageFile, "/group_${groupName}")
-            if (groupFile.exists()) {
-                groupFile.deleteRecursively()
-            }
             for (routeModel in route.value) {
                 var className = try {
                     extractClassNameByPath(routeModel.path)
@@ -173,31 +172,47 @@ class AssembleGoRouteHelperCode(private val model: RouteHelperModel) {
                     classBuilder.addJavadoc("\n{@link \$N}", routeModel.pathClass)
                 }
 
-                val java = JavaFile.builder("${GOROUTER_HELPER_PACKAGE_NAME}.group_${groupName}", classBuilder.build()).indent("    ").build().toString()
-                val outputFile = File(packageFile, "/group_${groupName}/${className}.java")
+                val moduleName = projectNameToPackageName(routeModel.moduleName)
+                clearModuleDir(packageFile, moduleName)
+                val groupName = route.key.lowercase().replace(".", "").replace("-", "")
+                val java = JavaFile.builder("${GOROUTER_HELPER_PACKAGE_NAME}.${moduleName}.group_${groupName}", classBuilder.build()).indent("    ").build().toString()
+                val outputFile = File(packageFile, "/${moduleName}/group_${groupName}/${className}.java")
                 outputFile.parentFile.mkdirs()
                 outputFile.writeText(java, Charsets.UTF_8)
             }
         }
     }
 
+    private fun projectNameToPackageName(projectName: String): String {
+        if (projectName.isEmpty()) {
+            return projectName
+        }
+        var str = projectName
+        // 去除开头字母是0-9和_的情况
+        str = str.replace("^[0-9_]+".toRegex(), "")
+        str = str.replace("-", "_")
+        // 首字母小写
+        str = str.substring(0, 1).lowercase() + str.substring(1)
+        // 处理大写
+        val len = str.length
+        val sb = StringBuilder(len)
+        for (i in 0 until len) {
+            val c = str[i]
+            if (Character.isUpperCase(c)) {
+                if (str[i - 1] != '_') {
+                    sb.append("_")
+                }
+                sb.append(str[i].lowercaseChar())
+            } else {
+                sb.append(c)
+            }
+        }
+        return sb.toString()
+    }
+
     private fun extractClassNameByPath(path: String): String {
         var methodName = ""
-        val replace = path.replace(".", "")
-            .replace("~", "")
-            .replace("!", "")
-            .replace("@", "")
-            .replace("#", "")
-            .replace("$", "")
-            .replace("%", "")
-            .replace("^", "")
-            .replace("&", "")
-            .replace("*", "")
-            .replace("(", "")
-            .replace(")", "")
-            .replace("-", "")
-            .replace("+", "")
-            .replace("=", "")
+        val replace = path.replace(".", "").replace("-", "")
         for (item in replace.split("/")) {
             if (item.contains("_")){
                 for (_item in item.split("_")) {
@@ -283,7 +298,14 @@ class AssembleGoRouteHelperCode(private val model: RouteHelperModel) {
         return goParamCodeString
     }
 
-    private fun handleParam(param: ParamModel, buildMethod: MethodSpec.Builder, goMethod: MethodSpec.Builder, paramCode: CodeBlock.Builder, goParamCode: CodeBlock.Builder, allParamMethodParamCode: CodeBlock.Builder) {
+    private fun handleParam(
+        param: ParamModel,
+        buildMethod: MethodSpec.Builder,
+        goMethod: MethodSpec.Builder,
+        paramCode: CodeBlock.Builder,
+        goParamCode: CodeBlock.Builder,
+        allParamMethodParamCode: CodeBlock.Builder
+    ) {
         val type = param.type.replace("java.lang.", "")
         val name = param.name
         if (param.remark?.isNotEmpty() == true) {
@@ -297,7 +319,15 @@ class AssembleGoRouteHelperCode(private val model: RouteHelperModel) {
         goMethod.addParameter(TypeVariableName.get(type), name)
     }
 
-    private fun toCodeEnd(getPathMethod: MethodSpec.Builder, buildMethod: MethodSpec.Builder, goMethod: MethodSpec.Builder, routeModel: RouteModel, paramCode: CodeBlock.Builder, goParamCode: CodeBlock.Builder, methods: LinkedHashSet<MethodSpec>) {
+    private fun toCodeEnd(
+        getPathMethod: MethodSpec.Builder,
+        buildMethod: MethodSpec.Builder,
+        goMethod: MethodSpec.Builder,
+        routeModel: RouteModel,
+        paramCode: CodeBlock.Builder,
+        goParamCode: CodeBlock.Builder,
+        methods: LinkedHashSet<MethodSpec>
+    ) {
         val newBuildMethod = buildMethod.build().toBuilder()
         newBuildMethod.addStatement(
             "return \$T.getInstance().build(\$N())\$L",
@@ -347,5 +377,18 @@ class AssembleGoRouteHelperCode(private val model: RouteHelperModel) {
             newGoMethod.addStatement("return (Fragment) \$N(\$L).go(context)", buildMethod.build().name, goParamCodeString)
         }
         methods.add(newGoMethod.build())
+    }
+
+    /**
+     * 清除一下模块包下的文件
+     */
+    private fun clearModuleDir(packageFile: File, moduleName: String) {
+        if (!clearDirList.contains(moduleName)) {
+            val moduleFile = File(packageFile, "/${moduleName}")
+            if (moduleFile.exists()) {
+                moduleFile.deleteRecursively()
+            }
+            clearDirList.add(moduleName)
+        }
     }
 }
