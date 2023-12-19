@@ -9,12 +9,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.wyjson.module_common.route.UserRoute;
 import com.wyjson.module_user.databinding.UserFragmentParamBinding;
 import com.wyjson.router.annotation.Param;
 import com.wyjson.router.annotation.Route;
 
-@Route(path = UserRoute.ParamFragment, remark = "参数片段")
+@Route(path = "/new/param/fragment", remark = "参数片段")
 public class ParamFragment extends Fragment {
 
     UserFragmentParamBinding vb;

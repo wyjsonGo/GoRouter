@@ -121,10 +121,11 @@ public final class Card extends CardMeta {
         return null;
     }
 
-    public void setCardMeta(RouteType type, Class<?> pathClass, int tag) {
+    public void setCardMeta(RouteType type, Class<?> pathClass, int tag, boolean deprecated) {
         setType(type);
         setPathClass(pathClass);
         setTag(tag);
+        setDeprecated(deprecated);
     }
 
     public Bundle getExtras() {

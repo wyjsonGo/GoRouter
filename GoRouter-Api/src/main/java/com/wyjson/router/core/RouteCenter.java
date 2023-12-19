@@ -241,7 +241,7 @@ public class RouteCenter {
     public static synchronized void assembleRouteCard(@NonNull Card card) throws NoFoundRouteException {
         CardMeta cardMeta = getCardMeta(card);
         if (cardMeta != null) {
-            card.setCardMeta(cardMeta.getType(), cardMeta.getPathClass(), cardMeta.getTag());
+            card.setCardMeta(cardMeta.getType(), cardMeta.getPathClass(), cardMeta.getTag(), cardMeta.isDeprecated());
             card.withString(ROUTER_CURRENT_PATH, card.getPath());
 
             Map<String, ParamMeta> paramsType = cardMeta.getParamsType();

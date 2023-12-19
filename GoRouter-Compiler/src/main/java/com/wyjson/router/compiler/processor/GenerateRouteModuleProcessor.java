@@ -7,8 +7,8 @@ import static com.wyjson.router.compiler.utils.Constants.BYTE_PACKAGE;
 import static com.wyjson.router.compiler.utils.Constants.BYTE_PRIMITIVE;
 import static com.wyjson.router.compiler.utils.Constants.CHAR_PACKAGE;
 import static com.wyjson.router.compiler.utils.Constants.CHAR_PRIMITIVE;
-import static com.wyjson.router.compiler.utils.Constants.DOUBEL_PACKAGE;
-import static com.wyjson.router.compiler.utils.Constants.DOUBEL_PRIMITIVE;
+import static com.wyjson.router.compiler.utils.Constants.DOUBLE_PACKAGE;
+import static com.wyjson.router.compiler.utils.Constants.DOUBLE_PRIMITIVE;
 import static com.wyjson.router.compiler.utils.Constants.FLOAT_PACKAGE;
 import static com.wyjson.router.compiler.utils.Constants.FLOAT_PRIMITIVE;
 import static com.wyjson.router.compiler.utils.Constants.FRAGMENT;
@@ -300,6 +300,13 @@ public class GenerateRouteModuleProcessor extends BaseProcessor {
         }
         unifyCode.add(tagCode.build());
 
+        // .putDeprecated(true)
+        CodeBlock.Builder deprecatedCode = CodeBlock.builder();
+        if (route.deprecated()) {
+            deprecatedCode.add(".putDeprecated(true)");
+        }
+        unifyCode.add(deprecatedCode.build());
+
         // .putInt(x).putString(x) ...
         // Get all fields annotation by @Param
         CodeBlock.Builder paramCode = CodeBlock.builder();
@@ -325,7 +332,7 @@ public class GenerateRouteModuleProcessor extends BaseProcessor {
         unifyCode.add(typeCode.build());
 
         loadRouteGroupMethod.addStatement(unifyCode.build());
-        DocumentUtils.addRouteDoc(moduleName, logger, element, routeModelDocList, route, typeDoc);
+        DocumentUtils.addRouteDoc(moduleName, logger, element, routeModelDocList, route, typeDoc, types, serializableType, parcelableType);
     }
 
     private CodeBlock.Builder handleParam(CodeBlock.Builder paramCode, Element element) {
@@ -344,7 +351,7 @@ public class GenerateRouteModuleProcessor extends BaseProcessor {
                     case INTEGER_PACKAGE, INTEGER_PRIMITIVE -> paramType = "putInt";
                     case LONG_PACKAGE, LONG_PRIMITIVE -> paramType = "putLong";
                     case FLOAT_PACKAGE, FLOAT_PRIMITIVE -> paramType = "putFloat";
-                    case DOUBEL_PACKAGE, DOUBEL_PRIMITIVE -> paramType = "putDouble";
+                    case DOUBLE_PACKAGE, DOUBLE_PRIMITIVE -> paramType = "putDouble";
                     case BOOLEAN_PACKAGE, BOOLEAN_PRIMITIVE -> paramType = "putBoolean";
                     case CHAR_PACKAGE, CHAR_PRIMITIVE -> paramType = "putChar";
                     case STRING_PACKAGE -> paramType = "putString";

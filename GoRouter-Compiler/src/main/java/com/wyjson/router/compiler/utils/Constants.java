@@ -71,7 +71,7 @@ public class Constants {
     public static final String INTEGER_PACKAGE = LANG + ".Integer";
     public static final String LONG_PACKAGE = LANG + ".Long";
     public static final String FLOAT_PACKAGE = LANG + ".Float";
-    public static final String DOUBEL_PACKAGE = LANG + ".Double";
+    public static final String DOUBLE_PACKAGE = LANG + ".Double";
     public static final String BOOLEAN_PACKAGE = LANG + ".Boolean";
     public static final String CHAR_PACKAGE = LANG + ".Character";
     public static final String STRING_PACKAGE = LANG + ".String";
@@ -83,7 +83,7 @@ public class Constants {
     public static final String INTEGER_PRIMITIVE = "int";
     public static final String LONG_PRIMITIVE = "long";
     public static final String FLOAT_PRIMITIVE = "float";
-    public static final String DOUBEL_PRIMITIVE = "double";
+    public static final String DOUBLE_PRIMITIVE = "double";
     public static final String BOOLEAN_PRIMITIVE = "boolean";
     public static final String CHAR_PRIMITIVE = "char";
 

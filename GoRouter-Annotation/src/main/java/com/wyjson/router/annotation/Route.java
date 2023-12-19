@@ -25,4 +25,15 @@ public @interface Route {
      * Ps. U should use the integer num sign the switch, Range from 1 to 1 << 30
      */
     int tag() default 0;
+
+    /**
+     * If marked true, the framework in the case of openDebug(),
+     * jumping to this page will prompt other developers and testers
+     */
+    boolean deprecated() default false;
+
+    /**
+     * If marked true, the automatically generated route help class function ignores this page
+     */
+    boolean ignoreHelper() default false;
 }

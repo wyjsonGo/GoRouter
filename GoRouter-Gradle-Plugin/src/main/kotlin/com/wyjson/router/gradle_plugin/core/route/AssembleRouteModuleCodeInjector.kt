@@ -68,7 +68,7 @@ class AssembleRouteModuleCodeInjector(val routeModuleClassList: List<String>) {
                     false
                 )
             }
-            super.onMethodExit(opcode);
+            super.onMethodExit(opcode)
         }
 
     }

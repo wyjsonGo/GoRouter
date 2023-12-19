@@ -15,6 +15,7 @@ dependencies {
     implementation 'org.ow2.asm:asm:9.2'
     implementation 'org.ow2.asm:asm-commons:9.2'
     implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'com.squareup:javapoet:1.13.0'
 }
 
 apply from: rootProject.file('gradle/publish-java.gradle')

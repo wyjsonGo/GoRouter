@@ -10,12 +10,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.wyjson.module_common.entity.UserEntity;
-import com.wyjson.module_common.route.MainRoute;
 import com.wyjson.module_main.databinding.MainFragmentEventBinding;
 import com.wyjson.router.GoRouter;
 import com.wyjson.router.annotation.Route;
+import com.wyjson.router.helper.module_main.group_main.MainEventActivityGoRouter;
 
-@Route(path = MainRoute.EventFragment, remark = "事件片段")
+@Route(path = "/main/event/fragment", remark = "事件片段")
 public class EventFragment extends Fragment {
 
     MainFragmentEventBinding vb;
@@ -47,12 +47,12 @@ public class EventFragment extends Fragment {
 
         vb.tvSendString.setOnClickListener(v -> {
             // 向EventActivity发送String类型
-            GoRouter.getInstance().postEvent(MainRoute.EventActivity, "Hi!");
+            GoRouter.getInstance().postEvent(MainEventActivityGoRouter.getPath(), "Hi!");
         });
 
         vb.tvSendCustom.setOnClickListener(v -> {
             // 向EventActivity发送自定义类型
-            GoRouter.getInstance().postEvent(MainRoute.EventActivity, new UserEntity(123, "jack"));
+            GoRouter.getInstance().postEvent(MainEventActivityGoRouter.getPath(), new UserEntity(123, "jack"));
         });
     }
 }

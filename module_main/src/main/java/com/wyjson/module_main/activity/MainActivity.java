@@ -11,9 +11,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
 import com.wyjson.module_common.model.TestModel;
-import com.wyjson.module_common.route.KotlinRoute;
-import com.wyjson.module_common.route.MainRoute;
-import com.wyjson.module_common.route.UserRoute;
 import com.wyjson.module_common.route.service.user.PayService;
 import com.wyjson.module_common.route.service.user.UserService;
 import com.wyjson.module_common.utils.ToastUtils;
@@ -22,9 +19,19 @@ import com.wyjson.module_main.databinding.MainActivityMainBinding;
 import com.wyjson.router.GoRouter;
 import com.wyjson.router.annotation.Route;
 import com.wyjson.router.callback.GoCallback;
+import com.wyjson.router.helper.module_kotlin.group_kotlin.KotlinActivityGoRouter;
+import com.wyjson.router.helper.module_main.group_main.MainEventActivityGoRouter;
+import com.wyjson.router.helper.module_user.group_new.NewParamActivityGoRouter;
+import com.wyjson.router.helper.module_user.group_new.NewParamFragmentGoRouter;
+import com.wyjson.router.helper.module_user.group_user.UserCardFragmentGoRouter;
+import com.wyjson.router.helper.module_user.group_user.UserInfoActivityGoRouter;
+import com.wyjson.router.helper.module_user.group_user.UserSignInActivityGoRouter;
+import com.wyjson.router.helper.module_user.service.PayServiceForAlipayGoRouter;
+import com.wyjson.router.helper.module_user.service.PayServiceForWechatPayGoRouter;
+import com.wyjson.router.helper.module_user.service.UserServiceGoRouter;
 import com.wyjson.router.model.Card;
 
-@Route(path = MainRoute.MainActivity, remark = "主页")
+@Route(path = "/main/activity", remark = "主页")
 public class MainActivity extends FragmentActivity {
 
     MainActivityMainBinding vb;
@@ -39,24 +46,34 @@ public class MainActivity extends FragmentActivity {
     }
 
     public void onClickSignInActivity(View view) {
-        GoRouter.getInstance().build(UserRoute.SignInActivity).go(this);
+        UserSignInActivityGoRouter.go(this);
+        // or
+//        UserSignInActivityGoRouter.build()
+//                .withFlags(...)
+//                .go(this);
     }
 
     public void onClickParamActivity(View view) {
-        GoRouter.getInstance().build(UserRoute.ParamActivity)
-                .withInt("age", 78)
-                .withString("nickname", "Wyjson")
-                .withInt("base", 7758)// 父类里定义的参数
-                /**
-                 * 使用此方式传递自定义参数需要实现Json服务
-                 * Demo示例 {@link com.wyjson.module_common.route.service.JsonServiceImpl}
-                 */
-                .withObject("test", new TestModel(123, "Jack"))
-                .go(this);
+        // 父类里定义的参数
+        int base = 7758;
+        /**
+         * 使用此方式传递自定义参数需要实现Json服务
+         * Demo示例 {@link com.wyjson.module_common.route.service.JsonServiceImpl}
+         */
+        TestModel testModel = new TestModel(123, "Jack");
+        NewParamActivityGoRouter.go(this, "Wyjson", testModel, base, 78);
+        // or
+//        NewParamActivityGoRouter.go(this, "Wyjson", testModel);
+        // or
+//        NewParamActivityGoRouter.get("Wyjson", testModel)
+//                .setAge(78)
+//                .setBase(base)
+//                .build()
+//                .go(this);
     }
 
     public void onClickCardFragment(View view) {
-        Fragment cardFragment = (Fragment) GoRouter.getInstance().build(UserRoute.CardFragment).go(this);
+        Fragment cardFragment = UserCardFragmentGoRouter.go(this);
         if (cardFragment != null) {
             getSupportFragmentManager()
                     .beginTransaction()
@@ -66,10 +83,7 @@ public class MainActivity extends FragmentActivity {
     }
 
     public void onClickParamFragment(View view) {
-        Fragment cardFragment = (Fragment) GoRouter.getInstance().build(UserRoute.ParamFragment)
-                .withInt("age", 78)
-                .withString("name", "Wyjson")
-                .go(this);
+        Fragment cardFragment = NewParamFragmentGoRouter.go(this, 78, "Wyjson");
         if (cardFragment != null) {
             getSupportFragmentManager()
                     .beginTransaction()
@@ -79,7 +93,7 @@ public class MainActivity extends FragmentActivity {
     }
 
     public void onClickUserInfoActivity(View view) {
-        GoRouter.getInstance().build(UserRoute.UserInfoActivity).go(this, new GoCallback() {
+        UserInfoActivityGoRouter.build().go(this, new GoCallback() {
             @Override
             public void onFound(Card card) {
 
@@ -105,35 +119,32 @@ public class MainActivity extends FragmentActivity {
     }
 
     public void onClickUserService(View view) {
-        UserService userService = GoRouter.getInstance().getService(UserService.class);
+        UserService userService = UserServiceGoRouter.get();
         if (userService != null) {
             ToastUtils.makeText(MainActivity.this, "userId:" + userService.getUserId());
         }
     }
 
     public void onClickPayService1(View view) {
-        PayService alipayService = GoRouter.getInstance().getService(PayService.class, "Alipay");
-        if (alipayService != null) {
-            ToastUtils.makeText(MainActivity.this, "payType:" + alipayService.getPayType());
+        PayService payServiceForAlipay = PayServiceForAlipayGoRouter.get();
+        if (payServiceForAlipay != null) {
+            ToastUtils.makeText(MainActivity.this, "payType:" + payServiceForAlipay.getPayType());
         }
     }
 
     public void onClickPayService2(View view) {
-        PayService wechatPayService = GoRouter.getInstance().getService(PayService.class, "WechatPay");
-        if (wechatPayService != null) {
-            ToastUtils.makeText(MainActivity.this, "payType:" + wechatPayService.getPayType());
+        PayService payServiceForWechatPay = PayServiceForWechatPayGoRouter.get();
+        if (payServiceForWechatPay != null) {
+            ToastUtils.makeText(MainActivity.this, "payType:" + payServiceForWechatPay.getPayType());
         }
     }
 
     public void onClickEventActivity(View view) {
-        GoRouter.getInstance().build(MainRoute.EventActivity).go(this);
+        MainEventActivityGoRouter.go(this);
     }
 
     public void onClickKotlinActivity(View view) {
-        GoRouter.getInstance().build(KotlinRoute.KotlinActivity)
-                .withInt("age", 78)
-                .withString("nickname", "Wyjson")
-                .go(this);
+        KotlinActivityGoRouter.go(this, "Wyjson", 78);
     }
 
     private void showRouteLoadMode() {

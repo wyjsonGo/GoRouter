@@ -9,20 +9,25 @@ public class RouteModel {
 
     private String path;
     private String remark;
+    private String moduleName;
     private String type;
     private String pathClass;
     private Integer tag;
+    private Boolean deprecated;
+    private Boolean ignoreHelper;
     private List<ParamModel> paramsType;
 
     public RouteModel() {
     }
 
-    public RouteModel(String path, String type, String pathClass, Integer tag, List<ParamModel> paramsType, String remark) {
+    public RouteModel(String path, String type, String pathClass, Integer tag, List<ParamModel> paramsType, String remark, String moduleName, Boolean deprecated, Boolean ignoreHelper) {
         this.path = path;
         this.type = type;
         this.pathClass = pathClass;
         this.tag = tag;
-        this.paramsType = paramsType;
+        this.moduleName = moduleName;
+        this.deprecated = deprecated;
+        this.ignoreHelper = ignoreHelper;
         if (!StringUtils.isEmpty(remark)) {
             this.remark = remark;
         }
@@ -77,5 +82,29 @@ public class RouteModel {
 
     public void setParamsType(List<ParamModel> paramsType) {
         this.paramsType = paramsType;
+    }
+
+    public String getModuleName() {
+        return moduleName;
+    }
+
+    public void setModuleName(String moduleName) {
+        this.moduleName = moduleName;
+    }
+
+    public Boolean getDeprecated() {
+        return deprecated;
+    }
+
+    public void setDeprecated(Boolean deprecated) {
+        this.deprecated = deprecated;
+    }
+
+    public Boolean getIgnoreHelper() {
+        return ignoreHelper;
+    }
+
+    public void setIgnoreHelper(Boolean ignoreHelper) {
+        this.ignoreHelper = ignoreHelper;
     }
 }

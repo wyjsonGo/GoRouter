@@ -8,8 +8,8 @@ import static com.wyjson.router.compiler.utils.Constants.BYTE_PACKAGE;
 import static com.wyjson.router.compiler.utils.Constants.BYTE_PRIMITIVE;
 import static com.wyjson.router.compiler.utils.Constants.CHAR_PACKAGE;
 import static com.wyjson.router.compiler.utils.Constants.CHAR_PRIMITIVE;
-import static com.wyjson.router.compiler.utils.Constants.DOUBEL_PACKAGE;
-import static com.wyjson.router.compiler.utils.Constants.DOUBEL_PRIMITIVE;
+import static com.wyjson.router.compiler.utils.Constants.DOUBLE_PACKAGE;
+import static com.wyjson.router.compiler.utils.Constants.DOUBLE_PRIMITIVE;
 import static com.wyjson.router.compiler.utils.Constants.FLOAT_PACKAGE;
 import static com.wyjson.router.compiler.utils.Constants.FLOAT_PRIMITIVE;
 import static com.wyjson.router.compiler.utils.Constants.FRAGMENT;
@@ -214,24 +214,15 @@ public class ParamProcessor extends BaseProcessor {
             String typeStr = typeMirror.toString();
             boolean isSelfHandleRequired = false;
             switch (typeStr) {
-                case BYTE_PACKAGE, BYTE_PRIMITIVE ->
-                        itemCode.addStatement("self.$N = bundle.getByte($S, self.$N)", key, name, key);
-                case SHORT_PACKAGE, SHORT_PRIMITIVE ->
-                        itemCode.addStatement("self.$N = bundle.getShort($S, self.$N)", key, name, key);
-                case INTEGER_PACKAGE, INTEGER_PRIMITIVE ->
-                        itemCode.addStatement("self.$N = bundle.getInt($S, self.$N)", key, name, key);
-                case LONG_PACKAGE, LONG_PRIMITIVE ->
-                        itemCode.addStatement("self.$N = bundle.getLong($S, self.$N)", key, name, key);
-                case FLOAT_PACKAGE, FLOAT_PRIMITIVE ->
-                        itemCode.addStatement("self.$N = bundle.getFloat($S, self.$N)", key, name, key);
-                case DOUBEL_PACKAGE, DOUBEL_PRIMITIVE ->
-                        itemCode.addStatement("self.$N = bundle.getDouble($S, self.$N)", key, name, key);
-                case BOOLEAN_PACKAGE, BOOLEAN_PRIMITIVE ->
-                        itemCode.addStatement("self.$N = bundle.getBoolean($S, self.$N)", key, name, key);
-                case CHAR_PACKAGE, CHAR_PRIMITIVE ->
-                        itemCode.addStatement("self.$N = bundle.getChar($S, self.$N)", key, name, key);
-                case STRING_PACKAGE ->
-                        itemCode.addStatement("self.$N = bundle.getString($S, self.$N)", key, name, key);
+                case BYTE_PACKAGE, BYTE_PRIMITIVE -> itemCode.addStatement("self.$N = bundle.getByte($S, self.$N)", key, name, key);
+                case SHORT_PACKAGE, SHORT_PRIMITIVE -> itemCode.addStatement("self.$N = bundle.getShort($S, self.$N)", key, name, key);
+                case INTEGER_PACKAGE, INTEGER_PRIMITIVE -> itemCode.addStatement("self.$N = bundle.getInt($S, self.$N)", key, name, key);
+                case LONG_PACKAGE, LONG_PRIMITIVE -> itemCode.addStatement("self.$N = bundle.getLong($S, self.$N)", key, name, key);
+                case FLOAT_PACKAGE, FLOAT_PRIMITIVE -> itemCode.addStatement("self.$N = bundle.getFloat($S, self.$N)", key, name, key);
+                case DOUBLE_PACKAGE, DOUBLE_PRIMITIVE -> itemCode.addStatement("self.$N = bundle.getDouble($S, self.$N)", key, name, key);
+                case BOOLEAN_PACKAGE, BOOLEAN_PRIMITIVE -> itemCode.addStatement("self.$N = bundle.getBoolean($S, self.$N)", key, name, key);
+                case CHAR_PACKAGE, CHAR_PRIMITIVE -> itemCode.addStatement("self.$N = bundle.getChar($S, self.$N)", key, name, key);
+                case STRING_PACKAGE -> itemCode.addStatement("self.$N = bundle.getString($S, self.$N)", key, name, key);
                 default -> {
                     if (types.isSubtype(typeMirror, parcelableType)) {
                         itemCode.beginControlFlow("if (bundle.containsKey($S))", name);

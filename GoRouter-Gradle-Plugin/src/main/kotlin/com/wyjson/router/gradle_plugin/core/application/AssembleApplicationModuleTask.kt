@@ -26,6 +26,10 @@ import kotlin.system.measureTimeMillis
 
 abstract class AssembleApplicationModuleTask : DefaultTask() {
 
+    init {
+        group = Constants.PROJECT_OTHER
+    }
+
     private val TAG = "AM"
 
     @get:InputFiles

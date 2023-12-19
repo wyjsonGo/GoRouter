@@ -7,43 +7,46 @@
 
 ## 简介
 
-之前一直在用阿里开源的[ARouter](https://github.com/alibaba/ARouter)项目，因为ARouter多年未更新，ARouter开始有些不太适合了，所以重新开发了这款Android路由框架，同样的API，更多的功能，迁移请参见文末7-10。
+之前一直在用阿里开源的[ARouter](https://github.com/alibaba/ARouter)项目，因为ARouter多年未更新，ARouter开始有些不太适合了，所以重新开发了这款Android路由框架，同样的API，更多的功能，迁移请参见文末8-10。
 
 ## GoRouter和ARouter功能差异对比
 
-| 功能                    | ARouter  | GoRouter  | 描述                                                  |
-| ---------------------- | -------- | --------- | ---------------------------------------------------- |
-| 路由注册方式             | 注解      | 注解、java | GoRouter不仅提供了注解，还能使用java方式注册，参见5-6 |
-| 动态注册拦截器            | 不支持    | 支持      | ARouter只能动态注册路由，不能动态注册拦截器 |
-| 重写跳转URL服务          | 支持      | 不支持     | 可以在`IPretreatmentService`里实现相同功能 |
-| 获取元数据               | 不支持    | 支持       | 有些场景需要判断某个页面当前是否存在等需求，就需要获取页面class等信息，参见5-1 |
-| inject(T)              | 单一      | 更多       | ARouter不能在`onNewIntent()`方法里使用，也不能检查`required`，GoRouter提供了更多使用场景，参见4-2 |
-| 按组分类、按需初始化       | 支持      | 支持       | ARouter不允许多个module中存在相同的分组，GoRouter允许 |
-| 模块Application生命周期   | 不支持    | 支持       | 主动分发到业务模块，让模块无侵入的获取Application生命周期，参见6-1 |
-| 路由页面Event            | 不支持    | 支持       | 页面事件解耦,提供更多、更方便的API，参见5-10 |
+| 功能                      | ARouter  | GoRouter  | 描述                                                  |
+| ------------------------ | -------- | --------- | ---------------------------------------------------- |
+| 路由注册方式               | 注解      | 注解、java | GoRouter不仅提供了注解，还能使用java方式注册，参见5-6 |
+| 动态注册拦截器              | 不支持    | 支持      | ARouter只能动态注册路由，不能动态注册拦截器 |
+| 重写跳转URL服务            | 支持      | 不支持     | 可以在`IPretreatmentService`里实现相同功能 |
+| 获取元数据                 | 不支持    | 支持       | 有些场景需要判断某个页面当前是否存在等需求，就需要获取页面class等信息，参见5-1 |
+| inject(T)                | 单一      | 更多       | ARouter不能在`onNewIntent()`方法里使用，也不能检查`required`，GoRouter提供了更多使用场景，性能更好，参见4-2 |
+| 按组分类、按需初始化         | 支持      | 支持       | ARouter不允许多个module中存在相同的分组，GoRouter允许 |
+| 生成路由文档                | 支持     | 支持       | ARouter会生成多个模块文档,GoRouter提供Gradle任务一键生成项目总文档,更加丰富，参见5-9 |
+| **模块Application生命周期** | 不支持    | 支持       | 主动分发到业务模块，让模块无侵入的获取Application生命周期，参见6-1 |
+| **路由页面事件**            | 不支持    | 支持       | 页面事件解耦，提供更多、更方便的API，参见5-10 |
+| **自动生成路由帮助类**       | 不支持    | 支持       | 调用更方便，不需要知道目标页面参数名和参数类型、是否必传等元素，真正做到了闭眼调用也不会出错，参见7-1 |
 
 ***
 
 ## 一、功能介绍
 
-1.  **支持直接解析标准URL进行跳转，并自动注入参数到目标页面中**
-2.  **支持多模块工程使用**
-3.  **支持添加多个拦截器，自定义拦截顺序**
-4.  **支持依赖注入，可单独作为依赖注入框架使用**
-5.  **支持InstantRun**
-6.  **支持MultiDex**(Google方案)
+1.  支持直接解析标准URL进行跳转，并自动注入参数到目标页面中
+2.  支持多模块工程使用
+3.  支持添加多个拦截器，自定义拦截顺序
+4.  支持依赖注入，可单独作为依赖注入框架使用
+5.  支持InstantRun
+6.  支持MultiDex(Google方案)
 7.  映射关系按组分类、多级管理，按需初始化
 8.  支持用户指定全局降级与局部降级策略
 9.  页面、拦截器、服务等组件均自动注册到框架
 10. 支持多种方式配置转场动画
 11. 支持获取Fragment
-12. 完全支持Kotlin以及混编(参见7-1)
-13. **支持第三方 App 加固**
-14. **支持生成路由文档**
+12. 完全支持Kotlin以及混编(参见8-1)
+13. 支持第三方 App 加固
+14. 支持一键生成路由文档
 15. 支持增量编译
 16. 支持动态注册路由、路由组、服务和拦截器
 17. **支持模块Application生命周期**
-18. **支持路由页面Event**
+18. **支持路由页面事件**
+19. **自动生成路由帮助类**
 
 ## 二、典型应用
 
@@ -66,12 +69,12 @@ dependencyResolutionManagement {
 }
 
 dependencies {
-    api 'com.github.wyjsonGo.GoRouter:GoRouter-Api:2.3.5'
+    api 'com.github.wyjsonGo.GoRouter:GoRouter-Api:2.4.0'
 }
-// Kotlin配置参见7-1
+// Kotlin配置参见8-1
 ```
 
-##### 2.  在module项目下添加注解处理器依赖和配置 (如只使用java方式注册,可忽略此步骤)
+##### 2.  在module项目下添加注解处理器依赖和配置 (如只使用java方式注册,不使用注解,可忽略此步骤)
 
 ```groovy
 android {
@@ -86,7 +89,7 @@ android {
 }
 
 dependencies {
-    annotationProcessor 'com.github.wyjsonGo.GoRouter:GoRouter-Compiler:2.3.5'
+    annotationProcessor 'com.github.wyjsonGo.GoRouter:GoRouter-Compiler:2.4.0'
 }
 ```
 
@@ -126,7 +129,7 @@ GoRouter.getInstance().build("/test/fragment")
             .go(this);
 ```
 
-##### 6.  使用Gradle插件实现路由表的自动加载，支持Gradle8.0+ (可选)
+##### 6.  使用Gradle插件实现路由表的自动加载，支持Gradle8.0+
 
 ```groovy
 // 项目根目录下的settings.gradle
@@ -142,7 +145,7 @@ pluginManagement {
 // 项目根目录下的build.gradle
 buildscript {
     dependencies {
-        classpath 'com.github.wyjsonGo.GoRouter:GoRouter-Gradle-Plugin:2.3.5'
+        classpath 'com.github.wyjsonGo.GoRouter:GoRouter-Gradle-Plugin:2.4.0'
     }
 }
 ```
@@ -163,7 +166,7 @@ plugins {
 ##### 1.  通过URL跳转
 
 ```java
-// 新建一个Activity用于监听Scheme事件,之后直接把url传递给GoRouter即可
+// 新建一个Activity用于监听Scheme事件,之后直接把url传递给GoRouter即可(消息栏和外部所有URL跳转都可以统一用这个Activity接收后分发跳转)
 public class SchemeFilterActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -614,7 +617,7 @@ GoRouter.getInstance().inject(this);
 
 ##### 7.  自定义模块路由加载
 
-如不使用gradle插件[3-6]进行自动注册，也不想走默认扫描dex的方式，可以不调用`GoRouter.autoLoadRouteModule(this)`方法，但需要自行调用模块生成的路由加载类。
+如不使用Gradle插件[3-6]进行自动注册，也不想走默认扫描dex的方式，可以不调用`GoRouter.autoLoadRouteModule(this)`方法，但需要自行调用模块生成的路由加载类。
 模块项目里至少使用一条注解`@Route`、`@Service`、`@Interceptor`，就会生成对应路由表的加载类。路由表加载类命名规则会根据`GOROUTER_MODULE_NAME`设置的模块名称转换成大写驼峰命名+`$$Route.java`，所有模块生成的路由表加载类都会放到`com.wyjson.router.module.route`包下。
 例如模块名称`module_user`会生成`ModuleUser$$Route.java`
 
@@ -636,7 +639,7 @@ plugins {
 // 不写下面的配置，默认android.buildTypes任务全部执行自动注册。
 GoRouter {
     // 允许执行自动注册任务的集合
-    runBuildTypes "release", "sandbox", "more"
+    runAutoRegisterBuildTypes "release", "sandbox", "more"
 }
 ```
 
@@ -645,22 +648,15 @@ GoRouter {
 使用gradle命令一键生成路由文档
 
 ```sh
-./gradlew generateRouteDoc
-# 或使用快速生成
-./gradlew quickGenerateRouteDoc
+./gradlew generateRouteDocDebug
 ```
 当然你也可以使用图形页面执行任务
 
 <img src="https://github.com/wyjsonGo/GoRouter/blob/master/screenshot/gradle_task_generate_router_doc.png" width="40%" />
 
-两条任务的区别是:
+生成的路由文档会保存到项目下的`/app/项目名-变体名-route-doc.json`,Demo示例[/app/GoRouter-release-route-doc.json](https://github.com/wyjsonGo/GoRouter/blob/master/app/GoRouter-release-route-doc.json)
 
-*   执行`generateRouteDoc`任务会先自动触发`build`任务生成各个模块子路由文档,在触发生成最终的路由文档。
-*   执行`quickGenerateRouteDoc`任务会直接去获取子模块路由文档，生成最终的路由文档(如果你已经运行过项目,可以使用此任务快速得到结果)。
-
-生成的路由文档会保存到项目下的`/app/项目名-route-doc.json`,Demo示例[/app/GoRouter-route-doc.json](https://github.com/wyjsonGo/GoRouter/blob/master/app/GoRouter-route-doc.json)
-
-##### 10.  路由页面Event
+##### 10.  路由页面事件
 
 在之前跨模块页面事件通知的流程是，使用EventBus库，在module_common模块里定义event类，页面注册订阅者接收事件，实现事件处理并注解标识，页面销毁解除注册。
 这一套流程下来步骤很多，会出现很多event类，而且这些类只在一个页面订阅，还要去module_common模块里定义，发布基础数据类型，会导致所有订阅者都会收到，也无法检测页面生命周期状态。
@@ -712,7 +708,7 @@ GoRouter.getInstance().unRegisterEvent(this, String.class, observer);
 *   `postEvent()`方法支持主线程和子线程调用。多次调用的情况下，在页面生命周期处于`onPause`下，`registerEvent()`方法只会收到最后一次数据，`registerEventForever()`会全部收到。在页面生命周期处于`onResume`下，两个方法会收到全部数据。
 *   `unRegisterEvent()`方法无需主动调用，框架会在页面销毁时自动解除订阅，除非你想立刻取消订阅。
 *   页面可以订阅多个相同类型的事件和多个不同类型的事件。
-*   路由页面Event功能内部使用`LiveData`。
+*   路由页面事件功能内部使用`LiveData`。
 
 Demo示例[EventActivity.java](https://github.com/wyjsonGo/GoRouter/blob/master/module_main/src/main/java/com/wyjson/module_main/activity/EventActivity.java)
 
@@ -763,7 +759,104 @@ Demo示例[MyApplication.java](https://github.com/wyjsonGo/GoRouter/blob/master/
 *   指定模块Application优先级，可以重写`setPriority()`方法，它将按照从大到小的执行顺序执行。
 *   `IApplicationModule`接口不仅提供了`onCreate`、`onLoadAsync`方法，还提供了`onTerminate`、`onConfigurationChanged`、`onLowMemory`、`onTrimMemory`方法，如需监听记得在主Application中添加他们的分发方法`GoRouter.callAMOnCreate()`、`GoRouter.callAMOnTerminate()`、`GoRouter.callAMOnConfigurationChanged(newConfig)`、`GoRouter.callAMOnLowMemory()`、`GoRouter.callAMOnTrimMemory(level)`。
 
-## 七、其他
+
+## 七、自动生成路由帮助类
+
+开启此功能可以大幅提升开发效率，避免错误调用的情况。不需要知道目标页面参数名和参数类型、是否必传等元素，通过帮助类提供的链式调用方便的实现路由的跳转，服务的获取。
+
+##### 1.  添加配置
+
+```groovy
+// app目录下的build.gradle添加配置
+plugins {
+    ...
+    id 'com.wyjson.gorouter'
+}
+GoRouter {
+    ...
+    // 指定根模块项目名称,开启自动生成路由帮助类功能
+    helperToRootModuleName "module_common"
+}
+```
+
+指定`helperToRootModuleName`配置参数后会开启自动生成路由帮助类功能，这个参数需要指定一个根模块项目名(指定的这个模块项目只要保证其他业务模块都能调用到，并且页面传递参数用到的实体类也能引用到就可以，推荐指向`module_common`模块或者新建一个模块单独存放这些生成的路由帮助类)。
+
+##### 2.  使用
+
+```java
+// 经典:访问/main/activity
+GoRouter.getInstance().build("/main/activity").go(this);
+// helper:访问/main/activity(框架会根据path生成对应类名GoRouter.java)
+MainActivityGoRouter.go(this);
+
+// 经典:带参数访问
+GoRouter.getInstance().build("/new/param/activity")
+        .withInt("age", 78)
+        .withString("nickname", "Wyjson")
+        .withInt("base", 7758)
+        .withObject("test", testModel)
+        .go(this);
+// helper:带参数访问
+// 必传参数
+NewParamActivityGoRouter.go(this, "Wyjson", testModel);
+// 所有参数(必传参数和非必传参数一起)
+NewParamActivityGoRouter.go(this, "Wyjson", testModel, base, 78);
+// 非必传参数可以链式调用出来,解决了经典方式需要知道类型和参数名的问题.
+NewParamActivityGoRouter.get("Wyjson", testModel)// 必传参数
+        .setAge(78)// 非必传参数
+        .setBase(7758)// 非必传参数
+        .build()
+        .go(this);
+
+// 经典:访问Fragment
+Fragment fragment = (Fragment) GoRouter.getInstance().build("/user/card/fragment").go(this);
+// helper:访问Fragment
+Fragment fragment = UserCardFragmentGoRouter.go(this);
+
+// 经典:获取元数据
+CardMeta cardMeta = GoRouter.getInstance().build("/user/info/activity").getCardMeta();
+// helper:获取元数据
+CardMeta cardMeta = UserInfoActivityGoRouter.getCardMeta()
+
+// 经典:获取User服务
+UserService service = GoRouter.getInstance().getService(UserService.class);
+// helper:获取User服务
+UserService service = UserServiceGoRouter.get()
+
+// 经典:获取带别名的服务
+PayService service = GoRouter.getInstance().getService(PayService.class, "Alipay");
+// helper:获取带别名的服务
+PayService service = PayServiceForAlipayGoRouter.get();
+
+// helper:获取path
+String path = MainActivityGoRouter.getPath()
+
+// 也可以通过helper类get/set其他属性
+UserSignInActivityGoRouter.build()
+        .withAction(...)
+        .withFlags(...)
+        .go(this, ...);
+```
+
+*   `@Route(deprecated = true)`和打开了openDebug()的情况下，框架跳转到该页将Toast提示其他开发人员和测试人员，并且生成的帮助类也会被自动标记为`@Deprecated`,代码上也会提示过时,提醒开发人员更新跳转代码，这在多人开发时会很有用。`@Service`不会有这个问题，service直接在暴漏的服务接口上标记`@Deprecated`，其他模块调用者就能看到过时标记。
+*   `@Route(ignoreHelper = true)`的情况下，框架不会为这个页面生成帮助类，适用于仅本模块调用的页面。
+
+##### 3.  设计思路
+
+此功能所生成的帮助类会存放到`com.wyjson.router.helper`包下，按照`模块.路由分组.帮助类.java`分别存放，请勿手动更改这些类。
+最早设计的是整个项目生成一个`GoRouterHelper.java`类，调用上比现在的每个页面生成一个对应的帮助类会更统一，
+但是这样会导致多人开发每个人生成的`GoRouterHelper.java`类代码合并冲突，所以想到把`GoRouterHelper.java`存放到根项目`build`目录，存放到`build`目录确实可以解决代码冲突问题，
+但是新的问题也来了，在首次开启生成帮助类的功能，项目里还没有调用这个`GoRouterHelper.java`类的时候是不会有问题的，如果项目里已经使用了这个帮助类，`build`目录被清除或者我clone代码，
+这时项目就没法运行了，因为缺少这个帮助类。这里不得不说一下帮助类生成流程和Android`buildConfig`任务的执行顺序，正常项目clone下来，idea提示报错缺少`buildConfig.java`类，
+你去`build`项目，Gradle会执行`buildConfig`任务，生成缺少的`buildConfig.java`类，再去生成common模块aar。路由帮助类在根项目里还不知道上层其他模块里有什么页面和服务的时候，
+它的执行顺序是，先`build`出来common模块，在去`build`其他页面业务模块，最后在app项目汇总，这时知道了所有页面和服务去生成帮助类到根模块项目。说回刚才的话题，项目里使用了帮助类，
+而帮助类又存放到`build`里，此时要是缺少了`build`目录，会导致项目无法运行，其实有其他方案解决这个问题，但都不是很好，所以最后我把这些帮助类存放到了`根项目/src
+/main/java/com/wyjson/router/helper/...`目录下，按照页面和服务生成对应的帮助类，解决了多人开发代码冲突的问题。
+虽然这些类不在`build`目录里，也不用担心无用的类，框架在每次生成新的代码的时候会自动删除无用的类，和`build`机制一样。
+如果其他业务模块你不是通过本地引用，而是通过aar等方式引入的，那框架只会更新本地引用模块项目的帮助类目录，不会更改和删除aar模块在根项目里的帮助类，
+这样做到了你所开发模块帮助类的更新而不影响其他团队的帮助类。
+
+## 八、其他
 
 ##### 1.  Kotlin项目中的配置方式
 
@@ -780,7 +873,7 @@ kapt {
 }
 
 dependencies {
-    kapt 'com.github.wyjsonGo.GoRouter:GoRouter-Compiler:2.3.5'
+    kapt 'com.github.wyjsonGo.GoRouter:GoRouter-Compiler:2.4.0'
 }
 ```
 

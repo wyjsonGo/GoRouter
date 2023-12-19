@@ -3,38 +3,45 @@
     "PayService$WechatPay": {
       "alias": "WechatPay",
       "remark": "微信Pay服务",
+      "moduleName": "module_user",
       "prototype": "com.wyjson.module_common.route.service.user.PayService",
       "className": "com.wyjson.module_user.route.service.WechatPayServiceImpl"
     },
     "UserService": {
       "remark": "用户服务",
+      "moduleName": "module_user",
       "prototype": "com.wyjson.module_common.route.service.user.UserService",
       "className": "com.wyjson.module_user.route.service.UserServiceImpl"
     },
+    "UserService$Kotlin": {
+      "alias": "Kotlin",
+      "remark": "Kotlin模块用户服务",
+      "moduleName": "module_kotlin",
+      "prototype": "com.wyjson.module_common.route.service.user.UserService",
+      "className": "com.wyjson.module_kotlin.route.service.KotlinUserServiceImpl"
+    },
     "IDegradeService": {
       "remark": "全局降级策略",
+      "moduleName": "module_common",
       "prototype": "com.wyjson.router.interfaces.IDegradeService",
       "className": "com.wyjson.module_common.route.service.DegradeServiceImpl"
     },
     "PayService$Alipay": {
       "alias": "Alipay",
       "remark": "AliPay服务",
+      "moduleName": "module_user",
       "prototype": "com.wyjson.module_common.route.service.user.PayService",
       "className": "com.wyjson.module_user.route.service.AliPayServiceImpl"
     },
-    "UserService$KotlinUserService": {
-      "alias": "KotlinUserService",
-      "remark": "Kotlin模块用户服务",
-      "prototype": "com.wyjson.module_common.route.service.user.UserService",
-      "className": "com.wyjson.module_kotlin.route.service.KotlinUserServiceImpl"
-    },
     "IPretreatmentService": {
       "remark": "预处理服务",
+      "moduleName": "module_common",
       "prototype": "com.wyjson.router.interfaces.IPretreatmentService",
       "className": "com.wyjson.module_common.route.service.PretreatmentServiceImpl"
     },
     "IJsonService": {
       "remark": "json服务",
+      "moduleName": "module_common",
       "prototype": "com.wyjson.router.interfaces.IJsonService",
       "className": "com.wyjson.module_common.route.service.JsonServiceImpl"
     }
@@ -43,16 +50,19 @@
     {
       "ordinal": 1,
       "remark": "登录拦截器",
+      "moduleName": "module_user",
       "className": "com.wyjson.module_user.route.interceptor.SignInInterceptor"
     },
     {
       "ordinal": 50,
       "remark": "Kotlin拦截器",
+      "moduleName": "module_kotlin",
       "className": "com.wyjson.module_kotlin.route.interceptor.KotlinInterceptor"
     },
     {
       "ordinal": 100,
       "remark": "身份验证拦截器",
+      "moduleName": "module_user",
       "className": "com.wyjson.module_user.route.interceptor.AuthenticationInterceptor"
     }
   ],
@@ -61,29 +71,34 @@
       {
         "path": "/new/param/activity",
         "remark": "参数页面",
+        "moduleName": "module_user",
         "type": "Activity",
         "pathClass": "com.wyjson.module_user.activity.ParamActivity",
         "paramsType": [
           {
             "name": "base",
             "type": "int",
+            "intentType": "withInt",
             "required": false,
             "remark": "我是一个父类字段"
           },
           {
             "name": "age",
             "type": "int",
+            "intentType": "withInt",
             "required": false
           },
           {
             "name": "nickname",
             "type": "java.lang.String",
+            "intentType": "withString",
             "required": true,
             "remark": "昵称"
           },
           {
             "name": "test",
             "type": "com.wyjson.module_common.model.TestModel",
+            "intentType": "withObject",
             "required": true,
             "remark": "自定义类型"
           }
@@ -92,17 +107,20 @@
       {
         "path": "/new/param/fragment",
         "remark": "参数片段",
+        "moduleName": "module_user",
         "type": "Fragment",
         "pathClass": "com.wyjson.module_user.fragment.ParamFragment",
         "paramsType": [
           {
             "name": "age",
             "type": "int",
+            "intentType": "withInt",
             "required": false
           },
           {
             "name": "name",
             "type": "java.lang.String",
+            "intentType": "withString",
             "required": false
           }
         ]
@@ -112,17 +130,20 @@
       {
         "path": "/kotlin/activity",
         "remark": "这是一个kotlin页面，本库支持kapt",
+        "moduleName": "module_kotlin",
         "type": "Activity",
         "pathClass": "com.wyjson.module_kotlin.activity.KotlinActivity",
         "paramsType": [
           {
             "name": "age",
             "type": "int",
+            "intentType": "withInt",
             "required": false
           },
           {
             "name": "nickname",
             "type": "java.lang.String",
+            "intentType": "withString",
             "required": true,
             "remark": "昵称"
           }
@@ -133,24 +154,28 @@
       {
         "path": "/main/activity",
         "remark": "主页",
+        "moduleName": "module_main",
         "type": "Activity",
         "pathClass": "com.wyjson.module_main.activity.MainActivity"
       },
       {
         "path": "/main/event/activity",
         "remark": "事件页面",
+        "moduleName": "module_main",
         "type": "Activity",
         "pathClass": "com.wyjson.module_main.activity.EventActivity"
       },
       {
         "path": "/main/event/fragment",
         "remark": "事件片段",
+        "moduleName": "module_main",
         "type": "Fragment",
         "pathClass": "com.wyjson.module_main.fragment.EventFragment"
       },
       {
         "path": "/main/splash/activity",
         "remark": "欢迎页",
+        "moduleName": "module_main",
         "type": "Activity",
         "pathClass": "com.wyjson.module_main.activity.SplashActivity"
       }
@@ -159,12 +184,14 @@
       {
         "path": "/user/card/fragment",
         "remark": "卡片片段",
+        "moduleName": "module_user",
         "type": "Fragment",
         "pathClass": "com.wyjson.module_user.fragment.CardFragment"
       },
       {
         "path": "/user/info/activity",
         "remark": "用户信息页面",
+        "moduleName": "module_user",
         "type": "Activity",
         "pathClass": "com.wyjson.module_user.activity.UserInfoActivity",
         "tag": 3
@@ -172,6 +199,7 @@
       {
         "path": "/user/sign_in/activity",
         "remark": "登录页面",
+        "moduleName": "module_user",
         "type": "Activity",
         "pathClass": "com.wyjson.module_user.activity.SignInActivity"
       }
