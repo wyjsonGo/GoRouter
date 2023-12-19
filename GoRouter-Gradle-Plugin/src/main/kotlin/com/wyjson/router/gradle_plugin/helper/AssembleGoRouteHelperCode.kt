@@ -270,7 +270,8 @@ class AssembleGoRouteHelperCode(private val model: RouteHelperModel) {
             if (param.remark?.isNotEmpty() == true) {
                 itemSetMethod.addJavadoc(param.remark)
             }
-            itemSetMethod.addStatement("\$N.with\$L(\$S, \$N)", FIELD_CARD, param.intentType, name, name)
+            // $L withXXX
+            itemSetMethod.addStatement("\$N.\$L(\$S, \$N)", FIELD_CARD, param.intentType, name, name)
             itemSetMethod.addStatement("return this")
             builderInnerClassMethods.add(itemSetMethod.build())
         }
@@ -311,7 +312,8 @@ class AssembleGoRouteHelperCode(private val model: RouteHelperModel) {
         if (param.remark?.isNotEmpty() == true) {
             paramCode.add("\n// \$N", param.remark)
         }
-        paramCode.add("\n.with\$L(\$S, \$N)", param.intentType, name, name)
+        // $L withXXX
+        paramCode.add("\n.\$L(\$S, \$N)", param.intentType, name, name)
         buildMethod.addParameter(TypeVariableName.get(type), name)
 
         goParamCode.add("\$N, ", name)

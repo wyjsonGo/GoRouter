@@ -155,22 +155,22 @@ public class DocumentUtils {
                 paramModel.setType(typeStr);
 
                 switch (typeStr) {
-                    case BYTE_PACKAGE, BYTE_PRIMITIVE -> paramModel.setIntentType("Byte");
-                    case SHORT_PACKAGE, SHORT_PRIMITIVE -> paramModel.setIntentType("Short");
-                    case INTEGER_PACKAGE, INTEGER_PRIMITIVE -> paramModel.setIntentType("Int");
-                    case LONG_PACKAGE, LONG_PRIMITIVE -> paramModel.setIntentType("Long");
-                    case FLOAT_PACKAGE, FLOAT_PRIMITIVE -> paramModel.setIntentType("Float");
-                    case DOUBLE_PACKAGE, DOUBLE_PRIMITIVE -> paramModel.setIntentType("Double");
-                    case BOOLEAN_PACKAGE, BOOLEAN_PRIMITIVE -> paramModel.setIntentType("Boolean");
-                    case CHAR_PACKAGE, CHAR_PRIMITIVE -> paramModel.setIntentType("Char");
-                    case STRING_PACKAGE -> paramModel.setIntentType("String");
+                    case BYTE_PACKAGE, BYTE_PRIMITIVE -> paramModel.setIntentType("withByte");
+                    case SHORT_PACKAGE, SHORT_PRIMITIVE -> paramModel.setIntentType("withShort");
+                    case INTEGER_PACKAGE, INTEGER_PRIMITIVE -> paramModel.setIntentType("withInt");
+                    case LONG_PACKAGE, LONG_PRIMITIVE -> paramModel.setIntentType("withLong");
+                    case FLOAT_PACKAGE, FLOAT_PRIMITIVE -> paramModel.setIntentType("withFloat");
+                    case DOUBLE_PACKAGE, DOUBLE_PRIMITIVE -> paramModel.setIntentType("withDouble");
+                    case BOOLEAN_PACKAGE, BOOLEAN_PRIMITIVE -> paramModel.setIntentType("withBoolean");
+                    case CHAR_PACKAGE, CHAR_PRIMITIVE -> paramModel.setIntentType("withChar");
+                    case STRING_PACKAGE -> paramModel.setIntentType("withString");
                     default -> {
                         if (types.isSubtype(typeMirror, parcelableType)) {
-                            paramModel.setIntentType("Parcelable");
+                            paramModel.setIntentType("withParcelable");
                         } else if (types.isSubtype(typeMirror, serializableType)) {
-                            paramModel.setIntentType("Serializable");
+                            paramModel.setIntentType("withSerializable");
                         } else {
-                            paramModel.setIntentType("Object");
+                            paramModel.setIntentType("withObject");
                         }
                     }
                 }

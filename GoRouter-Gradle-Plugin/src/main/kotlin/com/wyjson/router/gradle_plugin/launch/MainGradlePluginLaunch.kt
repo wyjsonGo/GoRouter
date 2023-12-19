@@ -29,7 +29,7 @@ class MainGradlePluginLaunch : Plugin<Project> {
     override fun apply(project: Project) {
         val isApp = project.plugins.hasPlugin(AppPlugin::class.java)
         if (!isApp) {
-            Logger.e(TAG, "Plugin ['com.wyjson.Gorouter'] can only be used under the application, not under the module library invalid!")
+            Logger.e(TAG, "Plugin ['com.wyjson.gorouter'] can only be used under the application, not under the module library invalid!")
             return
         }
         variantList.clear()

@@ -78,27 +78,27 @@
           {
             "name": "base",
             "type": "int",
-            "intentType": "Int",
+            "intentType": "withInt",
             "required": false,
             "remark": "我是一个父类字段"
           },
           {
             "name": "age",
             "type": "int",
-            "intentType": "Int",
+            "intentType": "withInt",
             "required": false
           },
           {
             "name": "nickname",
             "type": "java.lang.String",
-            "intentType": "String",
+            "intentType": "withString",
             "required": true,
             "remark": "昵称"
           },
           {
             "name": "test",
             "type": "com.wyjson.module_common.model.TestModel",
-            "intentType": "Object",
+            "intentType": "withObject",
             "required": true,
             "remark": "自定义类型"
           }
@@ -114,13 +114,13 @@
           {
             "name": "age",
             "type": "int",
-            "intentType": "Int",
+            "intentType": "withInt",
             "required": false
           },
           {
             "name": "name",
             "type": "java.lang.String",
-            "intentType": "String",
+            "intentType": "withString",
             "required": false
           }
         ]
@@ -137,13 +137,13 @@
           {
             "name": "age",
             "type": "int",
-            "intentType": "Int",
+            "intentType": "withInt",
             "required": false
           },
           {
             "name": "nickname",
             "type": "java.lang.String",
-            "intentType": "String",
+            "intentType": "withString",
             "required": true,
             "remark": "昵称"
           }
