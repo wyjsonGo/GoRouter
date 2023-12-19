@@ -1,7 +1,7 @@
 pluginManagement {
     repositories {
-        mavenLocal()
-//        maven { url 'https://jitpack.io' }
+//        mavenLocal()
+        maven { url 'https://jitpack.io' }
         google()
         mavenCentral()
         gradlePluginPortal()
@@ -18,11 +18,11 @@ dependencyResolutionManagement {
 
 rootProject.name = "GoRouter"
 
-include ':app'
-include ':module_main'
-include ':module_user'
-include ':module_kotlin'
-include ':module_common'
+//include ':app'
+//include ':module_main'
+//include ':module_user'
+//include ':module_kotlin'
+//include ':module_common'
 
 include ':GoRouter-Api'
 include ':GoRouter-Annotation'
