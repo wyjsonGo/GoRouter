@@ -783,7 +783,78 @@ GoRouter {
 
 ##### 2.  使用
 
-:::TODO 未写完
+```java
+// 经典:访问/main/activity
+GoRouter.getInstance().build("/main/activity").go(this);
+// helper:访问/main/activity(框架会根据path生成对应类名GoRouter.java)
+MainActivityGoRouter.go(this);
+
+// 经典:带参数访问
+GoRouter.getInstance().build("/new/param/activity")
+        .withInt("age", 78)
+        .withString("nickname", "Wyjson")
+        .withInt("base", 7758)
+        .withObject("test", testModel)
+        .go(this);
+// helper:带参数访问
+// 必传参数
+NewParamActivityGoRouter.go(this, "Wyjson", testModel);
+// 所有参数(必传参数和非必传参数一起)
+NewParamActivityGoRouter.go(this, "Wyjson", testModel, base, 78);
+// 非必传参数可以链式调用出来,解决了经典方式需要知道类型和参数名的问题.
+NewParamActivityGoRouter.get("Wyjson", testModel)// 必传参数
+        .setAge(78)// 非必传参数
+        .setBase(7758)// 非必传参数
+        .build()
+        .go(this);
+
+// 经典:访问Fragment
+Fragment fragment = (Fragment) GoRouter.getInstance().build("/user/card/fragment").go(this);
+// helper:访问Fragment
+Fragment fragment = UserCardFragmentGoRouter.go(this);
+
+// 经典:获取元数据
+CardMeta cardMeta = GoRouter.getInstance().build("/user/info/activity").getCardMeta();
+// helper:获取元数据
+CardMeta cardMeta = UserInfoActivityGoRouter.getCardMeta()
+
+// 经典:获取User服务
+UserService service = GoRouter.getInstance().getService(UserService.class);
+// helper:获取User服务
+UserService service = UserServiceGoRouter.get()
+
+// 经典:获取带别名的服务
+PayService service = GoRouter.getInstance().getService(PayService.class, "Alipay");
+// helper:获取带别名的服务
+PayService service = PayServiceForAlipayGoRouter.get();
+
+// helper:获取path
+String path = MainActivityGoRouter.getPath()
+
+// 也可以通过helper类get/set其他属性
+UserSignInActivityGoRouter.build()
+        .withAction(...)
+        .withFlags(...)
+        .go(this, ...);
+```
+
+*   `@Route(deprecated = true)`和打开了openDebug()的情况下，框架跳转到该页将Toast提示其他开发人员和测试人员，并且生成的帮助类也会被自动标记为`@Deprecated`,代码上也会提示过时,提醒开发人员更新跳转代码，这在多人开发时会很有用。`@Service`不会有这个问题，service直接在暴漏的服务接口上标记`@Deprecated`，其他模块调用者就能看到过时标记。
+*   `@Route(ignoreHelper = true)`的情况下，框架不会为这个页面生成帮助类，适用于仅本模块调用的页面。
+
+##### 3.  设计思路
+
+此功能所生成的帮助类会存放到`com.wyjson.router.helper`包下，按照`模块.路由分组.帮助类.java`分别存放，请勿手动更改这些类。
+最早设计的是整个项目生成一个`GoRouterHelper.java`类，调用上比现在的每个页面生成一个对应的帮助类会更统一，
+但是这样会导致多人开发每个人生成的`GoRouterHelper.java`类代码合并冲突，所以想到把`GoRouterHelper.java`存放到根项目`build`目录，存放到`build`目录确实可以解决代码冲突问题，
+但是新的问题也来了，在首次开启生成帮助类的功能，项目里还没有调用这个`GoRouterHelper.java`类的时候是不会有问题的，如果项目里已经使用了这个帮助类，`build`目录被清除或者我clone代码，
+这时项目就没法运行了，因为缺少这个帮助类。这里不得不说一下帮助类生成流程和Android`buildConfig`任务的执行顺序，正常项目clone下来，idea提示报错缺少`buildConfig.java`类，
+你去`build`项目，Gradle会执行`buildConfig`任务，生成缺少的`buildConfig.java`类，再去生成common模块aar。路由帮助类在根项目里还不知道上层其他模块里有什么页面和服务的时候，
+它的执行顺序是，先`build`出来common模块，在去`build`其他页面业务模块，最后在app项目汇总，这时知道了所有页面和服务去生成帮助类到根模块项目。说回刚才的话题，项目里使用了帮助类，
+而帮助类又存放到`build`里，此时要是缺少了`build`目录，会导致项目无法运行，其实有其他方案解决这个问题，但都不是很好，所以最后我把这些帮助类存放到了`根项目/src
+/main/java/com/wyjson/router/helper/...`目录下，按照页面和服务生成对应的帮助类，解决了多人开发代码冲突的问题。
+虽然这些类不在`build`目录里，也不用担心无用的类，框架在每次生成新的代码的时候会自动删除无用的类，和`build`机制一样。
+如果其他业务模块你不是通过本地引用，而是通过aar等方式引入的，那框架只会更新本地引用模块项目的帮助类目录，不会更改和删除aar模块在根项目里的帮助类，
+这样做到了你所开发模块帮助类的更新而不影响其他团队的帮助类。
 
 ## 八、其他
 

@@ -22,7 +22,7 @@ class KotlinActivity : FragmentActivity() {
         val vb = KotlinActivityKotlinBinding.inflate(layoutInflater)
         setContentView(vb.root)
 
-//        `KotlinActivity$$Param`.inject(this)
+        `KotlinActivity$$Param`.inject(this)
         vb.tvTitle.text = "age:${age},name:${name}"
     }
 }

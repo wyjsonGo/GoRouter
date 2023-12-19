@@ -47,6 +47,10 @@ public class MainActivity extends FragmentActivity {
 
     public void onClickSignInActivity(View view) {
         UserSignInActivityGoRouter.go(this);
+        // or
+//        UserSignInActivityGoRouter.build()
+//                .withFlags(...)
+//                .go(this);
     }
 
     public void onClickParamActivity(View view) {
@@ -61,7 +65,11 @@ public class MainActivity extends FragmentActivity {
         // or
 //        NewParamActivityGoRouter.go(this, "Wyjson", testModel);
         // or
-//        NewParamActivityGoRouter.get("Wyjson", testModel).setAge(78).setBase(base).build().go(this);
+//        NewParamActivityGoRouter.get("Wyjson", testModel)
+//                .setAge(78)
+//                .setBase(base)
+//                .build()
+//                .go(this);
     }
 
     public void onClickCardFragment(View view) {
