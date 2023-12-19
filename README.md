@@ -74,7 +74,7 @@ dependencies {
 // Kotlin配置参见8-1
 ```
 
-##### 2.  在module项目下添加注解处理器依赖和配置 (如只使用java方式注册,不使用注解,可忽略此步骤)
+##### 2.  在module项目下添加注解处理器依赖和配置
 
 ```groovy
 android {
