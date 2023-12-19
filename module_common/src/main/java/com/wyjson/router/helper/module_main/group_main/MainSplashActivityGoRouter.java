@@ -3,6 +3,7 @@ package com.wyjson.router.helper.module_main.group_main;
 import android.content.Context;
 import com.wyjson.router.GoRouter;
 import com.wyjson.router.model.Card;
+import com.wyjson.router.model.CardMeta;
 import java.lang.String;
 
 /**
@@ -13,6 +14,10 @@ import java.lang.String;
 public class MainSplashActivityGoRouter {
     public static String getPath() {
         return "/main/splash/activity";
+    }
+
+    public static CardMeta getCardMeta() {
+        return GoRouter.getInstance().build(getPath()).getCardMeta();
     }
 
     public static Card build() {

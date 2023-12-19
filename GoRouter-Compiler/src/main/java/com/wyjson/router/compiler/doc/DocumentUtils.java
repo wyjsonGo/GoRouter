@@ -131,6 +131,12 @@ public class DocumentUtils {
                 routeModel.setTag(route.tag());
             }
             routeModel.setModuleName(moduleName);
+            if (route.deprecated()) {
+                routeModel.setDeprecated(true);
+            }
+            if (route.ignoreHelper()) {
+                routeModel.setIgnoreHelper(true);
+            }
             addParamCode(moduleName, logger, element, routeModel, types, serializableType, parcelableType);
             routeModelList.add(routeModel);
         } catch (Exception e) {

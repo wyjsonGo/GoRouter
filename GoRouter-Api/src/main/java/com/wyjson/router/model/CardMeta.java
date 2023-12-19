@@ -19,16 +19,18 @@ public class CardMeta {
     private RouteType type;
     private Class<?> pathClass;
     private int tag;// 额外的标记
+    private boolean deprecated;
     private Map<String, ParamMeta> paramsType;// <字段名, 参数元数据对象>
 
     protected CardMeta() {
     }
 
-    public CardMeta(String path, RouteType type, Class<?> pathClass, int tag, Map<String, ParamMeta> paramsType) {
+    public CardMeta(String path, RouteType type, Class<?> pathClass, int tag, boolean deprecated, Map<String, ParamMeta> paramsType) {
         setPath(path);
         this.type = type;
         this.pathClass = pathClass;
         this.tag = tag;
+        this.deprecated = deprecated;
         this.paramsType = paramsType;
     }
 
@@ -91,6 +93,14 @@ public class CardMeta {
         this.tag = tag;
     }
 
+    public boolean isDeprecated() {
+        return deprecated;
+    }
+
+    void setDeprecated(boolean deprecated) {
+        this.deprecated = deprecated;
+    }
+
     public Map<String, ParamMeta> getParamsType() {
         if (paramsType == null) {
             paramsType = new HashMap<>();
@@ -110,11 +120,20 @@ public class CardMeta {
         if (cls == null) {
             throw new RouterException("Cannot commit empty!");
         }
-        RouteCenter.addCardMeta(new CardMeta(this.path, type, cls, this.tag, this.paramsType));
+        RouteCenter.addCardMeta(new CardMeta(this.path, type, cls, this.tag, this.deprecated, this.paramsType));
     }
 
     public CardMeta putTag(int tag) {
         this.tag = tag;
+        return this;
+    }
+
+    /**
+     * @param deprecated 如果标记为true，框架在openDebug()的情况下，跳转到该页将提示其他开发人员和测试人员
+     * @return
+     */
+    public CardMeta putDeprecated(boolean deprecated) {
+        this.deprecated = deprecated;
         return this;
     }
 

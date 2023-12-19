@@ -300,6 +300,13 @@ public class GenerateRouteModuleProcessor extends BaseProcessor {
         }
         unifyCode.add(tagCode.build());
 
+        // .putDeprecated(true)
+        CodeBlock.Builder deprecatedCode = CodeBlock.builder();
+        if (route.deprecated()) {
+            deprecatedCode.add(".putDeprecated(true)");
+        }
+        unifyCode.add(deprecatedCode.build());
+
         // .putInt(x).putString(x) ...
         // Get all fields annotation by @Param
         CodeBlock.Builder paramCode = CodeBlock.builder();

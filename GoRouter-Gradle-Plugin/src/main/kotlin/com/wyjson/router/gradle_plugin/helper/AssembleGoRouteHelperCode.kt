@@ -9,7 +9,9 @@ import com.squareup.javapoet.TypeVariableName
 import com.wyjson.router.gradle_plugin.model.ParamModel
 import com.wyjson.router.gradle_plugin.model.RouteHelperModel
 import com.wyjson.router.gradle_plugin.model.RouteModel
+import com.wyjson.router.gradle_plugin.utils.Constants
 import com.wyjson.router.gradle_plugin.utils.Constants.CARD_CLSS_NAME
+import com.wyjson.router.gradle_plugin.utils.Constants.CARD_META_CLSS_NAME
 import com.wyjson.router.gradle_plugin.utils.Constants.CONTEXT
 import com.wyjson.router.gradle_plugin.utils.Constants.FIELD_CARD
 import com.wyjson.router.gradle_plugin.utils.Constants.FRAGMENT
@@ -18,7 +20,6 @@ import com.wyjson.router.gradle_plugin.utils.Constants.GOROUTER_HELPER_PACKAGE_N
 import com.wyjson.router.gradle_plugin.utils.Constants.I_DEGRADE_SERVICE
 import com.wyjson.router.gradle_plugin.utils.Constants.I_JSON_SERVICE
 import com.wyjson.router.gradle_plugin.utils.Constants.I_PRETREATMENT_SERVICE
-import com.wyjson.router.gradle_plugin.utils.Constants.NULLABLE
 import com.wyjson.router.gradle_plugin.utils.Constants.PROJECT
 import com.wyjson.router.gradle_plugin.utils.Constants.WARNING_TIPS
 import com.wyjson.router.gradle_plugin.utils.Logger
@@ -31,9 +32,11 @@ class AssembleGoRouteHelperCode(private val model: RouteHelperModel) {
     private val TAG = "RHCode"
     private val GoRouter = ClassName.bestGuess(GOROUTER_CLASS_NAME)
     private val Card = ClassName.bestGuess(CARD_CLSS_NAME)
+    private val CardMeta = ClassName.bestGuess(CARD_META_CLSS_NAME)
     private val Context = ClassName.bestGuess(CONTEXT)
     private val Fragment = ClassName.bestGuess(FRAGMENT)
-    private val Nullable = ClassName.bestGuess(NULLABLE)
+    private val Nullable = ClassName.bestGuess(Constants.Nullable)
+    private val Deprecated = ClassName.bestGuess(Constants.Deprecated)
     private val clearDirList = ArrayList<String>()
 
     fun generateJavaFile(packageFile: File) {
@@ -104,6 +107,8 @@ class AssembleGoRouteHelperCode(private val model: RouteHelperModel) {
     private fun addRoute(packageFile: File) {
         for (route in model.routes) {
             for (routeModel in route.value) {
+                if (routeModel.ignoreHelper == true)
+                    continue
                 var className = try {
                     extractClassNameByPath(routeModel.path)
                 } catch (e: Exception) {
@@ -120,6 +125,15 @@ class AssembleGoRouteHelperCode(private val model: RouteHelperModel) {
                     .returns(String::class.java)
                     .addStatement("return \$S", routeModel.path)
 
+                val getCardMetaMethod = MethodSpec.methodBuilder("getCardMeta")
+                    .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+                    .returns(CardMeta)
+                    .addStatement(
+                        "return \$T.getInstance().build(\$N()).getCardMeta()",
+                        GoRouter,
+                        getPathMethod.build().name
+                    )
+
                 val buildMethod = MethodSpec.methodBuilder("build")
                     .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                     .returns(Card)
@@ -129,6 +143,8 @@ class AssembleGoRouteHelperCode(private val model: RouteHelperModel) {
                     .addParameter(Context, "context")
 
                 methods.add(getPathMethod.build())
+                methods.add(getCardMetaMethod.build())
+
                 if (routeModel.paramsType != null) {
                     val paramCode = CodeBlock.builder()
                     val goParamCode = CodeBlock.builder()
@@ -170,6 +186,10 @@ class AssembleGoRouteHelperCode(private val model: RouteHelperModel) {
                     classBuilder.addJavadoc("\n{@link \$N}", routeModel.pathClass)
                 } else {
                     classBuilder.addJavadoc("\n{@link \$N}", routeModel.pathClass)
+                }
+
+                if (routeModel.deprecated == true) {
+                    classBuilder.addAnnotation(Deprecated)
                 }
 
                 val moduleName = projectNameToPackageName(routeModel.moduleName)

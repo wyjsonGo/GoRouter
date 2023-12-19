@@ -7,5 +7,7 @@ data class RouteModel(
     val type: String,
     val pathClass: String,
     val tag: Int?,
+    val deprecated: Boolean?,
+    val ignoreHelper: Boolean?,
     val paramsType: List<ParamModel>?
 )

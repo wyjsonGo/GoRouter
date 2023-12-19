@@ -9,14 +9,19 @@ import java.lang.annotation.Target;
 @Target({FIELD})
 @Retention(SOURCE)
 public @interface Param {
-
-    // Mark param name
+    /**
+     * Mark param name
+     */
     String name() default "";
 
-    // remark of the field
+    /**
+     * remark of the field
+     */
     String remark() default "";
 
-    // If required, app will be crash when value is null.
-    // Primitive type wont be check!
+    /**
+     * If marked true, injectCheck() is called to check if the value is empty,
+     * which throws a ParamException() type exception.
+     */
     boolean required() default false;
 }

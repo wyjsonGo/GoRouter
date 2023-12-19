@@ -385,6 +385,13 @@ public final class GoRouter {
             }
         });
 
+        if (isDebug() && card.isDeprecated()) {
+            logger.warning(null, "[go] This page has been marked as deprecated. path[" + card.getPath() + "]");
+            runInMainThread(() -> Toast.makeText(context, "This page has been marked as deprecated!\n" +
+                    " Path = [" + card.getPath() + "]\n" +
+                    " Group = [" + card.getGroup() + "]", Toast.LENGTH_SHORT).show());
+        }
+
         switch (card.getType()) {
             case ACTIVITY:
                 IInterceptorService interceptorService = getService(IInterceptorService.class);

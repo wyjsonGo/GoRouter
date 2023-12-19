@@ -4,6 +4,7 @@ import android.content.Context;
 import androidx.fragment.app.Fragment;
 import com.wyjson.router.GoRouter;
 import com.wyjson.router.model.Card;
+import com.wyjson.router.model.CardMeta;
 import java.lang.String;
 
 /**
@@ -14,6 +15,10 @@ import java.lang.String;
 public class MainEventFragmentGoRouter {
     public static String getPath() {
         return "/main/event/fragment";
+    }
+
+    public static CardMeta getCardMeta() {
+        return GoRouter.getInstance().build(getPath()).getCardMeta();
     }
 
     public static Card build() {
