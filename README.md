@@ -762,7 +762,7 @@ Demo示例[MyApplication.java](https://github.com/wyjsonGo/GoRouter/blob/master/
 
 ## 七、自动生成路由帮助类
 
-开启此功能可以大幅提升开发效率，避免错误调用的情况。不需要知道目标页面参数名和参数类型、是否必传等元素，通过帮助类提供的链式调用方便的实现路由的跳转，服务的获取。
+开启此功能可以大幅提升开发效率，避免错误调用的情况。不需要知道目标页面参数名和参数类型、是否必传等元素，通过帮助类提供的链式调用方便的实现路由的跳转和服务的获取。
 
 ##### 1.  添加配置
 
@@ -801,7 +801,7 @@ GoRouter.getInstance().build("/new/param/activity")
 NewParamActivityGoRouter.go(this, "Wyjson", testModel);
 // 所有参数(必传参数和非必传参数一起)
 NewParamActivityGoRouter.go(this, "Wyjson", testModel, base, 78);
-// 非必传参数可以链式调用出来,解决了经典方式需要知道类型和参数名的问题.
+// 非必传参数可以链式调用出来,解决了经典方式需要知道类型和参数名的问题
 NewParamActivityGoRouter.get("Wyjson", testModel)// 必传参数
         .setAge(78)// 非必传参数
         .setBase(7758)// 非必传参数
