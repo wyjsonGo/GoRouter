@@ -47,17 +47,17 @@ public class EventActivity extends FragmentActivity {
 
     public void onClickStringEvent(View view) {
         // 向EventFragment发送String类型
-        GoRouter.getInstance().postEvent(MainEventFragmentGoRouter.getPath(), "Go!");
+        MainEventFragmentGoRouter.postEvent("Go!");
     }
 
     public void onClickCustomEvent(View view) {
         // 向EventFragment发送自定义类型
-        GoRouter.getInstance().postEvent(MainEventFragmentGoRouter.getPath(), new UserEntity(89, "Wyjson"));
+        MainEventFragmentGoRouter.postEvent(new UserEntity(89, "Wyjson"));
     }
 
     public void onClickIntEvent(View view) {
         // 向MainActivity发送int类型
-        GoRouter.getInstance().postEvent(MainActivityGoRouter.getPath(), 123);
+        MainActivityGoRouter.postEvent(123);
     }
 
     // 显示EventFragment
