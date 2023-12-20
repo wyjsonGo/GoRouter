@@ -20,6 +20,10 @@ public class NewParamActivityGoRouter {
         return GoRouter.getInstance().build(getPath()).getCardMeta();
     }
 
+    public static <T> void postEvent(T value) {
+        GoRouter.getInstance().postEvent(getPath(), value);
+    }
+
     public static Card build(String nickname, com.wyjson.module_common.model.TestModel test) {
         return GoRouter.getInstance().build(getPath())
                 // 昵称

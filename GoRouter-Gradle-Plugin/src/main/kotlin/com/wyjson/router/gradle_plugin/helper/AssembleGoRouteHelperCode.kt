@@ -134,6 +134,16 @@ class AssembleGoRouteHelperCode(private val model: RouteHelperModel) {
                         getPathMethod.build().name
                     )
 
+                val postEventMethod = MethodSpec.methodBuilder("postEvent")
+                    .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+                    .addTypeVariable(TypeVariableName.get("T"))
+                    .addParameter(TypeVariableName.get("T"), "value")
+                    .addStatement(
+                        "\$T.getInstance().postEvent(\$N(), value)",
+                        GoRouter,
+                        getPathMethod.build().name
+                    )
+
                 val buildMethod = MethodSpec.methodBuilder("build")
                     .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                     .returns(Card)
@@ -144,6 +154,7 @@ class AssembleGoRouteHelperCode(private val model: RouteHelperModel) {
 
                 methods.add(getPathMethod.build())
                 methods.add(getCardMetaMethod.build())
+                methods.add(postEventMethod.build())
 
                 if (routeModel.paramsType != null) {
                     val paramCode = CodeBlock.builder()

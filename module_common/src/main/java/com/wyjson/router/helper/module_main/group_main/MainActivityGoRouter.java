@@ -20,6 +20,10 @@ public class MainActivityGoRouter {
         return GoRouter.getInstance().build(getPath()).getCardMeta();
     }
 
+    public static <T> void postEvent(T value) {
+        GoRouter.getInstance().postEvent(getPath(), value);
+    }
+
     public static Card build() {
         return GoRouter.getInstance().build(getPath());
     }
