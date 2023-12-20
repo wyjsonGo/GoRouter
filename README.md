@@ -69,7 +69,7 @@ dependencyResolutionManagement {
 }
 
 dependencies {
-    api 'com.github.wyjsonGo.GoRouter:GoRouter-Api:2.4.0'
+    api 'com.github.wyjsonGo.GoRouter:GoRouter-Api:2.4.1'
 }
 // Kotlin配置参见8-1
 ```
@@ -89,7 +89,7 @@ android {
 }
 
 dependencies {
-    annotationProcessor 'com.github.wyjsonGo.GoRouter:GoRouter-Compiler:2.4.0'
+    annotationProcessor 'com.github.wyjsonGo.GoRouter:GoRouter-Compiler:2.4.1'
 }
 ```
 
@@ -157,7 +157,7 @@ pluginManagement {
 // 项目根目录下的build.gradle
 buildscript {
     dependencies {
-        classpath 'com.github.wyjsonGo.GoRouter:GoRouter-Gradle-Plugin:2.4.0'
+        classpath 'com.github.wyjsonGo.GoRouter:GoRouter-Gradle-Plugin:2.4.1'
     }
 }
 ```
@@ -840,6 +840,11 @@ PayService service = GoRouter.getInstance().getService(PayService.class, "Alipay
 // helper:获取带别名的服务
 PayService service = PayServiceForAlipayGoRouter.get();
 
+// 经典:向/main/activity发送事件
+GoRouter.getInstance().postEvent("/main/activity", "Go!");
+// helper:向/main/activity发送事件
+MainActivityGoRouter.postEvent("Go!");
+
 // helper:获取path
 String path = MainActivityGoRouter.getPath()
 
@@ -885,7 +890,7 @@ kapt {
 }
 
 dependencies {
-    kapt 'com.github.wyjsonGo.GoRouter:GoRouter-Compiler:2.4.0'
+    kapt 'com.github.wyjsonGo.GoRouter:GoRouter-Compiler:2.4.1'
 }
 ```
 
