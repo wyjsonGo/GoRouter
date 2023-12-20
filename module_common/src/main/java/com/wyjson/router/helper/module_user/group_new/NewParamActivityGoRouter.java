@@ -37,13 +37,13 @@ public class NewParamActivityGoRouter {
         build(nickname, test).go(context);
     }
 
-    public static Builder get(String nickname, com.wyjson.module_common.model.TestModel test) {
+    public static Builder create(String nickname, com.wyjson.module_common.model.TestModel test) {
         return new Builder(nickname, test);
     }
 
     public static Card build(String nickname, com.wyjson.module_common.model.TestModel test,
             int base, int age) {
-        return get(nickname, test).setBase(base).setAge(age).build();
+        return create(nickname, test).setBase(base).setAge(age).build();
     }
 
     public static void go(Context context, String nickname,

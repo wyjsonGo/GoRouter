@@ -814,7 +814,7 @@ NewParamActivityGoRouter.go(this, "Wyjson", testModel);
 // 所有参数(必传参数和非必传参数一起)
 NewParamActivityGoRouter.go(this, "Wyjson", testModel, base, 78);
 // 非必传参数可以链式调用,解决了经典方式需要知道类型和参数名的问题
-NewParamActivityGoRouter.get("Wyjson", testModel)// 必传参数
+NewParamActivityGoRouter.create("Wyjson", testModel)// 必传参数
         .setAge(78)// 非必传参数
         .setBase(7758)// 非必传参数
         .build()
