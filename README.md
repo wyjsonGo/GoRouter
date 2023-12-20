@@ -117,8 +117,9 @@ GoRouter.autoLoadRouteModule(this); // 尽可能早，推荐在Application中初
 
 ##### 5.  发起路由操作
 
-```java
 经典方式:
+
+```java
 // 1. 应用内简单的跳转(通过URL跳转在'进阶用法'中)
 GoRouter.getInstance().build("/test/activity").go(this);
 
@@ -128,8 +129,11 @@ GoRouter.getInstance().build("/test/fragment")
             .withObject("test", new TestModel(123, "Jack"))
             .withInt("age", 35)
             .go(this);
+```
 
-自动生成Helper方式:(开启helper功能,参见7-1)
+Helper方式:(开启Helper功能，参见7-1)
+
+```java
 // 1. 应用内简单的跳转
 TestActivityGoRouter.go(this);
 
