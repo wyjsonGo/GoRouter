@@ -169,18 +169,18 @@ class AssembleGoRouteHelperCode(private val model: RouteHelperModel) {
                     toCodeEnd(getPathMethod, buildMethod, goMethod, routeModel, paramCode, goParamCode, methods)
 
                     if (requiredCount != routeModel.paramsType.size) {
-                        val getMethod = MethodSpec.methodBuilder("get")
+                        val createMethod = MethodSpec.methodBuilder("create")
                             .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                         val goParamCodeString = handleGoParamCodeString(goParamCode)
                         val allParamMethodParamCode = CodeBlock.builder()
-                        handleBuilderInnerClass(className, routeModel,  getPathMethod, getMethod, buildMethod, paramCode, goParamCodeString, typeSpecs, methods)
+                        handleBuilderInnerClass(className, routeModel,  getPathMethod, createMethod, buildMethod, paramCode, goParamCodeString, typeSpecs, methods)
 
                         for (param in routeModel.paramsType) {
                             if (param.required)
                                 continue
                             handleParam(param, buildMethod, goMethod, paramCode, goParamCode, allParamMethodParamCode)
                         }
-                        toCodeEndFormAllParam(getMethod, buildMethod, goMethod, routeModel, goParamCode, goParamCodeString, allParamMethodParamCode, methods)
+                        toCodeEndFormAllParam(createMethod, buildMethod, goMethod, routeModel, goParamCode, goParamCodeString, allParamMethodParamCode, methods)
                     }
                 } else {
                     toCodeEnd(getPathMethod,buildMethod, goMethod, routeModel, CodeBlock.builder(), CodeBlock.builder(), methods)
@@ -263,7 +263,7 @@ class AssembleGoRouteHelperCode(private val model: RouteHelperModel) {
         methodName: String,
         routeModel: RouteModel,
         getPathMethod: MethodSpec.Builder,
-        getMethod: MethodSpec.Builder,
+        createMethod: MethodSpec.Builder,
         buildMethod: MethodSpec.Builder,
         paramCode: CodeBlock.Builder,
         goParamCodeString: String,
@@ -316,10 +316,10 @@ class AssembleGoRouteHelperCode(private val model: RouteHelperModel) {
         builderInnerClass.addMethods(builderInnerClassMethods)
         typeSpecs.add(builderInnerClass.build())
 
-        getMethod.returns(TypeVariableName.get(builderInnerClass.build().name))
-        getMethod.addParameters(buildMethod.parameters)
-        getMethod.addStatement("return new \$L(\$L)", builderInnerClass.build().name, goParamCodeString)
-        methods.add(getMethod.build())
+        createMethod.returns(TypeVariableName.get(builderInnerClass.build().name))
+        createMethod.addParameters(buildMethod.parameters)
+        createMethod.addStatement("return new \$L(\$L)", builderInnerClass.build().name, goParamCodeString)
+        methods.add(createMethod.build())
     }
 
     private fun handleGoParamCodeString(goParamCode: CodeBlock.Builder): String {
@@ -382,7 +382,7 @@ class AssembleGoRouteHelperCode(private val model: RouteHelperModel) {
     }
 
     private fun toCodeEndFormAllParam(
-        getMethod: MethodSpec.Builder,
+        createMethod: MethodSpec.Builder,
         buildMethod: MethodSpec.Builder,
         goMethod: MethodSpec.Builder,
         routeModel: RouteModel,
@@ -394,7 +394,7 @@ class AssembleGoRouteHelperCode(private val model: RouteHelperModel) {
         val newBuildMethod = buildMethod.build().toBuilder()
         newBuildMethod.addStatement(
             "return \$N(\$L)\$L.build()",
-            getMethod.build().name,
+            createMethod.build().name,
             oldGoParamCodeString,
             allParamMethodParamCode.build()
         )

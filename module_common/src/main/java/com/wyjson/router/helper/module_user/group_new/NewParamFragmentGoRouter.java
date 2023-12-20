@@ -33,12 +33,12 @@ public class NewParamFragmentGoRouter {
         return (Fragment) build().go(context);
     }
 
-    public static Builder get() {
+    public static Builder create() {
         return new Builder();
     }
 
     public static Card build(int age, String name) {
-        return get().setAge(age).setName(name).build();
+        return create().setAge(age).setName(name).build();
     }
 
     public static Fragment go(Context context, int age, String name) {

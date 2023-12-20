@@ -34,12 +34,12 @@ public class KotlinActivityGoRouter {
         build(nickname).go(context);
     }
 
-    public static Builder get(String nickname) {
+    public static Builder create(String nickname) {
         return new Builder(nickname);
     }
 
     public static Card build(String nickname, int age) {
-        return get(nickname).setAge(age).build();
+        return create(nickname).setAge(age).build();
     }
 
     public static void go(Context context, String nickname, int age) {
