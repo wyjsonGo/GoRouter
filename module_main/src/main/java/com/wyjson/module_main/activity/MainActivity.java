@@ -65,11 +65,11 @@ public class MainActivity extends FragmentActivity {
         // or
 //        NewParamActivityGoRouter.go(this, "Wyjson", testModel);
         // or
-        NewParamActivityGoRouter.create("Wyjson", testModel)
-                .setAge(78)
-                .setBase(base)
-                .build()
-                .go(this);
+//        NewParamActivityGoRouter.create("Wyjson", testModel)
+//                .setAge(78)
+//                .setBase(base)
+//                .build()
+//                .go(this);
     }
 
     public void onClickCardFragment(View view) {
