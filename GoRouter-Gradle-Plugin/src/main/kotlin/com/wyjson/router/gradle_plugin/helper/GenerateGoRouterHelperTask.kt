@@ -2,6 +2,7 @@ package com.wyjson.router.gradle_plugin.helper
 
 import com.android.build.api.variant.Variant
 import com.google.gson.Gson
+import com.google.gson.JsonParser
 import com.wyjson.router.gradle_plugin.model.RouteHelperModel
 import com.wyjson.router.gradle_plugin.utils.Constants
 import com.wyjson.router.gradle_plugin.utils.Logger
@@ -40,7 +41,12 @@ abstract class GenerateGoRouterHelperTask : DefaultTask() {
         setDependModeList(variantName, buildType, flavorName)
 
         if (!scanRouteModule(variantName, buildType)) {
-            Logger.w(TAG, "GoRouterHelper task end.")
+            Logger.i(TAG, "GoRouterHelper task end.")
+            return
+        }
+
+        if (checkCache()) {
+            Logger.i(TAG, "GoRouterHelper(UP-TO-DATE) task end.")
             return
         }
 
@@ -55,7 +61,25 @@ abstract class GenerateGoRouterHelperTask : DefaultTask() {
         val path = "/src/${catalog}/java/com/wyjson/router/helper"
         val packageFile = File(dir, path)
         AssembleGoRouteHelperCode(routeHelperModel!!).generateJavaFile(packageFile)
+        saveCache()
         Logger.i(TAG, "GoRouterHelper task end. ${dir}${path}")
+    }
+
+    private fun checkCache(): Boolean {
+        val cacheFile = File(project.buildDir, "/tmp/gorouter/route-helper-cache.json")
+        if (!cacheFile.exists())
+            return false
+        try {
+            return JsonParser.parseString(cacheFile.readText()).equals(JsonParser.parseString(Gson().toJson(routeHelperModel)))
+        } catch (_: Exception) {
+        }
+        return false
+    }
+
+    private fun saveCache() {
+        val cacheFile = File(project.buildDir, "/tmp/gorouter/route-helper-cache.json")
+        cacheFile.parentFile.mkdirs()
+        cacheFile.writeText(Gson().toJson(routeHelperModel), Charsets.UTF_8)
     }
 
     private fun scanRouteModule(variantName: String, buildType: String?): Boolean {
