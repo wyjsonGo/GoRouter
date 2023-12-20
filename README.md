@@ -118,15 +118,23 @@ GoRouter.autoLoadRouteModule(this); // 尽可能早，推荐在Application中初
 ##### 5.  发起路由操作
 
 ```java
+经典方式:
 // 1. 应用内简单的跳转(通过URL跳转在'进阶用法'中)
 GoRouter.getInstance().build("/test/activity").go(this);
 
 // 2. 跳转并携带参数
 GoRouter.getInstance().build("/test/fragment")
-            .withInt("age", 35)
             .withString("name", "Wyjson")
             .withObject("test", new TestModel(123, "Jack"))
+            .withInt("age", 35)
             .go(this);
+
+自动生成Helper方式:(开启helper功能,参见7-1)
+// 1. 应用内简单的跳转
+TestActivityGoRouter.go(this);
+
+// 2. 跳转并携带参数
+TestFragmentGoRouter.go(this, "Wyjson", testModel, 35);
 ```
 
 ##### 6.  使用Gradle插件实现路由表的自动加载，支持Gradle8.0+
@@ -791,10 +799,10 @@ MainActivityGoRouter.go(this);
 
 // 经典:带参数访问
 GoRouter.getInstance().build("/new/param/activity")
-        .withInt("age", 78)
         .withString("nickname", "Wyjson")
-        .withInt("base", 7758)
         .withObject("test", testModel)
+        .withInt("age", 78)
+        .withInt("base", 7758)
         .go(this);
 // helper:带参数访问
 // 必传参数
