@@ -11,11 +11,11 @@ class KotlinActivity : FragmentActivity() {
 
     @JvmField
     @Param
-    var age: Int = 18;
+    var age: Int = 18
 
     @JvmField
     @Param(name = "nickname", remark = "昵称", required = true)
-    var name: String? = null;
+    var name: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
