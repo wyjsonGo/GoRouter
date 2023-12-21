@@ -173,7 +173,7 @@ class AssembleGoRouteHelperCode(private val model: RouteHelperModel) {
                             .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                         val goParamCodeString = handleGoParamCodeString(goParamCode)
                         val allParamMethodParamCode = CodeBlock.builder()
-                        handleBuilderInnerClass(className, routeModel,  getPathMethod, createMethod, buildMethod, paramCode, goParamCodeString, typeSpecs, methods)
+                        handleBuilderInnerClass(routeModel,  getPathMethod, createMethod, buildMethod, paramCode, goParamCodeString, typeSpecs, methods)
 
                         for (param in routeModel.paramsType) {
                             if (param.required)
@@ -260,7 +260,6 @@ class AssembleGoRouteHelperCode(private val model: RouteHelperModel) {
     }
 
     private fun handleBuilderInnerClass(
-        methodName: String,
         routeModel: RouteModel,
         getPathMethod: MethodSpec.Builder,
         createMethod: MethodSpec.Builder,
