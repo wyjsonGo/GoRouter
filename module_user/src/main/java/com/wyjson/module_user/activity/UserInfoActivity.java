@@ -1,7 +1,7 @@
 package com.wyjson.module_user.activity;
 
-import static com.wyjson.module_common.route.utils.RouteTagUtils.AUTHENTICATION;
-import static com.wyjson.module_common.route.utils.RouteTagUtils.LOGIN;
+import static com.wyjson.module_common.route.RouteTag.AUTHENTICATION;
+import static com.wyjson.module_common.route.RouteTag.LOGIN;
 
 import android.os.Bundle;
 
