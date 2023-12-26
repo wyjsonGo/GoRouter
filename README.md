@@ -373,13 +373,8 @@ public class DegradeServiceImpl implements IDegradeService {
 // 可以注通过@Route解的tag属性进行扩展，这个属性是一个int值，换句话说，单个int有4字节，可以配置31个开关
 @Route(path = "/user/info/activity", tag = LOGIN | AUTHENTICATION)
 
-// 在拦截器里通过Card对象拿到这个标记进行业务逻辑判断或处理
+// 在拦截器里通过Card对象拿到这个标记进行业务逻辑判断
 card.isTagExist(LOGIN); // 判断是否存在登录标识
-card.getTagExistCount(); // tag存在多少个开关
-card.addTag(LOGIN); // 追加登录标识
-card.deleteTag(LOGIN); // 删除登录标识
-card.getTagNegation(); // 取反
-ArrayList<Integer> tagList = card.getTagExistList(LOGIN, AUTHENTICATION, SAFETY); // 获取全部存在的标识
 ```
 
 tag使用示例[UserInfoActivity.java](https://github.com/wyjsonGo/GoRouter/blob/master/module_user/src/main/java/com/wyjson/module_user/activity/UserInfoActivity.java)，
