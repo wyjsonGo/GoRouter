@@ -1,11 +1,12 @@
 package com.wyjson.module_user.route.interceptor;
 
+import static com.wyjson.module_common.route.RouteTag.LOGIN;
+
 import android.os.Handler;
 import android.os.Looper;
 
 import androidx.appcompat.app.AlertDialog;
 
-import com.wyjson.module_common.route.utils.RouteTagUtils;
 import com.wyjson.router.annotation.Interceptor;
 import com.wyjson.router.callback.InterceptorCallback;
 import com.wyjson.router.exception.RouterException;
@@ -16,15 +17,16 @@ import com.wyjson.router.model.Card;
 @Interceptor(ordinal = 1, remark = "登录拦截器")
 public class SignInInterceptor implements IInterceptor {
 
+    private final Handler handler = new Handler(Looper.getMainLooper());
+
     @Override
     public void init() {
-
     }
 
     @Override
     public void process(Card card, InterceptorCallback callback) {
-        if (RouteTagUtils.TagEnum.isExist(card.getTag(), RouteTagUtils.TagEnum.LOGIN)) {
-            new Handler(Looper.getMainLooper()).post(new Runnable() {
+        if (card.isTagExist(LOGIN)) {
+            handler.post(new Runnable() {
                 @Override
                 public void run() {
                     new AlertDialog.Builder(card.getContext())

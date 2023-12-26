@@ -8,8 +8,10 @@ import com.wyjson.router.core.RouteCenter;
 import com.wyjson.router.enums.ParamType;
 import com.wyjson.router.enums.RouteType;
 import com.wyjson.router.exception.RouterException;
+import com.wyjson.router.utils.RouteTagUtils;
 import com.wyjson.router.utils.TextUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -236,6 +238,30 @@ public class CardMeta {
     private CardMeta put(String key, String name, ParamType type, boolean required) {
         getParamsType().put(key, new ParamMeta(TextUtils.isEmpty(name) ? key : name, type, required));
         return this;
+    }
+
+    public boolean isTagExist(int item) {
+        return RouteTagUtils.isExist(tag, item);
+    }
+
+    public int getTagExistCount() {
+        return RouteTagUtils.getExistCount(tag);
+    }
+
+    public int addTag(int item) {
+        return tag = RouteTagUtils.addItem(tag, item);
+    }
+
+    public int deleteTag(int item) {
+        return tag = RouteTagUtils.deleteItem(tag, item);
+    }
+
+    public int getTagNegation() {
+        return RouteTagUtils.getNegation(tag);
+    }
+
+    public ArrayList<Integer> getTagExistList(int... itemList) {
+        return RouteTagUtils.getExistList(tag, itemList);
     }
 
     @NonNull
