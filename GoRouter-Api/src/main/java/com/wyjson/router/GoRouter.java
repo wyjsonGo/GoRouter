@@ -54,6 +54,7 @@ public final class GoRouter {
     private volatile static ThreadPoolExecutor executor = DefaultPoolExecutor.getInstance();
     public static ILogger logger = new DefaultLogger();
     private volatile static boolean isDebug = false;
+    private static Application mApplication;
 
     private GoRouter() {
         InterceptorCenter.clearInterceptors();
@@ -74,6 +75,7 @@ public final class GoRouter {
      * @param application
      */
     public static synchronized void autoLoadRouteModule(Application application) {
+        setApplication(application);
         logger.info(null, "[GoRouter] autoLoadRouteModule!");
         RouteModuleCenter.load(application);
     }
@@ -91,6 +93,10 @@ public final class GoRouter {
         isDebug = true;
         logger.showLog(isDebug);
         logger.info(null, "[openDebug]");
+    }
+
+    public static void setApplication(Application application) {
+        mApplication = application;
     }
 
     public static boolean isDebug() {
@@ -125,8 +131,9 @@ public final class GoRouter {
         return ApplicationModuleCenter.isRegisterByPlugin();
     }
 
-    public static void callAMOnCreate(Application app) {
-        ApplicationModuleCenter.callOnCreate(app);
+    public static void callAMOnCreate(Application application) {
+        setApplication(application);
+        ApplicationModuleCenter.callOnCreate(application);
     }
 
     public static void callAMOnTerminate() {
@@ -348,10 +355,14 @@ public final class GoRouter {
 
     @Nullable
     public Object go(Context context, Card card, int requestCode, ActivityResultLauncher<Intent> activityResultLauncher, GoCallback callback) {
+        card.setContext(context == null ? mApplication : context);
+        card.setInterceptorException(null);
+
         logger.debug(null, "[go] " + card);
+
         IPretreatmentService pretreatmentService = getService(IPretreatmentService.class);
         if (pretreatmentService != null) {
-            if (!pretreatmentService.onPretreatment(context, card)) {
+            if (!pretreatmentService.onPretreatment(card.getContext(), card)) {
                 // 预处理失败，导航取消
                 logger.debug(null, "[go] IPretreatmentService Failure!");
                 return null;
@@ -360,21 +371,18 @@ public final class GoRouter {
             logger.warning(null, "[go] This [IPretreatmentService] was not found!");
         }
 
-        card.setContext(context);
-        card.setInterceptorException(null);
-
         try {
             RouteCenter.assembleRouteCard(card);
         } catch (NoFoundRouteException e) {
             logger.warning(null, e.getMessage());
 
             if (isDebug()) {
-                runInMainThread(() -> Toast.makeText(context, "There's no route matched!\n" +
+                runInMainThread(() -> Toast.makeText(card.getContext(), "There's no route matched!\n" +
                         " Path = [" + card.getPath() + "]\n" +
                         " Group = [" + card.getGroup() + "]", Toast.LENGTH_LONG).show());
             }
 
-            onLost(context, card, callback);
+            onLost(card.getContext(), card, callback);
             return null;
         }
 
@@ -387,7 +395,7 @@ public final class GoRouter {
 
         if (isDebug() && card.isDeprecated()) {
             logger.warning(null, "[go] This page has been marked as deprecated. path[" + card.getPath() + "]");
-            runInMainThread(() -> Toast.makeText(context, "This page has been marked as deprecated!\n" +
+            runInMainThread(() -> Toast.makeText(card.getContext(), "This page has been marked as deprecated!\n" +
                     " Path = [" + card.getPath() + "]\n" +
                     " Group = [" + card.getGroup() + "]", Toast.LENGTH_SHORT).show());
         }
@@ -399,7 +407,7 @@ public final class GoRouter {
                     interceptorService.doInterceptions(card, new InterceptorCallback() {
                         @Override
                         public void onContinue(Card card) {
-                            goActivity(context, card, requestCode, activityResultLauncher, callback);
+                            goActivity(card.getContext(), card, requestCode, activityResultLauncher, callback);
                         }
 
                         @Override
@@ -412,7 +420,7 @@ public final class GoRouter {
                         }
                     });
                 } else {
-                    goActivity(context, card, requestCode, activityResultLauncher, callback);
+                    goActivity(card.getContext(), card, requestCode, activityResultLauncher, callback);
                 }
                 break;
             case FRAGMENT:

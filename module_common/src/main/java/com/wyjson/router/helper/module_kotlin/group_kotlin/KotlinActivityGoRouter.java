@@ -1,6 +1,5 @@
 package com.wyjson.router.helper.module_kotlin.group_kotlin;
 
-import android.content.Context;
 import com.wyjson.router.GoRouter;
 import com.wyjson.router.model.Card;
 import com.wyjson.router.model.CardMeta;
@@ -30,8 +29,8 @@ public class KotlinActivityGoRouter {
                 .withString("nickname", nickname);
     }
 
-    public static void go(Context context, String nickname) {
-        build(nickname).go(context);
+    public static void go(String nickname) {
+        build(nickname).go();
     }
 
     public static Builder create(String nickname) {
@@ -42,8 +41,8 @@ public class KotlinActivityGoRouter {
         return create(nickname).setAge(age).build();
     }
 
-    public static void go(Context context, String nickname, int age) {
-        build(nickname, age).go(context);
+    public static void go(String nickname, int age) {
+        build(nickname, age).go();
     }
 
     public static class Builder {

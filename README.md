@@ -121,24 +121,24 @@ GoRouter.autoLoadRouteModule(this); // 尽可能早，推荐在Application中初
 
 ```java
 // 1. 应用内简单的跳转(通过URL跳转在'进阶用法'中)
-GoRouter.getInstance().build("/test/activity").go(this);
+GoRouter.getInstance().build("/test/activity").go();
 
 // 2. 跳转并携带参数
 GoRouter.getInstance().build("/test/fragment")
             .withString("name", "Wyjson")
             .withObject("test", new TestModel(123, "Jack"))
             .withInt("age", 35)
-            .go(this);
+            .go();
 ```
 
 Helper方式:(开启Helper功能，参见7-1)
 
 ```java
 // 1. 应用内简单的跳转
-TestActivityGoRouter.go(this);
+TestActivityGoRouter.go();
 
 // 2. 跳转并携带参数
-TestFragmentGoRouter.go(this, "Wyjson", testModel, 35);
+TestFragmentGoRouter.go("Wyjson", testModel, 35);
 ```
 
 ##### 6.  使用Gradle插件实现路由表的自动加载，支持Gradle8.0+
@@ -185,7 +185,7 @@ public class SchemeFilterActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         Uri uri = getIntent().getData();
-        GoRouter.getInstance().build(uri).go(this);
+        GoRouter.getInstance().build(uri).go();
         finish();
     }
 }
@@ -500,11 +500,11 @@ if (cardMeta != null) {
 
 ```java
 // 标准的路由请求
-GoRouter.getInstance().build("/main/activity").go(this);
+GoRouter.getInstance().build("/main/activity").go();
 
 // 通过Uri直接解析(外部、h5等调用native页面携带参数可以使用此方式)
 Uri uri = Uri.parse("/new/param/activity?age=9&name=jack&base=123");
-GoRouter.getInstance().build(uri).go(this);
+GoRouter.getInstance().build(uri).go();
 
 // 构建标准的路由请求，startActivityForResult()
 // go的第一个参数必须是Activity，第二个参数则是RequestCode
@@ -516,26 +516,26 @@ Bundle params = new Bundle();
 GoRouter.getInstance()
     .build("/main/activity")
     .with(params)
-    .go(this);
+    .go();
 
 // 指定Flag
 GoRouter.getInstance()
     .build("/main/activity")
     .withFlags()
-    .go(this);
+    .go();
 
 // 获取Fragment
-Fragment fragment = (Fragment) GoRouter.getInstance().build("/test/fragment").go(this);
+Fragment fragment = (Fragment) GoRouter.getInstance().build("/test/fragment").go();
 
 // 序列化对象传递
 GoRouter.getInstance().build("/main/activity")
     .withSerializable("user",new User())
-    .go(this);
+    .go();
 
 // 自定义对象传递
 GoRouter.getInstance().build("/main/activity")
     .withObject("test", new TestModel(123, "Jack"))
-    .go(this);
+    .go();
 
 // 觉得接口不够多，可以直接拿出Bundle赋值
 GoRouter.getInstance()
@@ -546,7 +546,7 @@ GoRouter.getInstance()
 GoRouter.getInstance()
     .build("/test/activity")
     .withTransition(R.anim.slide_in_bottom, R.anim.slide_out_bottom)
-    .go(this);
+    .go();
 
 // 转场动画(API16+)
 ActivityOptionsCompat compat = ActivityOptionsCompat.
@@ -557,10 +557,10 @@ ActivityOptionsCompat compat = ActivityOptionsCompat.
 GoRouter.getInstance()
     .build("/test/activity")
     .withActivityOptionsCompat(compat)
-    .go(this);
+    .go();
 
 // 使用绿色通道(跳过所有的拦截器)
-GoRouter.getInstance().build("/main/activity").greenChannel().go(this);
+GoRouter.getInstance().build("/main/activity").greenChannel().go();
 
 // 使用自己的日志工具打印日志
 GoRouter.setLogger();
@@ -799,9 +799,9 @@ GoRouter {
 
 ```java
 // 经典:访问/main/activity
-GoRouter.getInstance().build("/main/activity").go(this);
+GoRouter.getInstance().build("/main/activity").go();
 // helper:访问/main/activity(框架会根据path生成对应类名GoRouter.java)
-MainActivityGoRouter.go(this);
+MainActivityGoRouter.go();
 
 // 经典:带参数访问
 GoRouter.getInstance().build("/new/param/activity")
@@ -809,23 +809,23 @@ GoRouter.getInstance().build("/new/param/activity")
         .withObject("test", testModel)
         .withInt("age", 78)
         .withInt("base", 7758)
-        .go(this);
+        .go();
 // helper:带参数访问
 // 必传参数
-NewParamActivityGoRouter.go(this, "Wyjson", testModel);
+NewParamActivityGoRouter.go("Wyjson", testModel);
 // 所有参数(必传参数和非必传参数一起)
-NewParamActivityGoRouter.go(this, "Wyjson", testModel, base, 78);
+NewParamActivityGoRouter.go("Wyjson", testModel, base, 78);
 // 非必传参数可以链式调用,解决了经典方式需要知道类型和参数名的问题
 NewParamActivityGoRouter.create("Wyjson", testModel)// 必传参数
         .setAge(78)// 非必传参数
         .setBase(7758)// 非必传参数
         .build()
-        .go(this);
+        .go();
 
 // 经典:访问Fragment
-Fragment fragment = (Fragment) GoRouter.getInstance().build("/user/card/fragment").go(this);
+Fragment fragment = (Fragment) GoRouter.getInstance().build("/user/card/fragment").go();
 // helper:访问Fragment
-Fragment fragment = UserCardFragmentGoRouter.go(this);
+Fragment fragment = UserCardFragmentGoRouter.go();
 
 // 经典:获取元数据
 CardMeta cardMeta = GoRouter.getInstance().build("/user/info/activity").getCardMeta();

@@ -1,6 +1,5 @@
 package com.wyjson.router.helper.module_user.group_new;
 
-import android.content.Context;
 import androidx.fragment.app.Fragment;
 import com.wyjson.router.GoRouter;
 import com.wyjson.router.model.Card;
@@ -29,8 +28,8 @@ public class NewParamFragmentGoRouter {
         return GoRouter.getInstance().build(getPath());
     }
 
-    public static Fragment go(Context context) {
-        return (Fragment) build().go(context);
+    public static Fragment go() {
+        return (Fragment) build().go();
     }
 
     public static Builder create() {
@@ -41,8 +40,8 @@ public class NewParamFragmentGoRouter {
         return create().setAge(age).setName(name).build();
     }
 
-    public static Fragment go(Context context, int age, String name) {
-        return (Fragment) build(age, name).go(context);
+    public static Fragment go(int age, String name) {
+        return (Fragment) build(age, name).go();
     }
 
     public static class Builder {

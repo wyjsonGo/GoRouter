@@ -191,14 +191,14 @@ public class ApplicationModuleCenter {
         }
     }
 
-    public static void callOnCreate(Application app) {
-        load(app);
+    public static void callOnCreate(Application application) {
+        load(application);
         call(am -> {
-            am.onCreate(app);
+            am.onCreate(application);
             new Thread(() -> {
                 // 设置线程的优先级，不与主线程抢资源
                 Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
-                am.onLoadAsync(app);
+                am.onLoadAsync(application);
             }).start();
         });
     }

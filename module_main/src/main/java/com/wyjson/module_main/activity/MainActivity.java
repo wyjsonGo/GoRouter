@@ -46,11 +46,11 @@ public class MainActivity extends FragmentActivity {
     }
 
     public void onClickSignInActivity(View view) {
-        UserSignInActivityGoRouter.go(this);
+        UserSignInActivityGoRouter.go();
         // or
 //        UserSignInActivityGoRouter.build()
 //                .withFlags(...)
-//                .go(this);
+//                .go();
     }
 
     public void onClickParamActivity(View view) {
@@ -61,19 +61,19 @@ public class MainActivity extends FragmentActivity {
          * Demo示例 {@link com.wyjson.module_common.route.service.JsonServiceImpl}
          */
         TestModel testModel = new TestModel(123, "Jack");
-        NewParamActivityGoRouter.go(this, "Wyjson", testModel, base, 78);
+        NewParamActivityGoRouter.go("Wyjson", testModel, base, 78);
         // or
-//        NewParamActivityGoRouter.go(this, "Wyjson", testModel);
+//        NewParamActivityGoRouter.go("Wyjson", testModel);
         // or
 //        NewParamActivityGoRouter.create("Wyjson", testModel)
 //                .setAge(78)
 //                .setBase(base)
 //                .build()
-//                .go(this);
+//                .go();
     }
 
     public void onClickCardFragment(View view) {
-        Fragment cardFragment = UserCardFragmentGoRouter.go(this);
+        Fragment cardFragment = UserCardFragmentGoRouter.go();
         if (cardFragment != null) {
             getSupportFragmentManager()
                     .beginTransaction()
@@ -83,7 +83,7 @@ public class MainActivity extends FragmentActivity {
     }
 
     public void onClickParamFragment(View view) {
-        Fragment cardFragment = NewParamFragmentGoRouter.go(this, 78, "Wyjson");
+        Fragment cardFragment = NewParamFragmentGoRouter.go(78, "Wyjson");
         if (cardFragment != null) {
             getSupportFragmentManager()
                     .beginTransaction()
@@ -140,11 +140,11 @@ public class MainActivity extends FragmentActivity {
     }
 
     public void onClickEventActivity(View view) {
-        MainEventActivityGoRouter.go(this);
+        MainEventActivityGoRouter.go();
     }
 
     public void onClickKotlinActivity(View view) {
-        KotlinActivityGoRouter.go(this, "Wyjson", 78);
+        KotlinActivityGoRouter.go("Wyjson", 78);
     }
 
     private void showRouteLoadMode() {
