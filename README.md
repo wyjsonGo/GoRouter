@@ -7,7 +7,7 @@
 
 ## 简介
 
-之前一直在用阿里开源的[ARouter](https://github.com/alibaba/ARouter)项目，因为ARouter多年未更新，ARouter开始有些不太适合了，所以重新开发了这款Android路由框架，同样的API，更多的功能，迁移请参见文末8-10。
+之前一直在用阿里开源的[ARouter](https://github.com/alibaba/ARouter)项目，因为ARouter多年未更新，ARouter开始有些不太适合了，所以重新开发了这款Android路由框架，同样的API，更多的功能，迁移请参见文末8-11。
 
 ## GoRouter和ARouter功能差异对比
 
@@ -39,7 +39,7 @@
 9.  页面、拦截器、服务等组件均自动注册到框架
 10. 支持多种方式配置转场动画
 11. 支持获取Fragment
-12. 完全支持Kotlin以及混编(参见8-1)
+12. 完全支持Kotlin以及混编
 13. 支持第三方 App 加固
 14. 支持一键生成路由文档
 15. 支持增量编译
@@ -69,7 +69,7 @@ dependencyResolutionManagement {
 }
 
 dependencies {
-    api 'com.github.wyjsonGo.GoRouter:GoRouter-Api:2.4.4'
+    api 'com.github.wyjsonGo.GoRouter:GoRouter-Api:2.4.5'
 }
 // Kotlin配置参见8-1
 ```
@@ -89,7 +89,7 @@ android {
 }
 
 dependencies {
-    annotationProcessor 'com.github.wyjsonGo.GoRouter:GoRouter-Compiler:2.4.4'
+    annotationProcessor 'com.github.wyjsonGo.GoRouter:GoRouter-Compiler:2.4.5'
 }
 ```
 
@@ -157,7 +157,7 @@ pluginManagement {
 // 项目根目录下的build.gradle
 buildscript {
     dependencies {
-        classpath 'com.github.wyjsonGo.GoRouter:GoRouter-Gradle-Plugin:2.4.4'
+        classpath 'com.github.wyjsonGo.GoRouter:GoRouter-Gradle-Plugin:2.4.5'
     }
 }
 ```
@@ -892,7 +892,7 @@ kapt {
 }
 
 dependencies {
-    kapt 'com.github.wyjsonGo.GoRouter:GoRouter-Compiler:2.4.4'
+    kapt 'com.github.wyjsonGo.GoRouter:GoRouter-Compiler:2.4.5'
 }
 ```
 
@@ -932,7 +932,11 @@ module_kotlin模块Demo示例[module_kotlin/build.gradle](https://github.com/wyj
 *   2.3.2版本之前，`GoRouter.getInstance().inject(this)`方法会先通过`this`参数拿到`bundle`对象，再去获取当前页面的`path`，通过`path`拿到`CardMeta`数据，利用java反射进行数据的绑定。
 *   2.3.2版本起，自动生成了参数注入类，内部代码是原生写法，性能更好。
 
-##### 9.  开启调试,查看日志可以检查使用java方式注册的路由是否有重复提交的情况
+##### 9.  `go()`无参方法
+
+如果你没有使用自动加载路由表方法`GoRouter.autoLoadRouteModule(this)`,也没有使用多模块application`GoRouter.callAMOnCreate(this)`方法,这时你去使用`go()`无参方法需要在application里调用`GoRouter.setApplication(...)`设置一个上下文.
+
+##### 10.  开启调试,查看日志可以检查使用java方式注册的路由是否有重复提交的情况
 
 ```log
 route path[/xx/xx] duplicate commit!!!
@@ -943,7 +947,7 @@ route pathClass[class xx.xx] duplicate commit!!!
 ```
 GoRouter日志tag为`GoRouter`，GoRouter-Compiler日志tag为`GoRouter::Compiler`，GoRouter-Gradle-Plugin日志tag为`GoRouter::Gradle-Plugin`。
 
-##### 10.  ARouter迁移指南
+##### 11.  ARouter迁移指南
 
 | ARouter              | GoRouter                 |
 | -------------------- | ------------------------ |
