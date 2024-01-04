@@ -62,7 +62,7 @@ public class EventActivity extends FragmentActivity {
 
     // 显示EventFragment
     private void addFragment() {
-        Fragment fragment = MainEventFragmentGoRouter.go(this);
+        Fragment fragment = MainEventFragmentGoRouter.go();
         if (fragment != null) {
             getSupportFragmentManager()
                     .beginTransaction()

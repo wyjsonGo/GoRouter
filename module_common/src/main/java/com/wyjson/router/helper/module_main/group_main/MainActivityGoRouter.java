@@ -1,6 +1,5 @@
 package com.wyjson.router.helper.module_main.group_main;
 
-import android.content.Context;
 import com.wyjson.router.GoRouter;
 import com.wyjson.router.model.Card;
 import com.wyjson.router.model.CardMeta;
@@ -28,7 +27,7 @@ public class MainActivityGoRouter {
         return GoRouter.getInstance().build(getPath());
     }
 
-    public static void go(Context context) {
-        build().go(context);
+    public static void go() {
+        build().go();
     }
 }

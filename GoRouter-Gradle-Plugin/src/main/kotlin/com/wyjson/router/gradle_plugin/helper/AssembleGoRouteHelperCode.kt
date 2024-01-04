@@ -150,7 +150,6 @@ class AssembleGoRouteHelperCode(private val model: RouteHelperModel) {
 
                 val goMethod = MethodSpec.methodBuilder("go")
                     .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-                    .addParameter(Context, "context")
 
                 methods.add(getPathMethod.build())
                 methods.add(getCardMetaMethod.build())
@@ -369,13 +368,14 @@ class AssembleGoRouteHelperCode(private val model: RouteHelperModel) {
         )
         methods.add(newBuildMethod.build())
 
-        val newGoMethod = goMethod.build().toBuilder()
         val goParamCodeString = handleGoParamCodeString(goParamCode)
+
+        val newGoMethod = goMethod.build().toBuilder()
         if (routeModel.type == "Activity") {
-            newGoMethod.addStatement("\$N(\$L).go(context)", buildMethod.build().name, goParamCodeString)
+            newGoMethod.addStatement("\$N(\$L).go()", buildMethod.build().name, goParamCodeString)
         } else {
             newGoMethod.returns(Fragment)
-            newGoMethod.addStatement("return (Fragment) \$N(\$L).go(context)", buildMethod.build().name, goParamCodeString)
+            newGoMethod.addStatement("return (Fragment) \$N(\$L).go()", buildMethod.build().name, goParamCodeString)
         }
         methods.add(newGoMethod.build())
     }
@@ -400,13 +400,14 @@ class AssembleGoRouteHelperCode(private val model: RouteHelperModel) {
 
         methods.add(newBuildMethod.build())
 
-        val newGoMethod = goMethod.build().toBuilder()
         val goParamCodeString = handleGoParamCodeString(goParamCode)
+
+        val newGoMethod = goMethod.build().toBuilder()
         if (routeModel.type == "Activity") {
-            newGoMethod.addStatement("\$N(\$L).go(context)", buildMethod.build().name, goParamCodeString)
+            newGoMethod.addStatement("\$N(\$L).go()", buildMethod.build().name, goParamCodeString)
         } else {
             newGoMethod.returns(Fragment)
-            newGoMethod.addStatement("return (Fragment) \$N(\$L).go(context)", buildMethod.build().name, goParamCodeString)
+            newGoMethod.addStatement("return (Fragment) \$N(\$L).go()", buildMethod.build().name, goParamCodeString)
         }
         methods.add(newGoMethod.build())
     }

@@ -1,6 +1,5 @@
 package com.wyjson.router.helper.module_user.group_new;
 
-import android.content.Context;
 import com.wyjson.router.GoRouter;
 import com.wyjson.router.model.Card;
 import com.wyjson.router.model.CardMeta;
@@ -32,9 +31,8 @@ public class NewParamActivityGoRouter {
                 .withObject("test", test);
     }
 
-    public static void go(Context context, String nickname,
-            com.wyjson.module_common.model.TestModel test) {
-        build(nickname, test).go(context);
+    public static void go(String nickname, com.wyjson.module_common.model.TestModel test) {
+        build(nickname, test).go();
     }
 
     public static Builder create(String nickname, com.wyjson.module_common.model.TestModel test) {
@@ -46,9 +44,9 @@ public class NewParamActivityGoRouter {
         return create(nickname, test).setBase(base).setAge(age).build();
     }
 
-    public static void go(Context context, String nickname,
-            com.wyjson.module_common.model.TestModel test, int base, int age) {
-        build(nickname, test, base, age).go(context);
+    public static void go(String nickname, com.wyjson.module_common.model.TestModel test, int base,
+            int age) {
+        build(nickname, test, base, age).go();
     }
 
     public static class Builder {

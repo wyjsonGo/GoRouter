@@ -18,8 +18,7 @@ public class MyApplication extends Application {
         }
         // 这部分是多模块application,如不使用多模块application可以不调用
         GoRouter.callAMOnCreate(this);
-        
-        // 自动加载所有路由模块的路由
+        // 自动加载所有路由模块
         GoRouter.autoLoadRouteModule(this);
     }
 

@@ -33,7 +33,7 @@ public class SignInInterceptor implements IInterceptor {
                             .setMessage("登录拦截器,用户是否登录?")
                             .setNegativeButton("没登录", (dialog, which) -> {
                                 callback.onInterrupt(card, new RouterException("未登录,拦截自动跳转登录页!"));
-                                UserSignInActivityGoRouter.go(card.getContext());
+                                UserSignInActivityGoRouter.go();
                             })
                             .setPositiveButton("已登录", (dialog, which) -> {
                                 callback.onContinue(card);

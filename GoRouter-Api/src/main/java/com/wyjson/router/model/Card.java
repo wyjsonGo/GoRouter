@@ -77,6 +77,11 @@ public final class Card extends CardMeta {
     }
 
     @Nullable
+    public Object go() {
+        return go(null, this, -1, null, null);
+    }
+
+    @Nullable
     public Object go(Context context) {
         return go(context, this, -1, null, null);
     }
@@ -342,6 +347,9 @@ public final class Card extends CardMeta {
     }
 
     public void setContext(Context context) {
+        if (context == null) {
+            throw new RouterException("Context cannot be empty, Call 'GoRouter.setApplication(...)' in application.");
+        }
         this.context = context;
     }
 
