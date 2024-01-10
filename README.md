@@ -69,7 +69,7 @@ dependencyResolutionManagement {
 }
 
 dependencies {
-    api 'com.github.wyjsonGo.GoRouter:GoRouter-Api:2.4.5'
+    api 'com.github.wyjsonGo.GoRouter:GoRouter-Api:2.4.6'
 }
 // Kotlin配置参见8-1
 ```
@@ -89,7 +89,7 @@ android {
 }
 
 dependencies {
-    annotationProcessor 'com.github.wyjsonGo.GoRouter:GoRouter-Compiler:2.4.5'
+    annotationProcessor 'com.github.wyjsonGo.GoRouter:GoRouter-Compiler:2.4.6'
 }
 ```
 
@@ -157,7 +157,7 @@ pluginManagement {
 // 项目根目录下的build.gradle
 buildscript {
     dependencies {
-        classpath 'com.github.wyjsonGo.GoRouter:GoRouter-Gradle-Plugin:2.4.5'
+        classpath 'com.github.wyjsonGo.GoRouter:GoRouter-Gradle-Plugin:2.4.6'
     }
 }
 ```
@@ -625,7 +625,7 @@ GoRouter.getInstance().build("/user/info/activity").putTag(3).commitActivity(Use
 // 动态注册Fragment
 GoRouter.getInstance().build("/new/param/fragment").putInt("age").putString("name").commitFragment(ParamFragment.class);
 
-// 自动注入参数(2.3.2版本起，使用此方法需要在参数加上@Keep注解)
+// 自动注入参数(开启混淆的情况下,使用此方法需要配置混淆规则,参考8-7)
 GoRouter.getInstance().inject(this);
 ```
 
@@ -866,11 +866,11 @@ UserSignInActivityGoRouter.build()
 最早设计的是整个项目生成一个`GoRouterHelper.java`类，调用上比现在的每个页面生成一个对应的帮助类会更统一，
 但是这样会导致多人开发每个人生成的`GoRouterHelper.java`类代码合并冲突，所以想到把`GoRouterHelper.java`存放到根项目`build`目录，
 存放到`build`目录确实可以解决代码冲突问题，但是新的问题也来了，在首次开启生成帮助类的功能，项目里还没有调用这个`GoRouterHelper.java`类的时候是不会有问题的，
-如果项目里已经使用了这个帮助类，`build`目录被清除或者重新clone代码，这时项目就没法运行了，因为缺少这个帮助类。
+如果项目里已经使用了这个帮助类，`build`目录被清除或者重新clone代码，此时项目就没法运行了，因为缺少这个帮助类。
 这里不得不说一下帮助类生成流程和Android`buildConfig`任务的执行顺序，正常项目clone下来，idea提示报错缺少`buildConfig.java`类，
 你去`build`项目，Gradle会执行`buildConfig`任务，生成缺少的`buildConfig.java`类，再去生成common模块aar。
 路由帮助类在根项目里还不知道上层其他模块里有什么页面和服务的时候，它的执行顺序是，先`build`出来common模块，在去`build`其他页面业务模块，
-最后在app项目汇总，这时知道了所有页面和服务去生成帮助类到根模块项目。说回刚才的话题，项目里使用了帮助类，而帮助类又存放到`build`里，
+最后在app项目汇总，此时知道了所有页面和服务去生成帮助类到根模块项目。说回刚才的话题，项目里使用了帮助类，而帮助类又存放到`build`里，
 此时要是缺少了`build`目录，会导致项目无法运行，其实有其他方案解决这个问题，但都不是很好，
 所以最后我把这些帮助类存放到了`根项目/src/main/java/com/wyjson/router/helper/...`目录下，按照页面和服务生成对应的帮助类，
 解决了多人开发代码冲突的问题。虽然这些类不在`build`目录里，也不用担心无用的类，框架在每次生成新的代码的时候会自动删除无用的类，
@@ -894,7 +894,7 @@ kapt {
 }
 
 dependencies {
-    kapt 'com.github.wyjsonGo.GoRouter:GoRouter-Compiler:2.4.5'
+    kapt 'com.github.wyjsonGo.GoRouter:GoRouter-Compiler:2.4.6'
 }
 ```
 
@@ -927,16 +927,23 @@ module_kotlin模块Demo示例[module_kotlin/build.gradle](https://github.com/wyj
 
 ##### 7.  混淆
 
-框架已经做了混淆处理，开发者无需关心。如果使用了`GoRouter.getInstance().inject(this)`方法，2.3.2版本起，使用此方法需要在参数加上`@Keep`注解。
+框架已经做了混淆处理，开发者无需关心。
+
+```pro
+# 如果使用了 GoRouter.getInstance().inject(this) 方法，需添加下面规则，保护字段
+-keepclassmembers class * {
+    @com.wyjson.router.annotation.Param <fields>;
+}
+```
 
 ##### 8.  `inject()`工作原理
 
 *   2.3.2版本之前，`GoRouter.getInstance().inject(this)`方法会先通过`this`参数拿到`bundle`对象，再去获取当前页面的`path`，通过`path`拿到`CardMeta`数据，利用java反射进行数据的绑定。
-*   2.3.2版本起，`GoRouter.getInstance().inject(this)`方法废弃，使用`@Param`注解会自动生成参数注入类，内部代码是原生写法，性能更好，参见4-2。
+*   2.3.2版本起，使用`@Param`注解会自动生成参数注入类，内部代码是原生写法，性能更好，使用方法参见4-2。
 
 ##### 9.  `go()`无参方法
 
-如果你没有使用自动加载路由表方法`GoRouter.autoLoadRouteModule(this)`，也没有使用多模块application`GoRouter.callAMOnCreate(this)`方法，这时你去使用`go()`无参方法需要在application里调用`GoRouter.setApplication(...)`设置一个上下文。
+如果你没有使用自动加载路由表方法`GoRouter.autoLoadRouteModule(this)`，也没有使用多模块application`GoRouter.callAMOnCreate(this)`方法，此时你去使用`go()`无参方法需要在application里调用`GoRouter.setApplication(...)`设置一个上下文。
 
 ##### 10.  开启调试，查看日志可以检查使用java方式注册的路由是否有重复提交的情况
 

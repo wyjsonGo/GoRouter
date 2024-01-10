@@ -66,6 +66,10 @@
 # #   ########## Gson # end ##########
 
 
+# 如果使用了 GoRouter.getInstance().inject(this) 方法，需添加下面规则，保护字段
+-keepclassmembers class * {
+    @com.wyjson.router.annotation.Param <fields>;
+}
 
 
 
