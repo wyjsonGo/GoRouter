@@ -211,7 +211,7 @@ AndroidManifest.xml
 
 ##### 2.  解析参数
 
-在带有`@Route`注解的Activity、Fragment页面使用`@Param`注解，会自动生成`类名+$$Param.java`注入类，可调用`inject()`和`injectCheck()`方法自动注入参数。
+在带有`@Route`注解的Activity、Fragment页面使用`@Param`注解，会自动生成`类名+$$Param.java`注入类，可调用`inject()`或`injectCheck()`方法自动注入参数。
 
 ```java
 // 为每一个参数声明一个字段(不能是private)，并使用 @Param 标注
