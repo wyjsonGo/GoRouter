@@ -211,7 +211,10 @@ public class GenerateRouteModuleProcessor extends BaseProcessor {
 
         for (Map.Entry<String, Set<Element>> entry : routeGroupMap.entrySet()) {
             List<RouteModel> routeModelDocList = new ArrayList<>();
-            String groupName = entry.getKey();
+            String groupName = entry.getKey()
+                    .replace("-", "_")
+                    .replace(".", "_")
+                    .replace("#", "_");
             // 首字母大写
             String groupNameToUpperCase = groupName.substring(0, 1).toUpperCase() + groupName.substring(1);
             String methodName = String.format(METHOD_NAME_LOAD_ROUTE_FOR_x_GROUP, groupNameToUpperCase);
