@@ -218,31 +218,18 @@ class AssembleGoRouteHelperCode(private val model: RouteHelperModel) {
             return projectName
         }
         var str = projectName
-        // 去除开头字母是0-9和_的情况
-        str = str.replace("^[0-9_]+".toRegex(), "")
+        // 去除开头字母是0-9的情况
+        str = str.replace("^[0-9]+".toRegex(), "")
         str = str.replace("-", "_")
-        // 首字母小写
-        str = str.substring(0, 1).lowercase() + str.substring(1)
-        // 处理大写
-        val len = str.length
-        val sb = StringBuilder(len)
-        for (i in 0 until len) {
-            val c = str[i]
-            if (Character.isUpperCase(c)) {
-                if (str[i - 1] != '_') {
-                    sb.append("_")
-                }
-                sb.append(str[i].lowercaseChar())
-            } else {
-                sb.append(c)
-            }
-        }
-        return sb.toString()
+        str = str.lowercase()
+        return str
     }
 
     private fun extractClassNameByPath(path: String): String {
         var methodName = ""
-        val replace = path.replace(".", "").replace("-", "")
+        val replace = path.replace("-", "_")
+            .replace(".", "_")
+            .replace("#", "_")
         for (item in replace.split("/")) {
             if (item.contains("_")){
                 for (_item in item.split("_")) {
