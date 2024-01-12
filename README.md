@@ -69,7 +69,7 @@ dependencyResolutionManagement {
 }
 
 dependencies {
-    api 'com.github.wyjsonGo.GoRouter:GoRouter-Api:2.4.6'
+    api 'com.github.wyjsonGo.GoRouter:GoRouter-Api:2.4.7'
 }
 // Kotlin配置参见8-1
 ```
@@ -89,7 +89,7 @@ android {
 }
 
 dependencies {
-    annotationProcessor 'com.github.wyjsonGo.GoRouter:GoRouter-Compiler:2.4.6'
+    annotationProcessor 'com.github.wyjsonGo.GoRouter:GoRouter-Compiler:2.4.7'
 }
 ```
 
@@ -157,7 +157,7 @@ pluginManagement {
 // 项目根目录下的build.gradle
 buildscript {
     dependencies {
-        classpath 'com.github.wyjsonGo.GoRouter:GoRouter-Gradle-Plugin:2.4.6'
+        classpath 'com.github.wyjsonGo.GoRouter:GoRouter-Gradle-Plugin:2.4.7'
     }
 }
 ```
@@ -894,7 +894,7 @@ kapt {
 }
 
 dependencies {
-    kapt 'com.github.wyjsonGo.GoRouter:GoRouter-Compiler:2.4.6'
+    kapt 'com.github.wyjsonGo.GoRouter:GoRouter-Compiler:2.4.7'
 }
 ```
 
@@ -906,6 +906,7 @@ module_kotlin模块Demo示例[module_kotlin/build.gradle](https://github.com/wyj
 
 ##### 3.  路由中的分组概念
 
+*   路由路径支持(a-zA-Z0-9_-.#)
 *   SDK中针对所有的路径`/test/1`、`/test/2`进行分组，分组只有在分组中的某一个路径第一次被访问的时候，该分组才会被初始化。分组使用路径中第一段字符串(/*/)作为分组，这里的路径需要注意的是至少需要有两级`/xx/xx`。
 *   GRouter允许一个module中存在多个分组，也允许多个module中存在相同的分组，但是最好不要在多个module中存在相同的分组，因为在注册路由组时发现存在相同的分组，会立即注册老的路由组里的全部路由，然后更新新的路由组信息。
 
