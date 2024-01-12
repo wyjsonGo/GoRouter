@@ -922,7 +922,7 @@ module_kotlin模块Demo示例[module_kotlin/build.gradle](https://github.com/wyj
 
 ##### 6.  使用java方式注册拦截器
 
-*   `addInterceptor(ordinal, interceptor)`重复添加相同序号级会catch。
+*   `addInterceptor(ordinal, interceptor)`重复添加相同序号会catch。
 *   `setInterceptor(ordinal, interceptor)`重复添加相同序号会覆盖(更新)。
 
 ##### 7.  混淆
