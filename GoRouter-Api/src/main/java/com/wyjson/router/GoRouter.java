@@ -157,7 +157,7 @@ public final class GoRouter {
      *
      * @param am
      */
-    public static void registerAM(Class<? extends IApplicationModule> am) {
+    public void registerAM(Class<? extends IApplicationModule> am) {
         ApplicationModuleCenter.register(am);
     }
 

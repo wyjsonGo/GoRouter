@@ -19,6 +19,8 @@ import com.wyjson.router.GoRouter;
 import com.wyjson.router.exception.RouterException;
 import com.wyjson.router.utils.TextUtils;
 
+import java.util.Map;
+
 public class EventCenter {
 
     public static <T> void registerEvent(LifecycleOwner owner, Class<T> type, boolean isForever, @NonNull Observer<T> observer) {
@@ -39,7 +41,7 @@ public class EventCenter {
             return;
         }
 
-        String key = path + "$" + type.getCanonicalName();
+        String key = path + "$" + type.getCanonicalName() + "$" + owner;
         MutableLiveData<T> liveData;
         if (Warehouse.events.containsKey(key)) {
             liveData = Warehouse.events.get(key);
@@ -70,7 +72,7 @@ public class EventCenter {
             return;
         }
 
-        String key = path + "$" + type.getCanonicalName();
+        String key = path + "$" + type.getCanonicalName() + "$" + owner;
         if (Warehouse.events.containsKey(key)) {
             MutableLiveData<T> liveData = Warehouse.events.get(key);
             if (liveData != null) {
@@ -133,18 +135,24 @@ public class EventCenter {
             throw new RouterException("value cannot be empty!");
         }
         String key = path + "$" + value.getClass().getCanonicalName();
-        if (Warehouse.events.containsKey(key)) {
-            MutableLiveData<T> liveData = Warehouse.events.get(key);
-            if (liveData != null) {
-                if (Looper.myLooper() == Looper.getMainLooper()) {
-                    liveData.setValue(value);
+        boolean isFound = false;
+        for (Map.Entry<String, MutableLiveData> entry : Warehouse.events.entrySet()) {
+            if (entry.getKey().startsWith(key)) {
+                isFound = true;
+                MutableLiveData<T> liveData = entry.getValue();
+                if (liveData != null) {
+                    GoRouter.logger.info(null, "[postEvent] send path[" + entry.getKey() + "] value[" + value + "]");
+                    if (Looper.myLooper() == Looper.getMainLooper()) {
+                        liveData.setValue(value);
+                    } else {
+                        liveData.postValue(value);
+                    }
                 } else {
-                    liveData.postValue(value);
+                    GoRouter.logger.error(null, "[postEvent] LiveData is empty??");
                 }
-            } else {
-                GoRouter.logger.error(null, "[postEvent] LiveData is empty??");
             }
-        } else {
+        }
+        if (!isFound) {
             GoRouter.logger.warning(null, "[postEvent] No observer was found for this event");
         }
     }
