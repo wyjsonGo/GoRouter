@@ -1,5 +1,6 @@
 package com.wyjson.router.helper.module_main.group_main;
 
+import androidx.annotation.Nullable;
 import com.wyjson.router.GoRouter;
 import com.wyjson.router.model.Card;
 import com.wyjson.router.model.CardMeta;
@@ -15,6 +16,7 @@ public class MainActivityGoRouter {
         return "/main/activity";
     }
 
+    @Nullable
     public static CardMeta getCardMeta() {
         return GoRouter.getInstance().build(getPath()).getCardMeta();
     }

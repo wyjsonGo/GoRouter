@@ -1,5 +1,6 @@
 package com.wyjson.router.helper.module_user.group_new;
 
+import androidx.annotation.Nullable;
 import com.wyjson.router.GoRouter;
 import com.wyjson.router.model.Card;
 import com.wyjson.router.model.CardMeta;
@@ -15,6 +16,7 @@ public class NewParamActivityGoRouter {
         return "/new/param/activity";
     }
 
+    @Nullable
     public static CardMeta getCardMeta() {
         return GoRouter.getInstance().build(getPath()).getCardMeta();
     }
