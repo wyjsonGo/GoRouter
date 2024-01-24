@@ -127,6 +127,7 @@ class AssembleGoRouteHelperCode(private val model: RouteHelperModel) {
 
                 val getCardMetaMethod = MethodSpec.methodBuilder("getCardMeta")
                     .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+                    .addAnnotation(Nullable)
                     .returns(CardMeta)
                     .addStatement(
                         "return \$T.getInstance().build(\$N()).getCardMeta()",
@@ -361,6 +362,7 @@ class AssembleGoRouteHelperCode(private val model: RouteHelperModel) {
         if (routeModel.type == "Activity") {
             newGoMethod.addStatement("\$N(\$L).go()", buildMethod.build().name, goParamCodeString)
         } else {
+            newGoMethod.addAnnotation(Nullable)
             newGoMethod.returns(Fragment)
             newGoMethod.addStatement("return (Fragment) \$N(\$L).go()", buildMethod.build().name, goParamCodeString)
         }
@@ -393,6 +395,7 @@ class AssembleGoRouteHelperCode(private val model: RouteHelperModel) {
         if (routeModel.type == "Activity") {
             newGoMethod.addStatement("\$N(\$L).go()", buildMethod.build().name, goParamCodeString)
         } else {
+            newGoMethod.addAnnotation(Nullable)
             newGoMethod.returns(Fragment)
             newGoMethod.addStatement("return (Fragment) \$N(\$L).go()", buildMethod.build().name, goParamCodeString)
         }

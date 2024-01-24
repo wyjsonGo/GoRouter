@@ -1,5 +1,6 @@
 package com.wyjson.router.helper.module_kotlin.group_kotlin;
 
+import androidx.annotation.Nullable;
 import com.wyjson.router.GoRouter;
 import com.wyjson.router.model.Card;
 import com.wyjson.router.model.CardMeta;
@@ -15,6 +16,7 @@ public class KotlinActivityGoRouter {
         return "/kotlin/activity";
     }
 
+    @Nullable
     public static CardMeta getCardMeta() {
         return GoRouter.getInstance().build(getPath()).getCardMeta();
     }

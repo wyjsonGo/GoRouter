@@ -1,5 +1,6 @@
 package com.wyjson.router.helper.module_user.group_user;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import com.wyjson.router.GoRouter;
 import com.wyjson.router.model.Card;
@@ -16,6 +17,7 @@ public class UserCardFragmentGoRouter {
         return "/user/card/fragment";
     }
 
+    @Nullable
     public static CardMeta getCardMeta() {
         return GoRouter.getInstance().build(getPath()).getCardMeta();
     }
@@ -28,6 +30,7 @@ public class UserCardFragmentGoRouter {
         return GoRouter.getInstance().build(getPath());
     }
 
+    @Nullable
     public static Fragment go() {
         return (Fragment) build().go();
     }
