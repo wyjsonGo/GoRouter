@@ -18,7 +18,7 @@
 | **路由页面事件**            | 不支持    | 支持       | 页面事件解耦，提供更多、更方便的API，参见5-10 |
 | 路由注册方式               | 注解      | 注解、java | GoRouter不仅提供了注解，还能使用java方式注册，参见5-6 |
 | 动态注册拦截器              | 不支持    | 支持      | ARouter只能动态注册路由，不能动态注册拦截器 |
-| 重写跳转URL服务            | 支持      | 不支持     | 可以在`IPretreatmentService`里实现相同功能 |
+| 重写跳转URL服务            | 支持      | 不支持     | 可以在`IPretreatmentService`里实现相同功能，参见8-10 |
 | 获取元数据                 | 不支持    | 支持       | 有些场景需要判断某个页面当前是否存在等需求，就需要获取页面class等信息，参见5-1 |
 | inject(T)                | 单一      | 更多       | ARouter不能在`onNewIntent()`方法里使用，也不能检查`required`，GoRouter提供了更多使用场景，性能更好，参见4-2 |
 | 按组分类、按需初始化         | 支持      | 支持       | ARouter不允许多个module中存在相同的分组，GoRouter允许 |
@@ -169,7 +169,7 @@ plugins {
     id 'com.wyjson.gorouter'
 }
 ```
-*   支持Gradle8.0+，Gradle8.0以下参见5-7。
+*   支持Gradle8.0+。
 *   开发阶段构建加速参见5-8(最好在开发阶段开启,节省build时间)。
 *   可选使用，通过GoRouter提供的注册插件进行路由表的自动加载，默认通过扫描dex的方式进行加载(在运行时注册,节省打包时间)，通过gradle插件进行自动注册可以缩短运行时初始化时间(在打包时注册,节省运行时间)，解决应用加固导致无法直接访问dex文件。
 
@@ -625,7 +625,7 @@ GoRouter.getInstance().build("/user/info/activity").putTag(3).commitActivity(Use
 // 动态注册Fragment
 GoRouter.getInstance().build("/new/param/fragment").putInt("age").putString("name").commitFragment(ParamFragment.class);
 
-// 自动注入参数(开启混淆的情况下,使用此方法需要配置混淆规则,参考8-7)
+// 自动注入参数(开启混淆的情况下,使用此方法需要配置混淆规则,参见8-7)
 GoRouter.getInstance().inject(this);
 ```
 
@@ -946,7 +946,11 @@ module_kotlin模块Demo示例[module_kotlin/build.gradle](https://github.com/wyj
 
 如果你没有使用自动加载路由表方法`GoRouter.autoLoadRouteModule(this)`，也没有使用多模块application`GoRouter.callAMOnCreate(this)`方法，此时你去使用`go()`无参方法需要在application里调用`GoRouter.setApplication(...)`设置一个上下文。
 
-##### 10.  开启调试，查看日志可以检查使用java方式注册的路由是否有重复提交的情况
+##### 10.  重写跳转URL服务
+
+本库删除了`PathReplaceService`，可以在`IPretreatmentService`里实现相同功能。使用`card.setPath(...)`和`card.setUri(...)`方法，效果一样。
+
+##### 11.  开启调试，查看日志可以检查使用java方式注册的路由是否有重复提交的情况
 
 ```log
 route path[/xx/xx] duplicate commit!!!
@@ -957,7 +961,7 @@ route pathClass[class xx.xx] duplicate commit!!!
 ```
 GoRouter日志tag为`GoRouter`，GoRouter-Compiler日志tag为`GoRouter::Compiler`，GoRouter-Gradle-Plugin日志tag为`GoRouter::Gradle-Plugin`。
 
-##### 11.  ARouter迁移指南
+##### 12.  ARouter迁移指南
 
 | ARouter              | GoRouter                 |
 | -------------------- | ------------------------ |
