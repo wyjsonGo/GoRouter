@@ -241,11 +241,7 @@ public final class GoRouter {
     }
 
     public Card build(String path) {
-        return build(path, null);
-    }
-
-    public Card build(String path, Bundle bundle) {
-        return new Card(path, bundle);
+        return new Card(path, null);
     }
 
     public Card build(Uri uri) {
@@ -373,12 +369,10 @@ public final class GoRouter {
             return null;
         }
 
-        runInMainThread(() -> {
-            logger.debug(null, "[go] [onFound] " + card);
-            if (callback != null) {
-                callback.onFound(card);
-            }
-        });
+        logger.debug(null, "[go] [onFound] " + card);
+        if (callback != null) {
+            runInMainThread(() -> callback.onFound(card));
+        }
 
         if (isDebug() && card.isDeprecated()) {
             logger.warning(null, "[go] This page has been marked as deprecated. path[" + card.getPath() + "]");
@@ -399,11 +393,9 @@ public final class GoRouter {
 
                         @Override
                         public void onInterrupt(Card card, @NonNull Throwable exception) {
-                            runInMainThread(() -> {
-                                if (callback != null) {
-                                    callback.onInterrupt(card, exception);
-                                }
-                            });
+                            if (callback != null) {
+                                runInMainThread(() -> callback.onInterrupt(card, exception));
+                            }
                         }
                     });
                 } else {
@@ -417,19 +409,17 @@ public final class GoRouter {
     }
 
     private void onLost(Context context, Card card, GoCallback callback) {
-        runInMainThread(() -> {
-            logger.error(null, "[onLost] There is no route. path[" + card.getPath() + "]");
-            if (callback != null) {
-                callback.onLost(card);
+        logger.error(null, "[onLost] There is no route. path[" + card.getPath() + "]");
+        if (callback != null) {
+            runInMainThread(() -> callback.onLost(card));
+        } else {
+            IDegradeService degradeService = getService(IDegradeService.class);
+            if (degradeService != null) {
+                runInMainThread(() -> degradeService.onLost(context, card));
             } else {
-                IDegradeService degradeService = getService(IDegradeService.class);
-                if (degradeService != null) {
-                    degradeService.onLost(context, card);
-                } else {
-                    logger.warning(null, "[onLost] This [IDegradeService] was not found!");
-                }
+                logger.warning(null, "[onLost] This [IDegradeService] was not found!");
             }
-        });
+        }
     }
 
     @SuppressLint("WrongConstant")
@@ -484,12 +474,10 @@ public final class GoRouter {
             if (instance instanceof Fragment) {
                 ((Fragment) instance).setArguments(card.getExtras());
             }
-            runInMainThread(() -> {
-                logger.debug(null, "[goFragment] [onArrival] Complete!");
-                if (callback != null) {
-                    callback.onArrival(card);
-                }
-            });
+            logger.debug(null, "[goFragment] [onArrival] Complete!");
+            if (callback != null) {
+                runInMainThread(() -> callback.onArrival(card));
+            }
             return instance;
         } catch (Exception e) {
             e.printStackTrace();
