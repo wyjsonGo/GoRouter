@@ -50,6 +50,7 @@ public final class Card extends CardMeta {
         setPath(uri.getPath());
     }
 
+    @Nullable
     public Uri getUri() {
         return uri;
     }
@@ -168,7 +169,9 @@ public final class Card extends CardMeta {
      * @return
      */
     public Card withObject(@Nullable String key, @Nullable Object value) {
-        jsonService = GoRouter.getInstance().getService(IJsonService.class);
+        if (jsonService == null) {
+            jsonService = GoRouter.getInstance().getService(IJsonService.class);
+        }
         if (jsonService == null) {
             throw new RouterException("To use withObject() method, you need to implement IJsonService");
         }
@@ -394,13 +397,13 @@ public final class Card extends CardMeta {
                 ", mBundle=" + mBundle +
                 ", flags=" + flags +
                 ", greenChannel=" + greenChannel +
-                ", action='" + action + '\'' +
+                ", action=" + (TextUtils.isEmpty(action) ? null : '\'' + action + '\'') +
                 ", context=" + (context != null ? context.getClass().getSimpleName() : null) +
-                ", optionsCompat=" + activityOptionsCompat +
                 ", enterAnim=" + enterAnim +
                 ", exitAnim=" + exitAnim +
+                ", activityOptionsCompat=" + activityOptionsCompat +
                 ", interceptorException=" + interceptorException +
-                ", timeout=" + timeout +
+                ", timeout=" + timeout + "s" +
                 '}';
     }
 }

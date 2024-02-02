@@ -1,7 +1,6 @@
 package com.wyjson.router.model;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.wyjson.router.GoRouter;
 import com.wyjson.router.core.RouteCenter;
@@ -36,7 +35,6 @@ public class CardMeta {
         this.paramsType = paramsType;
     }
 
-    @Nullable
     public String getPath() {
         return path;
     }
@@ -265,15 +263,18 @@ public class CardMeta {
     }
 
     @NonNull
+    @Override
     public String toString() {
         if (!GoRouter.isDebug()) {
             return "";
         }
         return "CardMeta{" +
                 "path='" + path + '\'' +
+                ", group='" + group + '\'' +
                 ", type=" + type +
                 ", pathClass=" + pathClass +
                 ", tag=" + tag +
+                ", deprecated=" + deprecated +
                 ", paramsType=" + paramsType +
                 '}';
     }

@@ -244,11 +244,11 @@ public class RouteCenter {
             card.setCardMeta(cardMeta.getType(), cardMeta.getPathClass(), cardMeta.getTag(), cardMeta.isDeprecated());
             card.withString(ROUTER_CURRENT_PATH, card.getPath());
 
-            Map<String, ParamMeta> paramsType = cardMeta.getParamsType();
             Uri rawUri = card.getUri();
             if (rawUri != null) {
-                Map<String, String> resultMap = TextUtils.splitQueryParameters(rawUri);
+                Map<String, ParamMeta> paramsType = cardMeta.getParamsType();
                 if (MapUtils.isNotEmpty(paramsType)) {
+                    Map<String, String> resultMap = TextUtils.splitQueryParameters(rawUri);
                     // 按类型设置值
                     for (Map.Entry<String, ParamMeta> params : paramsType.entrySet()) {
                         setValue(card,
