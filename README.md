@@ -302,7 +302,7 @@ public class JsonServiceImpl implements IJsonService {
 
 ```java
 // 比较经典的应用就是在跳转过程中处理登陆事件，这样就不需要在目标页重复做登陆检查
-// 拦截器会在跳转之间执行，多个拦截器会按序号从小到大顺序依次执行
+// 拦截器会在跳转之前执行，多个拦截器会按序号从小到大顺序依次执行
 @Interceptor(ordinal = 1, remark = "测试拦截器")
 public class TestInterceptor implements IInterceptor {
     @Override
