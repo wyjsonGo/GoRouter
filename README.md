@@ -857,7 +857,7 @@ UserSignInActivityGoRouter.build()
         .go(this, ...);
 ```
 
-*   `@Route(deprecated = true)`和打开了openDebug()的情况下，框架跳转到该页将Toast提示其他开发人员和测试人员，并且生成的帮助类也会被自动标记为`@Deprecated`,代码上也会提示过时,提醒开发人员更新跳转代码，这在多人开发时会很有用。`@Service`不会有这个问题，service直接在暴漏的服务接口上标记`@Deprecated`，其他模块调用者就能看到过时标记。
+*   `@Route(deprecated = true)`和打开了openDebug()的情况下，框架跳转到该页将Toast提示其他开发人员和测试人员，并且生成的帮助类也会被自动标记`@Deprecated`,代码上也会提示过时,提醒开发人员更新跳转代码，这在多人开发时会很有用。`@Service`不会有这个问题，service直接在暴漏的服务接口上标记`@Deprecated`，其他模块调用者就能看到过时标记。
 *   `@Route(ignoreHelper = true)`的情况下，框架不会为这个页面生成帮助类，适用于仅本模块调用的页面。
 
 ##### 3.  设计思路
