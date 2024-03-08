@@ -902,7 +902,7 @@ module_kotlin模块Demo示例[module_kotlin/build.gradle](https://github.com/wyj
 
 ##### 2.  Kotlin类中的字段无法注入如何解决？
 
-首先，Kotlin中的字段是可以自动注入的，但是注入代码为了不使用反射，使用的字段赋值的方式来注入的，Kotlin默认会生成set/get方法，并把属性设置为private 所以只要保证Kotlin中字段可见性不是private即可，简单解决可以在字段上添加 @JvmField。Demo示例[KotlinActivity.java](https://github.com/wyjsonGo/GoRouter/blob/master/module_kotlin/src/main/java/com/wyjson/module_kotlin/activity/KotlinActivity.java)
+首先，Kotlin中的字段是可以自动注入的，但是注入代码为了不使用反射，使用的字段赋值的方式来注入的，Kotlin默认会生成set/get方法，并把属性设置为private 所以只要保证Kotlin中字段可见性不是private即可，简单解决可以在字段上添加 @JvmField。Demo示例[KotlinActivity.kt](https://github.com/wyjsonGo/GoRouter/blob/master/module_kotlin/src/main/java/com/wyjson/module_kotlin/activity/KotlinActivity.kt)
 
 ##### 3.  路由中的分组概念
 
