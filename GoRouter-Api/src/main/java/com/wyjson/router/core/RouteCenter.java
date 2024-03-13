@@ -167,12 +167,13 @@ public class RouteCenter {
         try {
             bundle = getBundle(target, intent, bundle);
         } catch (Exception e) {
-            throw new RuntimeException("inject() " + e.getMessage());
+            GoRouter.logger.warning(null, "inject() " + e.getMessage());
+            return;
         }
 
         String path = getCurrentPath(bundle);
         if (TextUtils.isEmpty(path)) {
-            GoRouter.logger.error(null, "[inject] The " + ROUTER_CURRENT_PATH + " parameter was not found in the intent");
+            GoRouter.logger.warning(null, "[inject] The " + ROUTER_CURRENT_PATH + " parameter was not found in the intent");
             return;
         }
 
