@@ -69,7 +69,7 @@ dependencyResolutionManagement {
 }
 
 dependencies {
-    api 'com.github.wyjsonGo.GoRouter:GoRouter-Api:2.5.0'
+    api 'com.github.wyjsonGo.GoRouter:GoRouter-Api:2.5.1'
 }
 // Kotlin配置参见8-1
 ```
@@ -89,7 +89,7 @@ android {
 }
 
 dependencies {
-    annotationProcessor 'com.github.wyjsonGo.GoRouter:GoRouter-Compiler:2.5.0'
+    annotationProcessor 'com.github.wyjsonGo.GoRouter:GoRouter-Compiler:2.5.1'
 }
 ```
 
@@ -157,7 +157,7 @@ pluginManagement {
 // 项目根目录下的build.gradle
 buildscript {
     dependencies {
-        classpath 'com.github.wyjsonGo.GoRouter:GoRouter-Gradle-Plugin:2.5.0'
+        classpath 'com.github.wyjsonGo.GoRouter:GoRouter-Gradle-Plugin:2.5.1'
     }
 }
 ```
@@ -894,7 +894,7 @@ kapt {
 }
 
 dependencies {
-    kapt 'com.github.wyjsonGo.GoRouter:GoRouter-Compiler:2.5.0'
+    kapt 'com.github.wyjsonGo.GoRouter:GoRouter-Compiler:2.5.1'
 }
 ```
 
