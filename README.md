@@ -546,7 +546,7 @@ GoRouter.getInstance()
 GoRouter.getInstance()
     .build("/test/activity")
     .withTransition(R.anim.slide_in_bottom, R.anim.slide_out_bottom)
-    .go();
+    .go(this);// 注意这个Activity this是必传的,否则动画无效
 
 // 转场动画(API16+)
 ActivityOptionsCompat compat = ActivityOptionsCompat.
