@@ -99,13 +99,14 @@ public class RouteCenter {
      *
      * @param target
      * @param <T>
+     * @return
      */
     public static <T> String getRawURI(T target) {
         Bundle bundle;
         try {
             bundle = getBundle(target, null, null);
         } catch (Exception e) {
-            throw new RuntimeException("getRawURI() " + e.getMessage());
+            return null;
         }
         return bundle.getString(ROUTER_RAW_URI);
     }
@@ -115,6 +116,7 @@ public class RouteCenter {
      *
      * @param target
      * @param <T>
+     * @return
      */
     public static <T> String getCurrentPath(T target) {
         Bundle bundle;
@@ -124,7 +126,7 @@ public class RouteCenter {
             try {
                 bundle = getBundle(target, null, null);
             } catch (Exception e) {
-                throw new RuntimeException("getCurrentPath() " + e.getMessage());
+                return null;
             }
         }
         return bundle.getString(ROUTER_CURRENT_PATH);
