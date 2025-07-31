@@ -7,7 +7,7 @@
 
 ## 简介
 
-之前一直在用阿里开源的[ARouter](https://github.com/alibaba/ARouter)项目，因为ARouter多年未更新，ARouter开始有些不太适合了，所以重新开发了这款Android路由框架，同样的API，更多的功能，迁移请参见文末8-11。
+之前一直在用阿里开源的[ARouter](https://github.com/alibaba/ARouter)项目，因为ARouter多年未更新，ARouter开始有些不太适合了，所以重新开发了这款Android路由框架，同样的API，更多的功能，迁移请参见文末8-13。
 
 ## GoRouter和ARouter功能差异对比
 
@@ -57,7 +57,7 @@
 
 ## 三、基础功能
 
-##### 1.  添加依赖和配置
+##### 1.  添加依赖和配置(Groovy DSL)，[点击查看Kotlin DSL (`.kts`)语法](https://github.com/wyjsonGo/GoRouter/blob/master/README_Kotlin_DSL.md)
 
 ```groovy
 dependencyResolutionManagement {
@@ -961,7 +961,11 @@ route pathClass[class xx.xx] duplicate commit!!!
 ```
 GoRouter日志tag为`GoRouter`，GoRouter-Compiler日志tag为`GoRouter::Compiler`，GoRouter-Gradle-Plugin日志tag为`GoRouter::Gradle-Plugin`。
 
-##### 12.  ARouter迁移指南
+##### 12.  Kotlin DSL (`.kts`)依赖和配置
+
+[点击查看Kotlin DSL (`.kts`)](https://github.com/wyjsonGo/GoRouter/blob/master/README_Kotlin_DSL.md)
+
+##### 13.  ARouter迁移指南
 
 | ARouter              | GoRouter                 |
 | -------------------- | ------------------------ |
