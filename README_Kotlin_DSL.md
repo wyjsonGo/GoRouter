@@ -5,7 +5,7 @@
 
 ## 1、添加依赖和配置Kotlin DSL (`.kts`)语法
 
-##### 1.  libs.versions.toml
+##### 1.  `libs.versions.toml`
 
 ```toml
 [versions]
@@ -19,7 +19,7 @@ gorouter-compiler = { group = "com.github.wyjsonGo.GoRouter", name = "GoRouter-C
 gorouter-plugin = { id = "com.github.wyjsonGo.GoRouter", version.ref = "gorouter" }
 ```
 
-##### 2.  settings.gradle.kts
+##### 2.  `settings.gradle.kts`
 
 ```kotlin
 pluginManagement {
@@ -44,7 +44,7 @@ dependencyResolutionManagement {
 }
 ```
 
-##### 3.  项目根目录下build.gradle.kts
+##### 3.  项目根目录下`build.gradle.kts`
 
 ```kotlin
 plugins {
@@ -54,7 +54,7 @@ plugins {
 
 ```
 
-##### 4.  底层module_base项目目录下build.gradle.kts
+##### 4.  底层`module_base`项目目录下`build.gradle.kts`
 
 ```kotlin
 dependencies {
@@ -63,7 +63,7 @@ dependencies {
 }
 ```
 
-##### 5.  app目录下build.gradle.kts
+##### 5.  app目录下`build.gradle.kts`
 
 ```kotlin
 // app目录下build.gradle.kts
