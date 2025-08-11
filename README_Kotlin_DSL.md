@@ -66,8 +66,6 @@ dependencies {
 ##### 5.  app目录下`build.gradle.kts`
 
 ```kotlin
-// app目录下build.gradle.kts
-
 plugins {
     ...
     id("com.wyjson.gorouter")
