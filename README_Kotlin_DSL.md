@@ -75,7 +75,7 @@ plugins {
 
 GoRouter {
     runAutoRegisterBuildTypes = arrayOf("release")
-    helperToRootModuleName = "common:module_common"
+    helperToRootModuleName = "module_common"
 }
 ```
 
